@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>퀴즈 미리보기 — B. 대기의 순환 (14개 중 7개 선택, v3)</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Executive Kinetic — 재료/design/DESIGN.md 토큰 ===== */
+:root{
+  --surface:#f8f9ff; --surface-dim:#cbdbf5;
+  --surface-lowest:#ffffff; --surface-low:#eff4ff; --surface-c:#e5eeff;
+  --surface-high:#dce9ff; --surface-highest:#d3e4fe; --surface-variant:#d3e4fe;
+  --on-surface:#0b1c30; --on-surface-variant:#554335;
+  --inverse-surface:#213145; --inverse-on-surface:#eaf1ff;
+  --outline:#887363; --outline-variant:#dcc2af;
+  --primary:#904d00; --on-primary:#ffffff;
+  --primary-container:#f78d1e; --on-primary-container:#5f3100;
+  --primary-fixed:#ffdcc2; --primary-fixed-dim:#ffb77c;
+  --secondary:#5f5e5f; --secondary-container:#e2dfe0; --on-secondary-container:#636263;
+  --error:#ba1a1a; --error-c:#ffdad6; --on-error-c:#93000a;
+  --xs:4px; --base:8px; --sm:12px; --md:24px; --lg:48px; --xl:80px;
+  --gutter:24px; --margin-mobile:16px; --rail:280px;
+  --r-sm:2px; --r:4px; --r-md:6px; --r-lg:8px; --r-xl:12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--surface);color:var(--on-surface);
+  font-family:'Manrope','Pretendard','Malgun Gothic','맑은 고딕',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+
+/* ===== Rail ===== */
+.rail{position:fixed;left:0;top:0;height:100%;width:var(--rail);background:var(--surface-low);
+  display:flex;flex-direction:column;padding:var(--md) 0 var(--md);z-index:50;
+  box-shadow:0 1px 8px rgba(0,0,0,.04);}
+.brand{display:flex;align-items:center;gap:var(--base);padding:0 var(--md);}
+.brand-mark{width:34px;height:34px;background:var(--primary);color:var(--on-primary);border-radius:var(--r-lg);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex:none;}
+.brand-name{font-size:22px;font-weight:800;letter-spacing:-.01em;}
+.brand-rule{height:2px;width:48px;background:var(--primary);opacity:.2;margin:var(--sm) var(--md) var(--md);}
+.nav{flex:1;padding:0 var(--sm);display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.nav .grp{padding:var(--sm) var(--sm) var(--xs);font-size:12px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--on-surface-variant);opacity:.6;}
+.nav a{display:flex;align-items:center;gap:var(--base);padding:9px var(--sm);border-radius:var(--r-xl);
+  font-size:14px;font-weight:600;color:var(--on-surface-variant);text-decoration:none;transition:.18s;}
+.nav a:hover{background:var(--surface-highest);color:var(--on-surface);}
+.nav a .qn{width:22px;height:22px;flex:none;border-radius:var(--r);background:var(--surface-c);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--on-surface);}
+.nav a.picked .qn{background:var(--primary);color:var(--on-primary);}
+/* 선택 표시는 A·B를 각각 네모 테두리로 감싼다 — 'AB'로 붙여 놓으면 한 개를 고른 것처럼 읽힌다 */
+.nav a .st{margin-left:auto;display:inline-flex;align-items:center;gap:3px;flex:none;}
+.nav a .st .k{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  border:1px solid var(--primary);border-radius:var(--r-sm);background:var(--primary);color:var(--on-primary);
+  font-size:11px;font-weight:800;}
+.nav a .st .none{font-size:12px;font-weight:800;color:var(--outline);}
+.rail-foot{padding:var(--sm) var(--md) 0;}
+.rail-card{background:var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);display:flex;flex-direction:column;gap:var(--xs);}
+.rail-card .k{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+.rail-card .v{font-size:13px;font-weight:600;word-break:break-all;}
+
+/* ===== Shell ===== */
+.shell{padding-left:var(--rail);}
+.topbar{position:sticky;top:0;height:72px;background:rgba(248,249,255,.85);backdrop-filter:blur(12px);
+  box-shadow:0 1px 8px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:space-between;
+  gap:var(--sm);padding:0 var(--md);z-index:40;}
+.topbar .ttl{font-size:24px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;}
+.rev{display:flex;align-items:center;gap:var(--base);}
+.rev label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+.rev input{width:240px;max-width:42vw;padding:8px var(--sm);border:1px solid var(--outline-variant);
+  border-radius:999px;background:var(--surface-high);font-family:inherit;font-size:14px;color:var(--on-surface);}
+.rev input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+main{padding:var(--md) var(--md) 180px;display:flex;flex-direction:column;gap:var(--md);max-width:1440px;}
+
+/* ===== Hero ===== */
+.hero{background:var(--surface-c);border-radius:var(--r-xl);padding:var(--md);}
+.eyebrow{display:flex;align-items:center;gap:var(--base);margin-bottom:var(--base);}
+.eyebrow .sq{width:12px;height:12px;background:var(--primary-container);border-radius:var(--r-sm);}
+.eyebrow span{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+h1{font-size:40px;font-weight:800;line-height:1.15;letter-spacing:-.02em;margin:0 0 var(--sm);}
+.chips{display:flex;gap:var(--base);flex-wrap:wrap;}
+.chip{padding:4px 12px;font-size:12px;font-weight:700;letter-spacing:.02em;border-radius:999px;
+  background:var(--surface-lowest);color:var(--on-surface-variant);border:1px solid var(--surface-highest);}
+.chip.k{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+
+.guide{border-left:4px solid var(--primary);background:var(--surface-low);padding:var(--sm) var(--md);
+  border-radius:0 var(--r-lg) var(--r-lg) 0;font-size:14px;line-height:1.85;}
+.guide b{font-weight:800;}
+.guide code{background:var(--surface-c);border:1px solid var(--surface-high);border-radius:var(--r);
+  padding:1px 6px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;}
+
+/* ===== Actions ===== */
+.actions{display:flex;gap:var(--base);flex-wrap:wrap;align-items:center;
+  background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;font-size:13px;font-weight:700;
+  letter-spacing:.02em;border-radius:var(--r);cursor:pointer;font-family:inherit;
+  background:var(--primary);color:var(--on-primary);border:1px solid var(--primary);transition:.18s;}
+.btn:hover{background:var(--on-primary-container);border-color:var(--on-primary-container);}
+.btn.sec{background:var(--surface-lowest);color:var(--primary);}
+.btn.sec:hover{background:var(--primary-fixed);color:var(--on-primary-container);border-color:var(--primary);}
+.btn.ghost{background:transparent;color:var(--on-surface-variant);border-color:var(--surface-highest);}
+.btn.ghost:hover{background:var(--surface-low);color:var(--on-surface);border-color:var(--outline);}
+.sw{display:inline-flex;align-items:center;gap:var(--base);cursor:pointer;font-size:13px;font-weight:700;
+  color:var(--on-surface-variant);margin-left:var(--xs);}
+.sw input{position:absolute;opacity:0;width:0;height:0;}
+.sw .tr{width:44px;height:24px;border-radius:999px;background:var(--surface-highest);position:relative;transition:.2s;flex:none;}
+.sw .tr::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--surface-lowest);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s;}
+.sw input:checked + .tr{background:var(--primary);}
+.sw input:checked + .tr::after{transform:translateX(20px);}
+.sw input:focus-visible + .tr{box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.spacer{flex:1;}
+
+/* ===== Slot ===== */
+.slot{background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-xl);overflow:hidden;}
+.slot.chosen{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);}
+.slot-head{display:flex;align-items:center;gap:var(--base);padding:var(--sm) var(--md);flex-wrap:wrap;}
+.slot-no{width:30px;height:30px;background:var(--primary);color:var(--on-primary);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex:none;}
+.ab-tabs{margin-left:auto;display:flex;gap:var(--xs);}
+.ab-tab{padding:7px 16px;font-size:12px;font-weight:800;letter-spacing:.04em;cursor:pointer;font-family:inherit;
+  background:var(--surface-low);color:var(--on-surface-variant);border:1px solid var(--surface-highest);border-radius:var(--r);transition:.18s;}
+.ab-tab:hover{background:var(--surface-highest);color:var(--on-surface);}
+.ab-tab.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+.axis{background:var(--surface-low);border-top:1px solid var(--surface-c);border-bottom:1px solid var(--surface-c);
+  padding:var(--base) var(--md);font-size:12px;font-weight:700;line-height:1.7;color:var(--on-surface-variant);text-align:center;}
+
+.panes{display:block;}
+.pane{padding:var(--md);}
+.panes.side{display:grid;grid-template-columns:1fr 1fr;align-items:start;}
+.panes.side .pane + .pane{border-left:1px solid var(--surface-c);}
+.panes:not(.side) .pane + .pane{border-top:1px solid var(--surface-c);}
+.pane.picked{background:rgba(144,77,0,.04);}
+
+/* ===== 문항 상단 바 — 왼쪽 = 문항 선택 / 오른쪽 = 모범 문제 별표 ===== */
+.selbar{display:flex;align-items:stretch;gap:var(--base);margin-bottom:var(--sm);}
+.selbox{display:flex;align-items:center;gap:var(--sm);flex:1;min-width:0;padding:11px var(--sm);
+  border:1px solid var(--outline-variant);border-radius:var(--r-lg);background:var(--surface-lowest);
+  cursor:pointer;transition:.18s;}
+.selbox:hover{border-color:var(--primary);background:var(--primary-fixed);}
+.selbox input{width:20px;height:20px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.selbox .tag{padding:3px 11px;font-size:11px;font-weight:800;letter-spacing:.05em;border-radius:999px;
+  background:var(--secondary-container);color:var(--on-secondary-container);flex:none;}
+.selbox.on{border-color:var(--primary);background:rgba(144,77,0,.06);box-shadow:inset 0 0 0 1px var(--primary);}
+.selbox.on .tag{background:var(--primary);color:var(--on-primary);}
+.selbox.off{opacity:.5;cursor:not-allowed;background:var(--surface-low);}
+.selbox.off:hover{border-color:var(--outline-variant);background:var(--surface-low);}
+.selbox.off input{cursor:not-allowed;}
+.starbox{display:flex;align-items:center;gap:var(--base);flex:none;padding:11px var(--sm);
+  border:1px solid var(--outline-variant);border-radius:var(--r-lg);background:var(--surface-lowest);
+  cursor:pointer;transition:.18s;}
+.starbox:hover{border-color:var(--primary-container);background:var(--primary-fixed);}
+.starbox input{width:20px;height:20px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.starbox .ico{font-size:19px;line-height:1;color:var(--outline-variant);transition:.18s;}
+.starbox.on{border-color:var(--primary-container);background:var(--primary-fixed);
+  box-shadow:inset 0 0 0 1px var(--primary-container);}
+.starbox.on .ico{color:var(--primary);}
+
+.q-text{font-size:18px;font-weight:600;line-height:1.6;margin-bottom:var(--sm);}
+/* 직접 입력의 빈칸(밑줄 `_`) — 글자 수를 눈으로 세기 쉽게 자간을 벌린다.
+   띄어쓰기까지 보여주는 표기이므로 줄바꿈으로 끊기지 않게 nowrap을 준다 */
+.ex b.blank{letter-spacing:.18em;color:var(--primary);white-space:nowrap;}
+.ex{background:var(--surface-low);border-left:3px solid var(--outline-variant);border-radius:0 var(--r-lg) var(--r-lg) 0;
+  padding:var(--sm) var(--md);font-size:16px;line-height:1.75;margin-bottom:var(--sm);}
+.ex b{background:var(--primary-fixed);color:var(--on-primary-container);padding:1px 7px;border-radius:var(--r-sm);font-weight:800;}
+.blank-label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);margin:var(--sm) 0 var(--base);}
+.opts{display:flex;flex-direction:column;gap:var(--base);}
+.opts.row{flex-direction:row;flex-wrap:wrap;}
+.opt{display:flex;align-items:flex-start;gap:var(--base);padding:12px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  font-size:15px;line-height:1.55;transition:.14s;}
+.opt:hover{border-color:var(--outline);background:var(--surface-low);}
+.opt input{margin:4px 0 0;accent-color:#904d00;flex:none;}
+.opt .n{font-weight:800;flex:none;min-width:16px;}
+.opt.sel{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.04);}
+.opts.row .opt{min-width:104px;justify-content:center;font-weight:800;font-size:18px;}
+input[type=text].ans{width:100%;padding:12px var(--sm);border:1px solid var(--outline-variant);border-radius:var(--r-lg);
+  background:var(--surface-lowest);font-family:inherit;font-size:16px;color:var(--on-surface);}
+input[type=text].ans:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.order{display:flex;flex-direction:column;gap:var(--base);}
+.ocard{display:flex;align-items:center;gap:var(--sm);padding:12px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  font-size:15px;line-height:1.55;transition:.14s;}
+.ocard:hover{border-color:var(--outline);background:var(--surface-low);}
+.ocard .seq{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--outline-variant);border-radius:var(--r);font-size:12px;font-weight:800;color:var(--on-surface-variant);}
+.ocard.picked{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.04);}
+.ocard.picked .seq{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+.order-hint{font-size:12px;font-weight:600;color:var(--on-surface-variant);margin-bottom:var(--base);}
+.q-actions{display:flex;gap:var(--base);margin-top:var(--sm);flex-wrap:wrap;align-items:center;}
+.res{margin-top:var(--sm);padding:var(--sm) var(--md);border-left:4px solid var(--primary);
+  background:var(--surface-low);border-radius:0 var(--r-lg) var(--r-lg) 0;display:none;}
+.res.show{display:block;}
+.res .verdict{font-size:13px;font-weight:800;letter-spacing:.03em;margin-bottom:var(--base);}
+.res.ok .verdict::before{content:"● 정답";color:var(--primary);}
+.res.no{border-left-color:var(--error);background:var(--error-c);}
+.res.no .verdict{color:var(--on-error-c);}
+.res.no .verdict::before{content:"● 다시 생각해 보세요";}
+.res .sol{font-size:15px;line-height:1.75;}
+.res .key{margin-top:var(--base);font-size:13px;font-weight:600;color:var(--on-surface-variant);}
+
+/* ===== 검수 메모 (기본 닫힌 토글) ===== */
+details.memo-box{border-top:1px solid var(--surface-c);}
+details.memo-box > summary{cursor:pointer;display:flex;align-items:center;gap:var(--base);
+  padding:var(--sm) var(--md);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);list-style:none;}
+details.memo-box > summary::-webkit-details-marker{display:none;}
+details.memo-box > summary::before{content:"▸";font-size:14px;}
+details.memo-box[open] > summary::before{content:"▾";}
+details.memo-box > summary:hover{color:var(--on-surface);background:var(--surface-low);}
+.memo-badge{padding:2px 9px;font-size:11px;font-weight:800;letter-spacing:.03em;border-radius:999px;
+  background:var(--primary);color:var(--on-primary);text-transform:none;}
+.memo-box .saved{margin-left:auto;font-size:11px;font-weight:700;text-transform:none;opacity:0;transition:opacity .2s;}
+.memo-box .saved.on{opacity:1;}
+.memo-body{padding:0 var(--md) var(--md);}
+.memo-box textarea{width:100%;min-height:112px;padding:var(--sm);resize:vertical;border-radius:var(--r-lg);
+  border:1px solid var(--outline-variant);background:var(--surface-lowest);
+  font-family:inherit;font-size:15px;line-height:1.65;color:var(--on-surface);}
+.memo-box textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.memo-box textarea.has{border-color:var(--primary);background:var(--surface-low);}
+.memo-tools{display:flex;gap:var(--base);margin-top:var(--base);flex-wrap:wrap;}
+.icon-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;cursor:pointer;border-radius:var(--r);
+  background:transparent;border:1px solid var(--surface-highest);color:var(--on-surface-variant);
+  font-family:inherit;font-size:12px;font-weight:700;transition:.18s;}
+.icon-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--surface-low);}
+
+details.rv{border-top:1px solid var(--surface-c);margin-top:var(--sm);padding-top:var(--base);}
+details.rv summary{cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);list-style:none;}
+details.rv summary::-webkit-details-marker{display:none;}
+details.rv summary::before{content:"▸ ";}
+details.rv[open] summary::before{content:"▾ ";}
+.rv-body{margin-top:var(--base);font-size:13px;line-height:1.85;color:var(--on-surface-variant);}
+.rv-body code{background:var(--surface-c);border-radius:var(--r-sm);padding:1px 6px;color:var(--on-surface);
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;}
+
+/* ===== Bottom bar ===== */
+.bar{position:fixed;left:var(--rail);right:0;bottom:0;background:var(--surface-high);
+  border-top:1px solid var(--surface-highest);box-shadow:0 -2px 12px rgba(0,0,0,.06);
+  padding:var(--sm) var(--md);display:flex;align-items:center;gap:var(--sm);flex-wrap:wrap;z-index:60;}
+.bar .count{display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;
+  background:var(--primary);color:var(--on-primary);font-size:14px;font-weight:800;white-space:nowrap;}
+.bar .count.full{background:var(--on-primary-container);}
+.bar .picks{display:flex;gap:var(--xs);flex-wrap:wrap;}
+.bar .pk{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:var(--r);
+  font-size:12px;font-weight:800;background:var(--surface-lowest);border:1px solid var(--surface-highest);}
+.bar .pk.set{border-color:var(--primary-fixed-dim);background:var(--primary-fixed);}
+.bar .pk .no{color:var(--on-surface-variant);min-width:9px;text-align:center;}
+/* A·B를 각각 네모 테두리로 감싼다 — 붙여 놓으면 두 개가 아니라 한 개로 읽힌다 */
+.bar .pk .k{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  border:1px solid var(--primary);border-radius:var(--r-sm);background:var(--primary);color:var(--on-primary);
+  font-size:11px;font-weight:800;}
+.bar .pk .none{color:var(--outline);}
+.bar .star{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;
+  background:var(--primary-fixed);color:var(--on-primary-container);font-size:12px;font-weight:800;white-space:nowrap;}
+.bar .star[hidden]{display:none;}
+/* 다시 만들 자리 배지 — 별표(채운 배경)와 구분되게 테두리형으로 둔다 */
+.bar .regen{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;
+  border:2px solid var(--primary);color:var(--primary);font-size:12px;font-weight:800;white-space:nowrap;}
+.bar .regen[hidden]{display:none;}
+.bar .warn{font-size:13px;font-weight:600;font-style:italic;color:var(--on-surface-variant);}
+.bar button:disabled{opacity:.45;cursor:not-allowed;}
+
+/* ===== 다시 만들 문항 고르기 (모달) ===== */
+.modal{position:fixed;inset:0;background:rgba(11,28,48,.55);z-index:90;
+  display:flex;align-items:center;justify-content:center;padding:var(--md);}
+.modal[hidden]{display:none;}
+.modal-card{background:var(--surface-lowest);border-radius:var(--r-xl);width:100%;max-width:760px;
+  max-height:86vh;overflow-y:auto;padding:var(--md);box-shadow:0 12px 48px rgba(0,0,0,.28);}
+.modal-card h2{margin:0 0 var(--base);font-size:26px;font-weight:800;letter-spacing:-.01em;}
+.modal-lead{font-size:14px;line-height:1.85;color:var(--on-surface-variant);margin-bottom:var(--sm);}
+.modal-lead b{color:var(--on-surface);font-weight:800;}
+.rg-row{display:flex;align-items:center;gap:var(--sm);padding:11px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  margin-bottom:var(--base);transition:.14s;}
+.rg-row:hover{border-color:var(--outline);background:var(--surface-low);}
+.rg-row.on{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.05);}
+.rg-row input{width:18px;height:18px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.rg-no{width:26px;height:26px;flex:none;border-radius:var(--r);background:var(--surface-c);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+.rg-row.on .rg-no{background:var(--primary);color:var(--on-primary);}
+.rg-meta{font-size:14px;font-weight:700;}
+.rg-state{margin-left:auto;font-size:12px;font-weight:700;color:var(--on-surface-variant);white-space:nowrap;}
+.rg-state.empty{color:var(--error);}
+.modal-card textarea{width:100%;min-height:96px;padding:var(--sm);resize:vertical;border-radius:var(--r-lg);
+  border:1px solid var(--outline-variant);background:var(--surface-lowest);margin-top:var(--base);
+  font-family:inherit;font-size:15px;line-height:1.65;color:var(--on-surface);}
+.modal-card textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.modal-sub{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);margin:var(--md) 0 var(--base);}
+.modal-foot{display:flex;gap:var(--base);justify-content:flex-end;margin-top:var(--md);flex-wrap:wrap;align-items:center;}
+.modal-foot .spacer{flex:1;}
+.regen-hint{font-size:13px;font-weight:700;color:var(--on-surface-variant);}
+.regen-hint.saved{color:var(--primary);}
+
+.confirm{border-left:4px solid var(--primary);background:var(--primary-fixed);color:var(--on-primary-container);
+  padding:var(--sm) var(--md);border-radius:0 var(--r-lg) var(--r-lg) 0;font-size:14px;font-weight:600;line-height:1.8;}
+@media (max-width:1100px){
+  .panes.side{grid-template-columns:1fr;}
+  .panes.side .pane + .pane{border-left:0;border-top:1px solid var(--surface-c);}
+}
+@media (max-width:860px){
+  .rail{display:none;} .shell{padding-left:0;} .bar{left:0;}
+  main{padding:var(--sm) var(--margin-mobile) 220px;}
+  h1{font-size:28px;} .topbar{height:auto;padding:var(--base) var(--sm);flex-wrap:wrap;}
+  .topbar .ttl{font-size:18px;} .rev input{width:100%;max-width:none;}
+  .ab-tabs{margin-left:0;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<aside class="rail">
+  <div class="brand">
+    <div class="brand-mark">Q</div>
+    <div class="brand-name">QuizReview</div>
+  </div>
+  <div class="brand-rule"></div>
+  <nav class="nav" id="rail-nav">
+    <div class="grp">문항 7자리</div>
+    <!-- 문항 링크는 스크립트가 채웁니다 -->
+    <div class="grp">현황판</div>
+    <a href="../퀴즈제작현황_대시보드_v2.html"><span class="qn">▤</span>퀴즈 제작 현황</a>
+  </nav>
+  <div class="rail-foot">
+    <div class="rail-card">
+      <span class="k">반영 대상</span>
+      <span class="v">산출물/대단원별/06_지구_살아있는_행성.csv · 72~78행</span>
+    </div>
+  </div>
+</aside>
+
+<div class="shell">
+  <header class="topbar">
+    <span class="ttl">퀴즈 검수 — 14개 중 7개 선택</span>
+    <span class="rev">
+      <label for="reviewer">검수자</label>
+      <input type="text" id="reviewer" placeholder="이름을 입력하세요 — 선택 결과에 함께 기록됩니다" autocomplete="off">
+    </span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="sq"></span><span>Quiz Preview · 후보 14개 중 7개 선택</span></div>
+      <h1>B. 대기의 순환</h1>
+      <div class="chips">
+        <span class="chip k">지구환경</span>
+        <span class="chip">6. 지구 — 살아있는 행성</span>
+        <span class="chip">6-4) 대기와 날씨</span>
+        <span class="chip">7자리 × 2안 = 후보 14문항</span>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="btn sec" id="btn-allA">A안 7개 전부 선택</button>
+      <button class="btn sec" id="btn-allB">B안 7개 전부 선택</button>
+      <label class="sw"><input type="checkbox" id="sw-both" checked><span class="tr"></span>둘 다 보기 (좌우 비교)</label>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="btn-reveal">전체 정답 보기</button>
+      <button class="btn ghost" id="btn-reset">다시 풀기</button>
+    </div>
+
+    <div id="quiz" style="display:flex;flex-direction:column;gap:var(--md);"></div>
+
+    <div class="confirm">
+      ⚠️ 아래 항목은 반드시 사람이 최종 확인합니다: 과학적 사실 오류 여부 / 정답 타당성 / 최종 발행 승인<br>
+      ⚠️ 미발행 원고는 외부 도구에 원문 저장 금지(세션 내 사용만) 준수 여부
+    </div>
+  </main>
+</div>
+
+<div class="bar">
+  <span class="count" id="bar-count">0 / 7 선택</span>
+  <span class="picks" id="bar-picks"></span>
+  <span class="star" id="bar-star" hidden></span>
+  <span class="regen" id="bar-regen" hidden></span>
+  <span class="warn" id="bar-warn"></span>
+  <span class="spacer"></span>
+  <button class="btn ghost" id="btn-clearpick" disabled>선택 초기화</button>
+  <button class="btn sec" id="btn-regen">다시 만들 문항 고르기</button>
+  <button class="btn" id="btn-copy" disabled>선택 결과 복사</button>
+</div>
+
+<div class="modal" id="regen-modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="regen-title">
+    <h2 id="regen-title">다시 만들 문항 고르기</h2>
+    <div class="modal-lead" id="regen-lead"></div>
+    <div id="regen-list"></div>
+    <div class="modal-sub">어떻게 다시 만들면 좋을지 (선택)</div>
+    <textarea id="regen-note" placeholder="예) 4번은 연도를 외우게 하지 말고 실험 절차 순서로 바꿔주세요. 6번은 보기가 너무 길어요."></textarea>
+    <div class="modal-foot">
+      <span class="regen-hint" id="regen-hint"></span>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="regen-close">닫기</button>
+      <button class="btn" id="regen-save">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var ARTICLE_ID = "06_지구_B_대기의순환";
+var META = {"분과":"지구환경","대단원":"6. 지구 — 살아있는 행성","중단원":"6-4) 대기와 날씨","아티클":"B. 대기의 순환","csv":"산출물/대단원별/06_지구_살아있는_행성.csv","행":"72~78행","원고":"재료/최종 원고_텍스트변환/6. 지구-살아있는 행성/6-4) 대기와 날씨/6_4)_B대기의순환_DF.docx.md"};
+
+/* 자리마다 후보 2안(A/B). 두 안은 서로 다른 내용을 묻거나 다른 방식으로 묻는다.
+   A·B는 대등한 후보이며, 14개 중 고른 7개만 CSV에 반영된다. */
+var SLOTS = [
+ {
+  "no": 1,
+  "lv": "하",
+  "type": "인라인",
+  "axis": "A = 전향력·무역풍을 이름으로 짝짓기(자전축) · B = 고기압·바람을 원인 → 결과로 묻기(기압축)",
+  "A": {
+   "q": "다음은 지구 규모의 바람이 휘어져 부는 까닭을 설명한 것입니다. 빈칸에 알맞은 말을 고르세요.",
+   "ex": "지구가 자전하기 때문에 북반구에서 이동하는 공기는 오른쪽으로 휘는데, 이러한 겉보기 효과를 [1](이)라고 한다. 해들리 순환의 지표 흐름도 오른쪽으로 휘면서 적도 쪽으로 부는데, 이 바람을 [2](이)라고 한다.",
+   "blanks": [
+    {
+     "opts": [
+      "기압",
+      "전향력",
+      "용승"
+     ],
+     "ans": 2
+    },
+    {
+     "opts": [
+      "편서풍",
+      "제트류",
+      "무역풍"
+     ],
+     "ans": 3
+    }
+   ],
+   "sol": "지구 자전 때문에 나타나는 겉보기 효과가 전향력이에요. 북반구에서 적도 쪽으로 내려가던 공기가 오른쪽으로 휘면서 북동 무역풍이 되죠. 남반구에서는 왼쪽으로 휘어 남동 무역풍이 불어요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>2</code> · 정답 2 = <code>3</code> · 보기1 = <code>기압/전향력/용승</code> · 보기2 = <code>편서풍/제트류/무역풍</code> · 근거 = 원고 9행 · 키워드 <b>전향력 · 무역풍</b>"
+  },
+  "B": {
+   "q": "기온이 달라지면 공기의 밀도와 기압도 함께 변합니다. 빈칸에 알맞은 말을 고르세요.",
+   "ex": "기온이 낮아져 공기가 수축하면 밀도가 높아지면서 [1]이 발달한다. 기압이 서로 다른 두 지역 사이에서 공기가 이동하는 흐름을 [2](이)라고 한다.",
+   "blanks": [
+    {
+     "opts": [
+      "저기압",
+      "고기압",
+      "용승"
+     ],
+     "ans": 2
+    },
+    {
+     "opts": [
+      "바람",
+      "제트류",
+      "전향력"
+     ],
+     "ans": 1
+    }
+   ],
+   "sol": "기온이 낮아지면 공기가 수축해 밀도와 기압이 높아지고, 이런 곳이 고기압이에요. 반대로 기온이 높아져 공기가 팽창하면 저기압이 되죠. 공기가 고기압에서 저기압 쪽으로 이동하는 흐름이 바로 바람이에요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>2</code> · 정답 2 = <code>1</code> · 보기1 = <code>저기압/고기압/용승</code> · 보기2 = <code>바람/제트류/전향력</code> · 근거 = 원고 7행 · 키워드 <b>고기압 · 바람</b>"
+  }
+ },
+ {
+  "no": 2,
+  "lv": "하",
+  "type": "OX",
+  "axis": "A = 제트류의 세기를 정하는 요인을 사실 확인형으로(정답 O) · B = 자전과 순환 셀 수에 대한 오개념 반박형으로(정답 X)",
+  "A": {
+   "q": "제트류는 남북 간의 온도 차이가 클수록 강해진다.",
+   "ex": "-",
+   "ox": {
+    "opts": [
+     "O",
+     "X"
+    ],
+    "ans": 1
+   },
+   "sol": "제트류는 남북 간 온도 차이를 동력으로 삼는 강한 편서풍의 띠예요. 온도 차가 클수록 더 빠르게 흘러 최대 풍속이 시속 400킬로미터를 넘기도 해요. 그래서 북극이 따뜻해져 온도 차가 줄면 제트류가 달라질 수 있다는 논의가 이어지고 있어요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>O</code> · 보기1 = <code>O</code>, 보기2 = <code>X</code> · 근거 = 원고 13행 · <b>사실 확인형</b>"
+  },
+  "B": {
+   "q": "지구가 자전하지 않더라도 대기는 지금처럼 여러 개의 순환 셀로 나뉘어 움직인다.",
+   "ex": "-",
+   "ox": {
+    "opts": [
+     "O",
+     "X"
+    ],
+    "ans": 2
+   },
+   "sol": "지구가 자전하지 않는다면 대기는 적도와 극 사이를 오가는 단순한 순환 하나로만 움직일 거예요. 자전이 만들어 낸 전향력이 대기를 여러 셀로 나누어 지금의 기후대 분포를 형성했어요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>X</code> · 보기1 = <code>O</code>, 보기2 = <code>X</code> · 근거 = 원고 9행 · <b>오개념 반박형</b> — 틀린 지점은 여러 셀로 나뉜다는 대목 한 곳"
+  }
+ },
+ {
+  "no": 3,
+  "lv": "중",
+  "type": "사지선다 (단수)",
+  "axis": "A = 페렐 순환의 정의(간접 순환의 성격)를 직접 묻기 · B = 태풍의 회전 방향이라는 구체 사례를 해석하게 하기",
+  "A": {
+   "q": "중위도에도 대기 순환의 셀이 하나 형성됩니다. 이 순환의 특징으로 알맞은 것을 고르세요.",
+   "ex": "-",
+   "single": {
+    "opts": [
+     "적도와 극지방의 온도 차이로 직접 일어나는 순환이다.",
+     "해들리 순환과 극순환이 맞닿는 곳에서 간접적으로 형성된다.",
+     "적도에서 상승한 공기가 극지방까지 곧장 이동하는 순환이다.",
+     "대륙과 해양의 가열 속도 차이로 계절마다 방향이 바뀐다."
+    ],
+    "ans": 2
+   },
+   "sol": "중위도의 페렐 순환은 해들리 순환과 극순환 사이에서 간접적으로 형성돼요. 온도 차이로 직접 일어나는 두 순환과는 성격이 다르죠. 이 세 순환 셀이 지구 전체의 에너지와 수분 분포를 결정해요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>2</code> · 근거 = 원고 11행 · 키워드 <b>페렐 순환의 간접성</b>"
+  },
+  "B": {
+   "q": "태풍은 북반구에서 반시계 방향으로, 남반구에서 시계 방향으로 회전합니다. 이러한 차이가 나타나는 까닭으로 알맞은 것을 고르세요.",
+   "ex": "-",
+   "single": {
+    "opts": [
+     "대륙과 해양의 가열 속도 차이가 반구마다 다르기 때문이다.",
+     "해들리 순환의 상승 기류가 반구마다 반대로 나타나기 때문이다.",
+     "남북 간 온도 차이가 커져 제트류가 반구마다 다르게 흐르기 때문이다.",
+     "지구 자전에 따른 전향력이 반구마다 반대로 작용하기 때문이다."
+    ],
+    "ans": 4
+   },
+   "sol": "전향력은 북반구에서 오른쪽, 남반구에서 왼쪽으로 공기를 휘게 해요. 그래서 저기압으로 모여드는 바람의 회전 방향이 반구마다 반대가 되죠. 태풍의 회전 방향도 같은 이유로 갈려요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>4</code> · 근거 = 원고 9행 · 키워드 <b>전향력의 사례 적용</b>"
+  }
+ },
+ {
+  "no": 4,
+  "lv": "중-상",
+  "type": "순서배열",
+  "axis": "A = 해들리 순환 → 아열대 고압대 → 사막 · B = 제트류 → 블로킹 → 극단 날씨. 【순서 근거】 둘 다 필연적 인과 — 이 원고에는 연도가 2010년 한 곳뿐이라 연도 기반 4장 문장은 만들 수 없었음",
+  "A": {
+   "q": "다음 문장은 위도 30도 부근에 큰 사막이 자리하는 이유를 설명한 것입니다. 설명의 흐름에 맞게 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "북위 약 30도 부근에서 공기가 하강하며 아열대 고압대가 형성된다.",
+     "적도 지방은 태양 복사 에너지를 많이 받아 공기가 뜨거워진다.",
+     "아열대 고압대 아래의 지표는 강수량이 적어 사막이 자리한다.",
+     "뜨거워진 적도 부근의 공기가 상승해 고위도 쪽으로 이동한다."
+    ],
+    "ans": [
+     2,
+     4,
+     1,
+     3
+    ]
+   },
+   "sol": "적도에서 데워진 공기가 상승해 고위도로 이동하다가 위도 30도 부근에서 하강해요. 공기가 하강하는 이 위도대에 아열대 고압대가 형성되고, 그 아래 지표는 강수량이 적어요. 사하라와 아라비아, 오스트레일리아 중부의 사막이 모두 이 위도대에 자리해요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>나-라-가-다</code> · 근거 = 원고 11행 · <b>순서 근거 = 필연적 인과</b>: 다·라 문장을 뒤바꾸면 사막이 있어서 고압대가 생긴다가 되고, 가·나 문장을 뒤바꾸면 상승한 뒤에 뜨거워진다가 되어 성립하지 않음"
+  },
+  "B": {
+   "q": "다음 문장은 중위도에서 극단적인 날씨가 오래 이어지는 이유를 설명한 것입니다. 설명의 흐름에 맞게 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "제트류가 남북으로 크게 구불구불해지는 블로킹 현상이 나타난다.",
+     "폭염과 한파, 폭우 같은 극단적인 날씨가 계속된다.",
+     "대류권 상층에 강한 편서풍의 띠인 제트류가 흐른다.",
+     "같은 날씨 패턴이 한자리에 머문 채 수 주 동안 이어진다."
+    ],
+    "ans": [
+     3,
+     1,
+     4,
+     2
+    ]
+   },
+   "sol": "제트류는 중위도 날씨의 흐름을 이끄는 강한 편서풍의 띠예요. 이 띠가 크게 사행해 블로킹이 생기면 날씨 패턴이 한자리에 머물러요. 2010년 러시아 폭염과 파키스탄 대홍수가 동시에 일어난 것도 정체된 블로킹과 연관된 것으로 분석돼요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>다-가-라-나</code> · 근거 = 원고 13행 · <b>순서 근거 = 필연적 인과</b>: 원고에 블로킹이 발생하면 같은 날씨 패턴이 수 주 동안 지속되어 극단 날씨가 이어진다고 인과가 한 문장에 명시됨 · 제트류 고도·풍속 수치는 문장에서 뺐음"
+  }
+ },
+ {
+  "no": 5,
+  "lv": "상",
+  "type": "직접 입력",
+  "axis": "A = 라니냐(정의에서 용어 끌어내기) · B = 계절풍(사례에서 용어 끌어내기). 발문이 같으므로 정답 용어를 완전히 다르게 갈랐음",
+  "A": {
+   "q": "빈칸에 들어갈 알맞은 말을 쓰세요.",
+   "ex": "태평양의 무역풍과 동태평양의 용승이 평상시보다 강해지면 동태평양 해수면이 더욱 차가워진다. 엘니뇨와 번갈아 나타나는 이 차가운 국면을 ___(이)라고 한다.",
+   "text": {
+    "ans": "라니냐"
+   },
+   "sol": "라니냐는 엘니뇨와 반대되는 국면이에요. 무역풍과 동태평양의 용승이 평상시보다 강해져 바다 표면이 더 차가워지죠. 엘니뇨와 라니냐는 번갈아 나타나며 전 세계 기후 변동을 이끌어요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>라니냐</code> · 보기 1~6 모두 빈칸 · 근거 = 원고 17행 · 공백 없는 3글자, 원고 표기 그대로 · 특정성 검토: <code>엘니뇨</code>를 넣으면 엘니뇨와 번갈아 나타나는 국면을 엘니뇨라고 한다가 되어 자기모순, <code>용승</code>·<code>무역풍</code>·<code>블로킹</code>은 국면의 이름이 아니거나 글자 수가 맞지 않음"
+  },
+  "B": {
+   "q": "빈칸에 들어갈 알맞은 말을 쓰세요.",
+   "ex": "아시아 남부에서 여름마다 바다에서 육지로 습한 공기가 불어와 많은 비를 뿌린다. 이처럼 계절에 따라 부는 방향이 바뀌는 바람을 ___(이)라고 한다.",
+   "text": {
+    "ans": "계절풍"
+   },
+   "sol": "계절풍은 대륙과 해양이 데워지고 식는 속도가 달라서 생겨요. 여름에는 대륙이 빨리 뜨거워져 기압이 낮아지고, 바다에서 육지로 습한 공기가 들어오죠. 이 비가 아시아 남부 수십억 인구의 농업을 뒷받침해요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>계절풍</code> · 보기 1~6 모두 빈칸 · 근거 = 원고 15행 · 공백 없는 3글자, 원고 표기 그대로 · A안(<code>라니냐</code>)과 정답 용어가 완전히 다름"
+  }
+ },
+ {
+  "no": 6,
+  "lv": "중",
+  "type": "사지선다 (복수)",
+  "axis": "A = 대순환의 원인·범위를 속성 나열형으로 · B = 대순환이 만든 기후대 분포를 적용 사례형으로",
+  "A": {
+   "q": "지구 규모의 대기 순환에 대한 설명으로 옳은 것을 모두 고르세요.",
+   "ex": "-",
+   "multi": {
+    "opts": [
+     "지구의 대기 순환은 대류권을 벗어난 높은 곳에서만 일어난다.",
+     "적도와 극지방이 받는 태양 복사 에너지의 불균형이 순환을 일으킨다.",
+     "대류권에서 공기가 수평과 수직으로 순환하며 열을 재분배한다.",
+     "적도와 극지방의 기온 차이가 사라져야 대기 순환이 시작된다."
+    ],
+    "ans": [
+     2,
+     3
+    ]
+   },
+   "sol": "적도는 태양 복사 에너지를 많이 받고 극지방은 적게 받아요. 이 불균형이 지구 규모의 대기 순환을 일으키고, 공기는 대류권 전체에서 수평과 수직으로 움직이며 열을 재분배해요. 기온 차이가 이어지는 한 순환도 계속돼요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>2</code>, 정답 2 = <code>3</code> · 근거 = 원고 7행 · 발문에 모두 고르세요 포함 · 키워드 <b>대순환의 원인과 범위</b>"
+  },
+  "B": {
+   "q": "대기 대순환이 지표 환경에 만들어 낸 결과로 옳은 것을 모두 고르세요.",
+   "ex": "-",
+   "multi": {
+    "opts": [
+     "극 주변에는 순환 셀이 형성되지 않아 바람이 거의 불지 않는다.",
+     "적도 부근에는 상승 기류로 구름이 발달해 열대우림이 형성된다.",
+     "중위도의 편서풍은 대륙과 해양의 가열 속도 차이로 생겨난다.",
+     "위도 30도 부근의 하강 기류 아래에 강수량이 적은 사막이 자리한다."
+    ],
+    "ans": [
+     2,
+     4
+    ]
+   },
+   "sol": "적도에서는 공기가 상승하며 구름이 발달해 비가 많이 내려요. 그래서 열대우림이 자리하죠. 반대로 공기가 하강하는 위도 30도 부근은 강수량이 적어 사막이 발달해요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>2</code>, 정답 2 = <code>4</code> · 근거 = 원고 11행 · 발문에 모두 고르세요 포함 · 키워드 <b>대순환이 만든 기후대</b> · ※ 보기4는 4A 마지막 문장과 내용이 겹침 — 4A와 동시 선택 비권장"
+  }
+ },
+ {
+  "no": 7,
+  "lv": "중-상",
+  "type": "순서배열",
+  "axis": "A = 대기–해양 상호작용(엘니뇨) · B = 대륙–해양 상호작용(계절풍). 【순서 근거】 둘 다 필연적 인과. 4번은 대기 자체의 흐름, 7번은 대기와 해양·대륙의 상호작용으로 축을 미리 갈랐음",
+  "A": {
+   "q": "다음 문장은 엘니뇨가 진행되는 과정을 설명한 것입니다. 원인과 결과가 자연스럽게 이어지도록 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "전 세계 강수 패턴이 바뀌어 페루에 폭우가, 호주에 가뭄이 나타난다.",
+     "엘니뇨가 발생하면 서쪽으로 불던 무역풍이 약해지거나 방향이 뒤집힌다.",
+     "평상시 태평양에서 무역풍이 서쪽으로 불어 따뜻한 해수를 서태평양으로 옮긴다.",
+     "동태평양의 용승이 약해지고 따뜻한 해수가 동태평양으로 퍼진다."
+    ],
+    "ans": [
+     3,
+     2,
+     4,
+     1
+    ]
+   },
+   "sol": "평상시에는 무역풍이 따뜻한 물을 서태평양으로 밀어 주고, 동태평양에서는 찬물이 올라와요. 엘니뇨 때는 이 무역풍이 약해져 따뜻한 물이 동쪽으로 퍼지죠. 바다가 달라지면 대기의 강수 패턴도 함께 달라져요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>다-나-라-가</code> · 근거 = 원고 17행 · <b>순서 근거 = 필연적 인과</b>: 약해진다는 서술이 평상시 상태를 전제하므로 첫 문장을 뒤로 보낼 수 없고, 용승 약화가 무역풍 약화의 원인이 될 수는 없음"
+  },
+  "B": {
+   "q": "다음 문장은 여름에 바다에서 육지로 습한 바람이 부는 이유를 설명한 것입니다. 원인과 결과가 자연스럽게 이어지도록 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "아시아 남부와 동남아시아에 많은 여름 강수가 내려 농업을 뒷받침한다.",
+     "뜨거워진 대륙 위의 공기가 팽창하면서 기압이 낮아진다.",
+     "기압이 높은 해양에서 기압이 낮은 육지로 습한 공기가 이동한다.",
+     "여름에 대륙이 해양보다 빠르게 가열되어 온도가 높아진다."
+    ],
+    "ans": [
+     4,
+     2,
+     3,
+     1
+    ]
+   },
+   "sol": "같은 햇빛을 받아도 대륙은 바다보다 훨씬 빨리 데워져요. 대륙 위 공기가 팽창해 기압이 낮아지면 바다에서 육지로 습한 공기가 밀려오죠. 아시아 남부의 여름 강수가 수십억 인구의 농업을 뒷받침하는 이유예요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>라-나-다-가</code> · 근거 = 원고 15행 · <b>순서 근거 = 필연적 인과</b>: 가열되지 않으면 팽창·기압 하강이 없고, 기압 차 없이 공기 이동이 없으며, 습한 공기 유입 없이 여름 강수가 없음 · ※ 5B(<code>계절풍</code>)와 상황이 같아 동시 선택 비권장"
+  }
+ }
+];
+var TAG = { A:'A안', B:'B안' };
+var MAX = 7;
+</script>
+<script>
+/* ===== 상태 ===== */
+var sel = {};          /* '1A' -> true. 자리 하나에서 A·B를 둘 다 담을 수 있다 */
+var starred = {};      /* '1A' -> true. 모범 문제 표시. 선택 7개 제한과는 무관하다 */
+var view = {};
+var graded = {};
+var orderPick = {};
+var showBoth = true;   /* A·B를 나란히 놓아야 두 개를 함께 고를 수 있으므로 기본 켜짐 */
+var root = document.getElementById('quiz');
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* 순서배열 보기 라벨은 숫자가 아니라 `가`·`나`·`다`·`라`다 (2026-08-28 확정).
+   알파벳 A~D를 쓰지 않는 이유는 이 과제가 A안·B안으로 2안을 관리해 섞이기 때문이다.
+   JSON의 order.ans는 숫자 배열([2,4,1,3])로 두고 화면에서만 라벨로 바꿔 표시한다 —
+   표시 형식이 바뀌어도 데이터 구조는 그대로 두는 쪽이 싸다.
+   문장을 고르면 그 자리에 고른 순번(1~4)이 대신 표시되므로 라벨과 선택 순서가 눈으로 구분된다. */
+var ORD_LABEL = ['가', '나', '다', '라'];
+function ordLabel(n){ return ORD_LABEL[n - 1] || String(n); }
+function ordAnsText(ans){ return ans.map(ordLabel).join('-'); }
+/* 인라인(1번)의 [1]·[2]와, 직접 입력(5번)의 빈칸(밑줄 `_`)을 굵게 보여준다.
+   빈칸은 정답을 글자 단위로 `_`로 바꾸고 띄어쓰기는 그대로 살려 표기하므로(2026-08-31 확정),
+   밑줄 사이의 공백까지 한 묶음으로 잡아야 `__ ____ __`가 통째로 굵게 표시된다.
+   esc() 뒤에 치환하므로 예문 텍스트가 HTML로 해석될 위험은 없다. */
+function exHTML(t){
+  return esc(t)
+    .replace(/\[1\]/g, '<b>[1]</b>')
+    .replace(/\[2\]/g, '<b>[2]</b>')
+    .replace(/_+(?: _+)*/g, function(m){ return '<b class="blank">' + m + '</b>'; });
+}
+function slotOf(no){ return SLOTS.filter(function(s){ return s.no === no; })[0]; }
+function memoKey(no){ return 'qzmemo:' + ARTICLE_ID + ':q' + no; }
+function selKey(){ return 'qzsel:' + ARTICLE_ID; }
+function starKey(){ return 'qzstar:' + ARTICLE_ID; }
+function nameKey(){ return 'qzmemo:' + ARTICLE_ID + ':reviewer'; }
+/* 다시 만들 자리와 그 메모도 저장한다 — 예전에는 메모리에만 있어서 모달을 닫으면 사라졌다 */
+function regenKey(){ return 'qzregen:' + ARTICLE_ID; }
+function regenNoteKey(){ return 'qzregen:' + ARTICLE_ID + ':note'; }
+function lsGet(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
+function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+/* 선택 집계 */
+function selCount(){ return Object.keys(sel).length; }
+function slotKeys(no){
+  return ['A','B'].filter(function(k){ return !!sel[no + k]; });
+}
+function emptySlots(){
+  return SLOTS.filter(function(s){ return slotKeys(s.no).length === 0; }).map(function(s){ return s.no; });
+}
+/* 다시 만들기로 저장해 둔 자리 (번호 오름차순) */
+function regenSlots(){
+  return SLOTS.map(function(s){ return s.no; }).filter(function(no){ return !!regenPick[no]; });
+}
+function regenNote(){ return (lsGet(regenNoteKey()) || '').trim(); }
+
+function memoTemplate(no){
+  var s = slotOf(no), ks = slotKeys(no);
+  return META.대단원 + ' > ' + META.중단원 + ' > ' + META.아티클 + '\n'
+       + '문항 ' + no + ' · ' + s.lv + ' · ' + s.type + ' (' + (ks.length ? ks.join('·') + '안' : '미선택') + ')\n'
+       + '요청사항: ';
+}
+function extractRequest(t){
+  var i = String(t).indexOf('요청사항:');
+  return (i >= 0 ? String(t).slice(i+5) : String(t)).trim();
+}
+function hasRequest(t){ return extractRequest(t).length > 0; }
+
+/* 메모 토글 summary의 '작성됨' 배지를 현재 입력값과 맞춘다.
+   전체 재렌더를 하면 풀던 답이 지워지므로 배지만 즉시 갱신한다. */
+function syncMemoBadge(no){
+  var ta = document.querySelector('[data-memo="' + no + '"]');
+  if (!ta) return;
+  var det = ta.closest('details.memo-box'); if (!det) return;
+  var sum = det.querySelector('summary'); if (!sum) return;
+  var badge = sum.querySelector('.memo-badge'), on = hasRequest(ta.value);
+  if (on && !badge){
+    var sp = document.createElement('span');
+    sp.className = 'memo-badge'; sp.textContent = '작성됨';
+    sum.insertBefore(sp, sum.querySelector('.saved'));
+  } else if (!on && badge){
+    badge.parentNode.removeChild(badge);
+  }
+}
+
+/* ===== 렌더 ===== */
+function paneHTML(no, key){
+  var s = slotOf(no), item = s[key], id = 'q' + no + key;
+  var on = !!sel[no + key], st = !!starred[no + key];
+  var b = '<div class="pane' + (on ? ' picked' : '') + '" data-pane="' + id + '">';
+
+  /* 문항 상단 바 — 왼쪽 = 문항 선택 체크박스 / 오른쪽 = 모범 문제 별표 체크박스 */
+  b += '<div class="selbar">'
+     + '<label class="selbox' + (on ? ' on' : '') + '">'
+     + '<input type="checkbox" data-sel="' + no + '|' + key + '"' + (on ? ' checked' : '') + '>'
+     + '<span class="tag">' + TAG[key] + '</span></label>'
+     + '<label class="starbox' + (st ? ' on' : '') + '"'
+     + ' title="모범 문제 — 이 문항 유형은 학습할 만한 좋은 모델입니다">'
+     + '<input type="checkbox" data-star="' + no + '|' + key + '"' + (st ? ' checked' : '')
+     + ' aria-label="' + TAG[key] + '을 모범 문제로 표시">'
+     + '<span class="ico">' + (st ? '★' : '☆') + '</span></label>'
+     + '</div>';
+
+  /* 지문(예문)이 없으면 지문 박스를 아예 그리지 않는다 (2026-08-28 확정).
+     17열 데이터에서는 예문 없는 칸에 `-`를 넣기로 되어 있는데(SPEC 규칙, `X`는 OX 정답과 혼동됨),
+     예전에는 그 `-` 한 글자가 든 빈 박스가 화면에 그려졌다. 데이터는 그대로 두고 표시만 감춘다. */
+  var hasEx = item.ex && String(item.ex).trim() !== '' && String(item.ex).trim() !== '-';
+  if (item.exFirst && hasEx) b += '<div class="ex">' + exHTML(item.ex) + '</div>';
+  b += '<div class="q-text">' + esc(item.q) + '</div>';
+  if (!item.exFirst && hasEx) b += '<div class="ex">' + exHTML(item.ex) + '</div>';
+
+  if (item.blanks){
+    item.blanks.forEach(function(bl, bi){
+      b += '<div class="blank-label">빈칸 [' + (bi+1) + '] 선택</div><div class="opts">';
+      bl.opts.forEach(function(o, oi){
+        b += '<label class="opt"><input type="radio" name="' + id + 'b' + bi + '" value="' + (oi+1) + '">'
+          + '<span class="n">' + (oi+1) + '.</span><span>' + esc(o) + '</span></label>';
+      });
+      b += '</div>';
+    });
+  } else if (item.ox){
+    b += '<div class="opts row">';
+    item.ox.opts.forEach(function(o, oi){
+      b += '<label class="opt"><input type="radio" name="' + id + '" value="' + (oi+1) + '"><span>' + esc(o) + '</span></label>';
+    });
+    b += '</div>';
+  } else if (item.single || item.multi){
+    var conf = item.single || item.multi, tp = item.single ? 'radio' : 'checkbox';
+    b += '<div class="opts">';
+    conf.opts.forEach(function(o, oi){
+      b += '<label class="opt"><input type="' + tp + '" name="' + id + '" value="' + (oi+1) + '">'
+        + '<span class="n">' + (oi+1) + '.</span><span>' + esc(o) + '</span></label>';
+    });
+    b += '</div>';
+  } else if (item.order){
+    b += '<div class="order-hint">문장을 순서대로 클릭하세요. 다시 클릭하면 해제됩니다.</div>';
+    b += '<div class="order" data-order="' + id + '">';
+    item.order.opts.forEach(function(o, oi){
+      b += '<div class="ocard" data-n="' + (oi+1) + '"><span class="seq">' + ordLabel(oi+1) + '</span><span>' + esc(o) + '</span></div>';
+    });
+    b += '</div>';
+  } else if (item.text){
+    b += '<input type="text" class="ans" name="' + id + '" placeholder="정답을 입력하세요" autocomplete="off">';
+  }
+
+  b += '<div class="q-actions"><button class="btn" data-check="' + id + '">정답 확인</button>'
+     + '<button class="btn ghost" data-clear="' + id + '">지우기</button></div>';
+  b += '<div class="res" id="res' + id + '"><div class="verdict"></div><div class="sol"></div><div class="key"></div></div>';
+  b += '<details class="rv"><summary>검수 정보 (17열에 들어갈 값 · 글자 수는 공백·문장부호 포함 기준)</summary><div class="rv-body">' + item.raw + '</div></details>';
+  b += '</div>';
+  return b;
+}
+
+function render(){
+  root.innerHTML = '';
+  orderPick = {};
+  SLOTS.forEach(function(s){
+    var card = document.createElement('div');
+    card.className = 'slot' + (slotKeys(s.no).length ? ' chosen' : '');
+    card.id = 'slot' + s.no;
+    var b = '<div class="slot-head"><span class="slot-no">' + s.no + '</span>'
+          + '<span class="chip">' + esc(s.lv) + '</span><span class="chip">' + esc(s.type) + '</span>';
+    if (!showBoth){
+      b += '<span class="ab-tabs">'
+        + '<button class="ab-tab' + (view[s.no] === 'A' ? ' on' : '') + '" data-view="' + s.no + '|A">A안</button>'
+        + '<button class="ab-tab' + (view[s.no] === 'B' ? ' on' : '') + '" data-view="' + s.no + '|B">B안</button></span>';
+    }
+    b += '</div>';
+    b += '<div class="axis">두 문항의 차이 — ' + esc(s.axis) + '</div>';
+    b += '<div class="panes' + (showBoth ? ' side' : '') + '">';
+    if (showBoth){ b += paneHTML(s.no, 'A') + paneHTML(s.no, 'B'); }
+    else { b += paneHTML(s.no, view[s.no] || 'A'); }
+    b += '</div>';
+
+    var written = hasRequest(lsGet(memoKey(s.no)));
+    b += '<details class="memo-box"' + (written ? ' open' : '') + '>'
+      + '<summary>검수 메모 적기'
+      + (written ? '<span class="memo-badge">작성됨</span>' : '')
+      + '<span class="saved" id="sv' + s.no + '">저장됨</span></summary>'
+      + '<div class="memo-body"><textarea data-memo="' + s.no + '"></textarea>'
+      + '<div class="memo-tools">'
+      + '<button class="icon-btn" data-copymemo="' + s.no + '"><span aria-hidden="true">⧉</span> 이 메모 복사</button>'
+      + '<button class="icon-btn" data-resetmemo="' + s.no + '"><span aria-hidden="true">↺</span> 양식 초기화</button>'
+      + '</div></div></details>';
+    card.innerHTML = b;
+    root.appendChild(card);
+  });
+
+  document.querySelectorAll('[data-order]').forEach(function(box){
+    var id = box.getAttribute('data-order');
+    orderPick[id] = [];
+    box.querySelectorAll('.ocard').forEach(function(c){
+      c.addEventListener('click', function(){
+        var n = parseInt(c.getAttribute('data-n'), 10), arr = orderPick[id], i = arr.indexOf(n);
+        if (i >= 0) arr.splice(i, 1); else arr.push(n);
+        redrawOrder(id);
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-memo]').forEach(function(ta){
+    var no = ta.getAttribute('data-memo'), k = memoKey(no);
+    ta.value = lsGet(k) || memoTemplate(parseInt(no, 10));
+    ta.classList.toggle('has', hasRequest(ta.value));
+    var timer = null;
+    ta.addEventListener('input', function(){
+      ta.classList.toggle('has', hasRequest(ta.value));
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+        if (hasRequest(ta.value)) lsSet(k, ta.value); else lsDel(k);
+        syncMemoBadge(no);
+        var sv = document.getElementById('sv' + no);
+        sv.classList.add('on'); setTimeout(function(){ sv.classList.remove('on'); }, 900);
+      }, 350);
+    });
+  });
+
+  applySelUI();
+}
+
+function redrawOrder(id){
+  var box = document.querySelector('[data-order="' + id + '"]'), arr = orderPick[id];
+  box.querySelectorAll('.ocard').forEach(function(c){
+    var n = parseInt(c.getAttribute('data-n'), 10), p = arr.indexOf(n), seq = c.querySelector('.seq');
+    if (p >= 0){ c.classList.add('picked'); seq.textContent = p + 1; }
+    else { c.classList.remove('picked'); seq.textContent = ordLabel(n); }
+  });
+}
+
+/* 선택 상태만 화면에 반영한다 — 전체 재렌더를 하면 풀던 답이 지워지므로 하지 않는다 */
+function applySelUI(){
+  var n = selCount();
+  document.querySelectorAll('[data-sel]').forEach(function(cb){
+    var p = cb.getAttribute('data-sel').split('|'), k = p[0] + p[1];
+    var on = !!sel[k], lock = !on && n >= MAX;
+    var box = cb.closest('.selbox'), pane = cb.closest('.pane');
+    cb.checked = on;
+    cb.disabled = lock;
+    box.classList.toggle('on', on);
+    box.classList.toggle('off', lock);
+    if (pane) pane.classList.toggle('picked', on);
+  });
+  document.querySelectorAll('[data-star]').forEach(function(cb){
+    var p = cb.getAttribute('data-star').split('|'), k = p[0] + p[1];
+    var st = !!starred[k], box = cb.closest('.starbox');
+    cb.checked = st;
+    box.classList.toggle('on', st);
+    box.querySelector('.ico').textContent = st ? '★' : '☆';
+  });
+  SLOTS.forEach(function(s){
+    var el = document.getElementById('slot' + s.no);
+    if (el) el.classList.toggle('chosen', slotKeys(s.no).length > 0);
+    syncMemoHeader(s.no);
+  });
+  updateBar();
+}
+
+/* 메모 기본 양식의 머리글에는 선택 상태가 들어간다. 아직 아무것도 쓰지 않은 메모만
+   현재 선택으로 다시 채운다 — 사람이 쓴 글은 건드리지 않는다 */
+function syncMemoHeader(no){
+  var ta = document.querySelector('[data-memo="' + no + '"]');
+  if (ta && !hasRequest(ta.value)) ta.value = memoTemplate(no);
+}
+
+/* ===== 채점 ===== */
+function grade(id, reveal){
+  var no = parseInt(id.replace('q','').slice(0, -1), 10), key = id.slice(-1);
+  var item = slotOf(no)[key], res = document.getElementById('res' + id);
+  if (!res) return;
+  var correct = null, keyText = '';
+
+  if (item.blanks){
+    var got = item.blanks.map(function(bl, bi){
+      var c = document.querySelector('input[name="' + id + 'b' + bi + '"]:checked');
+      return c ? parseInt(c.value, 10) : null;
+    });
+    if (got.some(function(v){ return v === null; }) && !reveal) return needPick(res);
+    correct = item.blanks.every(function(bl, bi){ return got[bi] === bl.ans; });
+    keyText = '정답 — 빈칸[1] = ' + item.blanks[0].ans + '번(' + item.blanks[0].opts[item.blanks[0].ans-1] + '), 빈칸[2] = '
+            + item.blanks[1].ans + '번(' + item.blanks[1].opts[item.blanks[1].ans-1] + ')';
+  } else if (item.ox){
+    var c1 = document.querySelector('input[name="' + id + '"]:checked');
+    if (!c1 && !reveal) return needPick(res);
+    correct = c1 ? parseInt(c1.value,10) === item.ox.ans : false;
+    keyText = '정답 — ' + item.ox.opts[item.ox.ans-1];
+  } else if (item.single){
+    var c2 = document.querySelector('input[name="' + id + '"]:checked');
+    if (!c2 && !reveal) return needPick(res);
+    correct = c2 ? parseInt(c2.value,10) === item.single.ans : false;
+    keyText = '정답 — ' + item.single.ans + '번';
+  } else if (item.multi){
+    var picked = Array.prototype.slice.call(document.querySelectorAll('input[name="' + id + '"]:checked'))
+      .map(function(x){ return parseInt(x.value,10); }).sort();
+    if (!picked.length && !reveal) return needPick(res);
+    var want = item.multi.ans.slice().sort();
+    correct = picked.length === want.length && picked.every(function(v,i){ return v === want[i]; });
+    keyText = '정답 — ' + item.multi.ans.join('번, ') + '번 (2개 모두)';
+  } else if (item.order){
+    var arr = orderPick[id] || [];
+    if (arr.length !== item.order.ans.length && !reveal) return needPick(res);
+    correct = arr.length === item.order.ans.length && arr.every(function(v,i){ return v === item.order.ans[i]; });
+    keyText = '정답 — ' + ordAnsText(item.order.ans);
+  } else if (item.text){
+    var el = document.querySelector('input[name="' + id + '"]');
+    /* 채점은 공백을 무시한다 (2026-08-28 확정). 입력값만 공백을 지우고 정답은 그대로 두어
+       `정역학적 평형`처럼 띄어 쓴 정답이 전부 오답 처리되던 버그를 고쳤다. */
+    var v = (el.value || '').replace(/\s/g,'');
+    if (!v && !reveal) return needPick(res);
+    correct = v === String(item.text.ans).replace(/\s/g,'');
+    keyText = '정답 — ' + item.text.ans;
+  }
+
+  graded[id] = { correct: correct };
+  res.className = 'res show ' + (correct ? 'ok' : 'no');
+  res.querySelector('.verdict').textContent = '';
+  res.querySelector('.sol').textContent = item.sol;
+  res.querySelector('.key').textContent = keyText;
+}
+function needPick(res){
+  res.className = 'res show';
+  res.querySelector('.verdict').textContent = '먼저 답을 선택하거나 입력해 주세요.';
+  res.querySelector('.sol').textContent = '';
+  res.querySelector('.key').textContent = '';
+}
+function clearOne(id){
+  var pane = document.querySelector('[data-pane="' + id + '"]');
+  if (!pane) return;
+  pane.querySelectorAll('input').forEach(function(i){
+    /* 문항 선택·모범 문제 체크박스는 '다시 풀기'로 지우지 않는다 */
+    if (i.hasAttribute('data-sel') || i.hasAttribute('data-star')) return;
+    if (i.type === 'text') i.value = ''; else i.checked = false;
+  });
+  pane.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); });
+  if (orderPick[id]){ orderPick[id] = []; redrawOrder(id); }
+  var res = document.getElementById('res' + id);
+  if (res) res.className = 'res';
+  delete graded[id];
+}
+
+/* ===== 선택 바 + 레일 ===== */
+function updateBar(){
+  var n = selCount(), picksEl = document.getElementById('bar-picks'), empty = emptySlots();
+  picksEl.innerHTML = '';
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no);
+    var sp = document.createElement('span');
+    sp.className = 'pk' + (ks.length ? ' set' : '');
+    /* A·B를 각각 네모 테두리로 감싼다 — 'AB'로 붙여 놓으면 한 개를 고른 것처럼 읽힌다 */
+    sp.innerHTML = '<span class="no">' + s.no + '</span>'
+      + (ks.length ? ks.map(function(k){ return '<span class="k">' + k + '</span>'; }).join('')
+                   : '<span class="none">–</span>');
+    picksEl.appendChild(sp);
+  });
+
+  var cnt = document.getElementById('bar-count');
+  cnt.textContent = n + ' / ' + MAX + ' 선택';
+  cnt.classList.toggle('full', n === MAX);
+
+  /* 다시 만들 자리는 사람이 고른 값이므로 '고른 문항이 없는 자리'와 따로 센다 */
+  var rg = regenSlots();
+  var rgEl = document.getElementById('bar-regen');
+  rgEl.hidden = (rg.length === 0);
+  rgEl.textContent = '↻ 다시 만들 자리 ' + rg.length + '개';
+
+  var warn, rest = empty.filter(function(no){ return rg.indexOf(no) < 0; });
+  if (n === 0 && rg.length === 0){
+    warn = '마음에 드는 문항을 고르세요. 다시 만들고 싶은 자리는 「다시 만들 문항 고르기」에 담아 두면 됩니다.';
+  } else if (rest.length){
+    /* 최소 개수는 없다. 고르지도, 다시 만들기로 담지도 않은 자리만 알려준다 */
+    warn = rest.join(', ') + '번 자리가 아직 비어 있습니다 — 문항을 고르거나 다시 만들 자리에 담아주세요.';
+  } else if (n === MAX){
+    warn = '7자리를 모두 채웠습니다 — 「선택 결과 복사」로 넘기세요.';
+  } else {
+    warn = '고른 ' + n + '개와 다시 만들 ' + rg.length + '개가 함께 복사됩니다 — 「선택 결과 복사」로 넘기세요.';
+  }
+  document.getElementById('bar-warn').textContent = warn;
+
+  /* 최대 7개 상한만 있고 최소 개수는 없다 — 고른 것이나 다시 만들 자리가 하나라도 있으면 복사할 수 있다.
+     (예전에는 n !== MAX 로 잠겨 있어 "4개는 확정, 3개는 다시 만들기"를 내보낼 방법이 없었다) */
+  document.getElementById('btn-copy').disabled = (n === 0 && rg.length === 0);
+  document.getElementById('btn-clearpick').disabled = (n === 0);
+
+  var sn = Object.keys(starred).length;
+  var starEl = document.getElementById('bar-star');
+  starEl.hidden = (sn === 0);
+  starEl.textContent = '★ 모범 ' + sn + '개';
+
+  if (n === 0) lsDel(selKey()); else lsSet(selKey(), JSON.stringify(Object.keys(sel)));
+  if (sn === 0) lsDel(starKey()); else lsSet(starKey(), JSON.stringify(Object.keys(starred)));
+  renderRail();
+}
+
+function renderRail(){
+  var nav = document.getElementById('rail-nav');
+  nav.querySelectorAll('a[data-slot]').forEach(function(a){ a.parentNode.removeChild(a); });
+  var anchor = nav.querySelectorAll('.grp')[1];
+  /* insertBefore(anchor)로 차례로 넣으면 넣은 순서대로 쌓인다 — 배열을 뒤집으면 7→1이 된다 */
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no);
+    var a = document.createElement('a');
+    a.href = '#slot' + s.no;
+    a.setAttribute('data-slot', s.no);
+    if (ks.length) a.className = 'picked';
+    a.innerHTML = '<span class="qn">' + s.no + '</span>' + esc(s.type)
+                + '<span class="st">'
+                + (ks.length ? ks.map(function(k){ return '<span class="k">' + k + '</span>'; }).join('')
+                             : '<span class="none">—</span>')
+                + '</span>';
+    nav.insertBefore(a, anchor);
+  });
+}
+
+function selectedIds(){
+  var out = [];
+  SLOTS.forEach(function(s){ slotKeys(s.no).forEach(function(k){ out.push({ no:s.no, key:k }); }); });
+  return out;
+}
+function starredIds(){
+  var out = [];
+  SLOTS.forEach(function(s){ ['A','B'].forEach(function(k){ if (starred[s.no + k]) out.push(s.no + k); }); });
+  return out;
+}
+function reviewerName(){
+  return (document.getElementById('reviewer').value || '').trim() || '(검수자 미입력)';
+}
+function memoLines(){
+  var out = [];
+  SLOTS.forEach(function(s){
+    var ta = document.querySelector('[data-memo="' + s.no + '"]');
+    if (ta && hasRequest(ta.value)) out.push('- ' + s.no + '번: ' + extractRequest(ta.value).replace(/\n/g, ' / '));
+  });
+  return out;
+}
+
+function buildResult(){
+  var ids = selectedIds(), empty = emptySlots(), rg = regenSlots(), L = [];
+  /* 고른 문항이 7개가 아니어도 복사할 수 있다. 이때는 "확정 + 다시 만들기" 두 가지 일이
+     한 텍스트에 담기므로, 맨 위 지시문도 상황에 맞게 바꾼다. */
+  L.push(rg.length
+    ? '아래에서 고른 문항은 CSV에 반영하고, 다시 만들 자리는 새로 만들어줘.'
+    : '아래 선택대로 CSV에 반영해줘.');
+  L.push('');
+  L.push('대상: ' + META.csv + ' ' + META.행);
+  L.push('아티클: ' + META.분과 + ' / ' + META.중단원 + ' / ' + META.아티클);
+  L.push('원고: ' + META.원고);
+  L.push('선택 (' + ids.length + '개): ' + (ids.length ? ids.map(function(x){ return x.no + x.key; }).join(' ') : '없음'));
+  if (rg.length) L.push('다시 만들 자리 (' + rg.length + '개): ' + rg.map(function(no){ return no + '번'; }).join(' '));
+  L.push('검수자: ' + reviewerName());
+  L.push('');
+  ids.forEach(function(x){
+    var s = slotOf(x.no), item = s[x.key];
+    var q = item.q.length > 40 ? item.q.slice(0, 40) + '…' : item.q;
+    L.push(x.no + x.key + ' · ' + s.lv + ' · ' + s.type + ' · ' + q);
+  });
+  if (rg.length){
+    L.push('');
+    L.push('■ 다시 만들 자리 (' + rg.length + '개) — 아래 조건대로 새로 만들어줘');
+    rg.forEach(function(no){
+      var s = slotOf(no), ks = slotKeys(no);
+      L.push('- ' + no + '번 · ' + s.lv + ' · ' + s.type
+           + ' — ' + (ks.length ? '현재 ' + ks.join('·') + '안 선택됨' : '고른 문항 없음'));
+    });
+    L.push('- 자리마다 후보 2안(A/B)을 새로 만들고, 두 안은 서로 다른 내용을 묻거나 다른 방식으로 묻게 할 것.');
+    L.push('- 그 자리의 난이도·퀴즈 유형은 위에 적힌 대로 유지할 것.');
+    L.push('- 위에서 고른 문항은 건드리지 말고, 소재·정답이 겹치지 않게 할 것.');
+    L.push('- 파일은 저장하지 말고 결과만 보여줄 것.');
+    var rnote = regenNote();
+    if (rnote){
+      L.push('- 어떻게 다시 만들면 좋을지:');
+      rnote.split('\n').forEach(function(t){ L.push('  ' + t); });
+    }
+  }
+  /* 고르지도, 다시 만들기로 담지도 않은 자리만 남은 문제로 알린다 */
+  var rest = empty.filter(function(no){ return rg.indexOf(no) < 0; });
+  if (rest.length){
+    L.push('');
+    L.push('※ 아직 비어 있는 자리: ' + rest.map(function(no){
+      var s = slotOf(no); return no + '번(' + s.lv + ' · ' + s.type + ')';
+    }).join(', '));
+  }
+  if (ids.length > SLOTS.length - empty.length){
+    L.push('※ 같은 자리에서 두 개를 고른 만큼 유형 배열이 달라집니다 — 이대로 반영할지 확인해줘.');
+  }
+  var stars = starredIds();
+  if (stars.length){
+    L.push('');
+    L.push('모범 문제로 표시한 문항 (' + stars.length + '개): ' + stars.join(' '));
+  }
+  var memos = memoLines();
+  if (memos.length){
+    L.push('');
+    L.push('추가 요청사항:');
+    memos.forEach(function(m){ L.push(m); });
+  }
+  return L.join('\n');
+}
+
+/* ===== 다시 만들 문항 고르기 (모달) ===== */
+/* 이 선택은 localStorage(qzregen:…)에 저장된다. 예전에는 메모리 변수뿐이라 모달을 닫거나
+   새로고침하면 고른 값이 통째로 사라졌다. */
+var regenPick = {};
+var regenSaved = false;   /* 이번에 연 뒤 저장을 눌렀는지 */
+var modal = document.getElementById('regen-modal');
+
+function openRegen(){
+  var n = selCount(), empty = emptySlots(), first = (lsGet(regenKey()) === '');
+  /* 저장해 둔 값이 있으면 그대로 복원한다. 한 번도 저장한 적이 없을 때만
+     '고른 문항이 없는 자리'를 미리 켜 준다 — 사람이 끈 자리가 되살아나면 안 되기 때문이다. */
+  if (first) empty.forEach(function(no){ regenPick[no] = true; });
+
+  document.getElementById('regen-note').value = lsGet(regenNoteKey());
+  regenSaved = false;
+  setRegenHint('');
+
+  document.getElementById('regen-lead').innerHTML =
+    '지금까지 <b>' + n + '개</b>를 고르셨습니다. 어느 자리를 다시 만들지 골라주세요.' +
+    (first ? ' 고른 문항이 없는 자리는 미리 켜 두었습니다.' : ' 지난번에 저장한 선택을 불러왔습니다.') +
+    ' <b>7개를 다 채우지 않아도 됩니다</b> — 저장한 뒤 「선택 결과 복사」를 누르면 고른 문항과 함께 나갑니다.' +
+    ' 새로 만드는 2안도 <b>서로 다른 내용이나 다른 방식으로</b> 묻도록 만듭니다.';
+
+  var box = document.getElementById('regen-list');
+  box.innerHTML = '';
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no), on = !!regenPick[s.no];
+    var row = document.createElement('label');
+    row.className = 'rg-row' + (on ? ' on' : '');
+    row.innerHTML = '<input type="checkbox" data-regen="' + s.no + '"' + (on ? ' checked' : '') + '>'
+      + '<span class="rg-no">' + s.no + '</span>'
+      + '<span class="rg-meta">' + esc(s.lv) + ' · ' + esc(s.type) + '</span>'
+      + '<span class="rg-state' + (ks.length ? '' : ' empty') + '">'
+      + (ks.length ? '현재 ' + ks.join('·') + '안 선택' : '고른 문항 없음') + '</span>';
+    box.appendChild(row);
+  });
+  modal.hidden = false;
+}
+function closeRegen(){ modal.hidden = true; }
+
+function setRegenHint(msg){
+  var el = document.getElementById('regen-hint');
+  el.textContent = msg;
+  el.className = 'regen-hint' + (msg ? ' saved' : '');
+}
+
+/* 저장 — 고른 자리와 메모를 localStorage에 넣고 하단 바를 갱신한다.
+   전체 재렌더(render)를 부르지 않는다. 사용자가 풀던 답이 지워지기 때문이다. */
+function saveRegen(){
+  var nos = regenSlots();
+  if (nos.length) lsSet(regenKey(), JSON.stringify(nos)); else lsDel(regenKey());
+  var note = (document.getElementById('regen-note').value || '').trim();
+  if (note) lsSet(regenNoteKey(), note); else lsDel(regenNoteKey());
+  regenSaved = true;
+  setRegenHint(nos.length ? '저장했습니다 — ' + nos.join(', ') + '번' : '저장했습니다 — 다시 만들 자리 없음');
+  updateBar();
+  SLOTS.forEach(function(s){ syncMemoHeader(s.no); });
+}
+
+
+/* ===== 복사 ===== */
+function copyText(text, btn){
+  var original = btn.innerHTML;
+  var done = function(){ btn.textContent = '복사됨 ✓'; setTimeout(function(){ btn.innerHTML = original; }, 1800); };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done){
+  var t = document.createElement('textarea');
+  t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+  document.body.appendChild(t); t.select();
+  try { document.execCommand('copy'); done(); }
+  catch(e){ window.prompt('아래 내용을 복사하세요', text); }
+  document.body.removeChild(t);
+}
+
+/* ===== 이벤트 ===== */
+document.addEventListener('change', function(e){
+  var el = e.target;
+
+  /* 문항 선택 체크박스 */
+  if (el.hasAttribute && el.hasAttribute('data-sel')){
+    var p = el.getAttribute('data-sel').split('|'), k = p[0] + p[1];
+    if (el.checked){
+      if (selCount() >= MAX){ el.checked = false; return; }
+      sel[k] = true;
+    } else {
+      delete sel[k];
+    }
+    applySelUI();
+    return;
+  }
+
+  /* 모범 문제 별표 — 선택 7개 제한과 무관하며 개수 제한도 없다 */
+  if (el.hasAttribute && el.hasAttribute('data-star')){
+    var sp = el.getAttribute('data-star').split('|'), sk = sp[0] + sp[1];
+    if (el.checked) starred[sk] = true; else delete starred[sk];
+    applySelUI();
+    return;
+  }
+
+  /* 모달의 자리 선택 — 실제 저장은 「저장」 버튼에서 한다 */
+  if (el.hasAttribute && el.hasAttribute('data-regen')){
+    var no = parseInt(el.getAttribute('data-regen'), 10);
+    if (el.checked) regenPick[no] = true; else delete regenPick[no];
+    el.closest('.rg-row').classList.toggle('on', el.checked);
+    setRegenHint('');   /* 저장 뒤 다시 만졌으면 "저장했습니다" 표시를 지운다 */
+    regenSaved = false;
+    return;
+  }
+
+  /* 문항을 풀 때의 보기 강조 */
+  if (el.type === 'radio' || el.type === 'checkbox'){
+    var scope = el.closest('.opts'); if (!scope) return;
+    if (el.type === 'radio') scope.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); });
+    var lab = el.closest('.opt');
+    if (el.type === 'checkbox') lab.classList.toggle('sel', el.checked); else lab.classList.add('sel');
+  }
+});
+
+document.addEventListener('click', function(e){
+  var v = e.target.closest('[data-view]');
+  if (v){ var p = v.getAttribute('data-view').split('|'); view[p[0]] = p[1]; render(); return; }
+  var ck = e.target.closest('[data-check]');
+  if (ck){ grade(ck.getAttribute('data-check'), false); return; }
+  var cl = e.target.closest('[data-clear]');
+  if (cl){ clearOne(cl.getAttribute('data-clear')); return; }
+  var cm = e.target.closest('[data-copymemo]');
+  if (cm){
+    var who = (document.getElementById('reviewer').value || '').trim();
+    var ta = document.querySelector('[data-memo="' + cm.getAttribute('data-copymemo') + '"]');
+    copyText(ta.value + (who ? '\n검수자: ' + who : ''), cm);
+    return;
+  }
+  var rm = e.target.closest('[data-resetmemo]');
+  if (rm){
+    var no = rm.getAttribute('data-resetmemo');
+    if (!window.confirm('문항 ' + no + ' 메모를 기본 양식으로 되돌립니다. 계속할까요?')) return;
+    var t2 = document.querySelector('[data-memo="' + no + '"]');
+    t2.value = memoTemplate(parseInt(no, 10)); t2.classList.remove('has');
+    lsDel(memoKey(no));
+    syncMemoBadge(no);
+    return;
+  }
+});
+
+function fillAll(key){
+  sel = {};
+  SLOTS.forEach(function(s){ sel[s.no + key] = true; });
+  /* 재렌더하지 않는다 — 탭 모드에서 눌러도 풀던 답이 지워지지 않도록 */
+  applySelUI();
+}
+document.getElementById('btn-allA').addEventListener('click', function(){ fillAll('A'); });
+document.getElementById('btn-allB').addEventListener('click', function(){ fillAll('B'); });
+
+document.getElementById('sw-both').addEventListener('change', function(){
+  showBoth = this.checked; render();
+});
+document.getElementById('btn-reveal').addEventListener('click', function(){
+  document.querySelectorAll('[data-check]').forEach(function(b){ grade(b.getAttribute('data-check'), true); });
+});
+document.getElementById('btn-reset').addEventListener('click', function(){
+  document.querySelectorAll('[data-clear]').forEach(function(b){ clearOne(b.getAttribute('data-clear')); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-clearpick').addEventListener('click', function(){
+  if (!selCount()) return;
+  if (!window.confirm('선택한 문항을 모두 지우고 처음부터 다시 고릅니다.\n풀던 답과 별표, 검수 메모는 그대로 남습니다. 계속할까요?')) return;
+  sel = {};
+  lsDel(selKey());
+  applySelUI();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-copy').addEventListener('click', function(){
+  copyText(buildResult(), this);
+});
+
+document.getElementById('btn-regen').addEventListener('click', openRegen);
+document.getElementById('regen-save').addEventListener('click', function(){
+  saveRegen();
+  closeRegen();
+});
+/* 저장하지 않고 닫으면 이번에 만진 체크는 버리고 저장돼 있던 값으로 되돌린다 —
+   "닫기"가 곧 취소가 되도록. */
+function cancelRegen(){
+  if (!regenSaved){
+    regenPick = {};
+    loadRegen();
+  }
+  closeRegen();
+}
+document.getElementById('regen-close').addEventListener('click', cancelRegen);
+modal.addEventListener('click', function(e){ if (e.target === modal) cancelRegen(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !modal.hidden) cancelRegen(); });
+
+var nameInput = document.getElementById('reviewer');
+nameInput.value = lsGet(nameKey());
+nameInput.addEventListener('input', function(){ lsSet(nameKey(), nameInput.value); });
+
+function loadIds(raw, limit, into){
+  try {
+    var saved = JSON.parse(raw || '[]');
+    if (Object.prototype.toString.call(saved) !== '[object Array]') return;
+    (limit ? saved.slice(0, limit) : saved).forEach(function(k){
+      var no = parseInt(k, 10), key = String(k).slice(-1);
+      if (slotOf(no) && (key === 'A' || key === 'B')) into[no + key] = true;
+    });
+  } catch(e){}
+}
+loadIds(lsGet(selKey()), MAX, sel);      /* 선택은 7개까지만 복원 */
+loadIds(lsGet(starKey()), 0, starred);   /* 별표는 개수 제한 없음 */
+
+/* 다시 만들 자리 복원 — 자리 번호 배열이라 loadIds(A/B 키)와 형식이 다르다 */
+function loadRegen(){
+  try {
+    var saved = JSON.parse(lsGet(regenKey()) || '[]');
+    if (Object.prototype.toString.call(saved) !== '[object Array]') return;
+    saved.forEach(function(v){
+      var no = parseInt(v, 10);
+      if (slotOf(no)) regenPick[no] = true;
+    });
+  } catch(e){}
+}
+loadRegen();
+
+render();
+</script>
+</body>
+</html>

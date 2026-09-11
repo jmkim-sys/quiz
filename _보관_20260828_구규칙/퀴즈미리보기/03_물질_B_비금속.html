@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>퀴즈 미리보기 — B. 비금속 (14개 중 7개 선택, v3)</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Executive Kinetic — 재료/design/DESIGN.md 토큰 ===== */
+:root{
+  --surface:#f8f9ff; --surface-dim:#cbdbf5;
+  --surface-lowest:#ffffff; --surface-low:#eff4ff; --surface-c:#e5eeff;
+  --surface-high:#dce9ff; --surface-highest:#d3e4fe; --surface-variant:#d3e4fe;
+  --on-surface:#0b1c30; --on-surface-variant:#554335;
+  --inverse-surface:#213145; --inverse-on-surface:#eaf1ff;
+  --outline:#887363; --outline-variant:#dcc2af;
+  --primary:#904d00; --on-primary:#ffffff;
+  --primary-container:#f78d1e; --on-primary-container:#5f3100;
+  --primary-fixed:#ffdcc2; --primary-fixed-dim:#ffb77c;
+  --secondary:#5f5e5f; --secondary-container:#e2dfe0; --on-secondary-container:#636263;
+  --error:#ba1a1a; --error-c:#ffdad6; --on-error-c:#93000a;
+  --xs:4px; --base:8px; --sm:12px; --md:24px; --lg:48px; --xl:80px;
+  --gutter:24px; --margin-mobile:16px; --rail:280px;
+  --r-sm:2px; --r:4px; --r-md:6px; --r-lg:8px; --r-xl:12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--surface);color:var(--on-surface);
+  font-family:'Manrope','Pretendard','Malgun Gothic','맑은 고딕',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+
+/* ===== Rail ===== */
+.rail{position:fixed;left:0;top:0;height:100%;width:var(--rail);background:var(--surface-low);
+  display:flex;flex-direction:column;padding:var(--md) 0 var(--md);z-index:50;
+  box-shadow:0 1px 8px rgba(0,0,0,.04);}
+.brand{display:flex;align-items:center;gap:var(--base);padding:0 var(--md);}
+.brand-mark{width:34px;height:34px;background:var(--primary);color:var(--on-primary);border-radius:var(--r-lg);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex:none;}
+.brand-name{font-size:22px;font-weight:800;letter-spacing:-.01em;}
+.brand-rule{height:2px;width:48px;background:var(--primary);opacity:.2;margin:var(--sm) var(--md) var(--md);}
+.nav{flex:1;padding:0 var(--sm);display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.nav .grp{padding:var(--sm) var(--sm) var(--xs);font-size:12px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--on-surface-variant);opacity:.6;}
+.nav a{display:flex;align-items:center;gap:var(--base);padding:9px var(--sm);border-radius:var(--r-xl);
+  font-size:14px;font-weight:600;color:var(--on-surface-variant);text-decoration:none;transition:.18s;}
+.nav a:hover{background:var(--surface-highest);color:var(--on-surface);}
+.nav a .qn{width:22px;height:22px;flex:none;border-radius:var(--r);background:var(--surface-c);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--on-surface);}
+.nav a.picked .qn{background:var(--primary);color:var(--on-primary);}
+/* 선택 표시는 A·B를 각각 네모 테두리로 감싼다 — 'AB'로 붙여 놓으면 한 개를 고른 것처럼 읽힌다 */
+.nav a .st{margin-left:auto;display:inline-flex;align-items:center;gap:3px;flex:none;}
+.nav a .st .k{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  border:1px solid var(--primary);border-radius:var(--r-sm);background:var(--primary);color:var(--on-primary);
+  font-size:11px;font-weight:800;}
+.nav a .st .none{font-size:12px;font-weight:800;color:var(--outline);}
+.rail-foot{padding:var(--sm) var(--md) 0;}
+.rail-card{background:var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);display:flex;flex-direction:column;gap:var(--xs);}
+.rail-card .k{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+.rail-card .v{font-size:13px;font-weight:600;word-break:break-all;}
+
+/* ===== Shell ===== */
+.shell{padding-left:var(--rail);}
+.topbar{position:sticky;top:0;height:72px;background:rgba(248,249,255,.85);backdrop-filter:blur(12px);
+  box-shadow:0 1px 8px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:space-between;
+  gap:var(--sm);padding:0 var(--md);z-index:40;}
+.topbar .ttl{font-size:24px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;}
+.rev{display:flex;align-items:center;gap:var(--base);}
+.rev label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+.rev input{width:240px;max-width:42vw;padding:8px var(--sm);border:1px solid var(--outline-variant);
+  border-radius:999px;background:var(--surface-high);font-family:inherit;font-size:14px;color:var(--on-surface);}
+.rev input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+main{padding:var(--md) var(--md) 180px;display:flex;flex-direction:column;gap:var(--md);max-width:1440px;}
+
+/* ===== Hero ===== */
+.hero{background:var(--surface-c);border-radius:var(--r-xl);padding:var(--md);}
+.eyebrow{display:flex;align-items:center;gap:var(--base);margin-bottom:var(--base);}
+.eyebrow .sq{width:12px;height:12px;background:var(--primary-container);border-radius:var(--r-sm);}
+.eyebrow span{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+h1{font-size:40px;font-weight:800;line-height:1.15;letter-spacing:-.02em;margin:0 0 var(--sm);}
+.chips{display:flex;gap:var(--base);flex-wrap:wrap;}
+.chip{padding:4px 12px;font-size:12px;font-weight:700;letter-spacing:.02em;border-radius:999px;
+  background:var(--surface-lowest);color:var(--on-surface-variant);border:1px solid var(--surface-highest);}
+.chip.k{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+
+.guide{border-left:4px solid var(--primary);background:var(--surface-low);padding:var(--sm) var(--md);
+  border-radius:0 var(--r-lg) var(--r-lg) 0;font-size:14px;line-height:1.85;}
+.guide b{font-weight:800;}
+.guide code{background:var(--surface-c);border:1px solid var(--surface-high);border-radius:var(--r);
+  padding:1px 6px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;}
+
+/* ===== Actions ===== */
+.actions{display:flex;gap:var(--base);flex-wrap:wrap;align-items:center;
+  background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;font-size:13px;font-weight:700;
+  letter-spacing:.02em;border-radius:var(--r);cursor:pointer;font-family:inherit;
+  background:var(--primary);color:var(--on-primary);border:1px solid var(--primary);transition:.18s;}
+.btn:hover{background:var(--on-primary-container);border-color:var(--on-primary-container);}
+.btn.sec{background:var(--surface-lowest);color:var(--primary);}
+.btn.sec:hover{background:var(--primary-fixed);color:var(--on-primary-container);border-color:var(--primary);}
+.btn.ghost{background:transparent;color:var(--on-surface-variant);border-color:var(--surface-highest);}
+.btn.ghost:hover{background:var(--surface-low);color:var(--on-surface);border-color:var(--outline);}
+.sw{display:inline-flex;align-items:center;gap:var(--base);cursor:pointer;font-size:13px;font-weight:700;
+  color:var(--on-surface-variant);margin-left:var(--xs);}
+.sw input{position:absolute;opacity:0;width:0;height:0;}
+.sw .tr{width:44px;height:24px;border-radius:999px;background:var(--surface-highest);position:relative;transition:.2s;flex:none;}
+.sw .tr::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--surface-lowest);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s;}
+.sw input:checked + .tr{background:var(--primary);}
+.sw input:checked + .tr::after{transform:translateX(20px);}
+.sw input:focus-visible + .tr{box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.spacer{flex:1;}
+
+/* ===== Slot ===== */
+.slot{background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-xl);overflow:hidden;}
+.slot.chosen{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);}
+.slot-head{display:flex;align-items:center;gap:var(--base);padding:var(--sm) var(--md);flex-wrap:wrap;}
+.slot-no{width:30px;height:30px;background:var(--primary);color:var(--on-primary);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex:none;}
+.ab-tabs{margin-left:auto;display:flex;gap:var(--xs);}
+.ab-tab{padding:7px 16px;font-size:12px;font-weight:800;letter-spacing:.04em;cursor:pointer;font-family:inherit;
+  background:var(--surface-low);color:var(--on-surface-variant);border:1px solid var(--surface-highest);border-radius:var(--r);transition:.18s;}
+.ab-tab:hover{background:var(--surface-highest);color:var(--on-surface);}
+.ab-tab.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+.axis{background:var(--surface-low);border-top:1px solid var(--surface-c);border-bottom:1px solid var(--surface-c);
+  padding:var(--base) var(--md);font-size:12px;font-weight:700;line-height:1.7;color:var(--on-surface-variant);text-align:center;}
+
+.panes{display:block;}
+.pane{padding:var(--md);}
+.panes.side{display:grid;grid-template-columns:1fr 1fr;align-items:start;}
+.panes.side .pane + .pane{border-left:1px solid var(--surface-c);}
+.panes:not(.side) .pane + .pane{border-top:1px solid var(--surface-c);}
+.pane.picked{background:rgba(144,77,0,.04);}
+
+/* ===== 문항 상단 바 — 왼쪽 = 문항 선택 / 오른쪽 = 모범 문제 별표 ===== */
+.selbar{display:flex;align-items:stretch;gap:var(--base);margin-bottom:var(--sm);}
+.selbox{display:flex;align-items:center;gap:var(--sm);flex:1;min-width:0;padding:11px var(--sm);
+  border:1px solid var(--outline-variant);border-radius:var(--r-lg);background:var(--surface-lowest);
+  cursor:pointer;transition:.18s;}
+.selbox:hover{border-color:var(--primary);background:var(--primary-fixed);}
+.selbox input{width:20px;height:20px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.selbox .tag{padding:3px 11px;font-size:11px;font-weight:800;letter-spacing:.05em;border-radius:999px;
+  background:var(--secondary-container);color:var(--on-secondary-container);flex:none;}
+.selbox.on{border-color:var(--primary);background:rgba(144,77,0,.06);box-shadow:inset 0 0 0 1px var(--primary);}
+.selbox.on .tag{background:var(--primary);color:var(--on-primary);}
+.selbox.off{opacity:.5;cursor:not-allowed;background:var(--surface-low);}
+.selbox.off:hover{border-color:var(--outline-variant);background:var(--surface-low);}
+.selbox.off input{cursor:not-allowed;}
+.starbox{display:flex;align-items:center;gap:var(--base);flex:none;padding:11px var(--sm);
+  border:1px solid var(--outline-variant);border-radius:var(--r-lg);background:var(--surface-lowest);
+  cursor:pointer;transition:.18s;}
+.starbox:hover{border-color:var(--primary-container);background:var(--primary-fixed);}
+.starbox input{width:20px;height:20px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.starbox .ico{font-size:19px;line-height:1;color:var(--outline-variant);transition:.18s;}
+.starbox.on{border-color:var(--primary-container);background:var(--primary-fixed);
+  box-shadow:inset 0 0 0 1px var(--primary-container);}
+.starbox.on .ico{color:var(--primary);}
+
+.q-text{font-size:18px;font-weight:600;line-height:1.6;margin-bottom:var(--sm);}
+.ex{background:var(--surface-low);border-left:3px solid var(--outline-variant);border-radius:0 var(--r-lg) var(--r-lg) 0;
+  padding:var(--sm) var(--md);font-size:16px;line-height:1.75;margin-bottom:var(--sm);}
+.ex b{background:var(--primary-fixed);color:var(--on-primary-container);padding:1px 7px;border-radius:var(--r-sm);font-weight:800;}
+.blank-label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);margin:var(--sm) 0 var(--base);}
+.opts{display:flex;flex-direction:column;gap:var(--base);}
+.opts.row{flex-direction:row;flex-wrap:wrap;}
+.opt{display:flex;align-items:flex-start;gap:var(--base);padding:12px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  font-size:15px;line-height:1.55;transition:.14s;}
+.opt:hover{border-color:var(--outline);background:var(--surface-low);}
+.opt input{margin:4px 0 0;accent-color:#904d00;flex:none;}
+.opt .n{font-weight:800;flex:none;min-width:16px;}
+.opt.sel{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.04);}
+.opts.row .opt{min-width:104px;justify-content:center;font-weight:800;font-size:18px;}
+input[type=text].ans{width:100%;padding:12px var(--sm);border:1px solid var(--outline-variant);border-radius:var(--r-lg);
+  background:var(--surface-lowest);font-family:inherit;font-size:16px;color:var(--on-surface);}
+input[type=text].ans:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.order{display:flex;flex-direction:column;gap:var(--base);}
+.ocard{display:flex;align-items:center;gap:var(--sm);padding:12px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  font-size:15px;line-height:1.55;transition:.14s;}
+.ocard:hover{border-color:var(--outline);background:var(--surface-low);}
+.ocard .seq{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--outline-variant);border-radius:var(--r);font-size:12px;font-weight:800;color:var(--on-surface-variant);}
+.ocard.picked{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.04);}
+.ocard.picked .seq{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+.order-hint{font-size:12px;font-weight:600;color:var(--on-surface-variant);margin-bottom:var(--base);}
+.q-actions{display:flex;gap:var(--base);margin-top:var(--sm);flex-wrap:wrap;align-items:center;}
+.res{margin-top:var(--sm);padding:var(--sm) var(--md);border-left:4px solid var(--primary);
+  background:var(--surface-low);border-radius:0 var(--r-lg) var(--r-lg) 0;display:none;}
+.res.show{display:block;}
+.res .verdict{font-size:13px;font-weight:800;letter-spacing:.03em;margin-bottom:var(--base);}
+.res.ok .verdict::before{content:"● 정답";color:var(--primary);}
+.res.no{border-left-color:var(--error);background:var(--error-c);}
+.res.no .verdict{color:var(--on-error-c);}
+.res.no .verdict::before{content:"● 다시 생각해 보세요";}
+.res .sol{font-size:15px;line-height:1.75;}
+.res .key{margin-top:var(--base);font-size:13px;font-weight:600;color:var(--on-surface-variant);}
+
+/* ===== 검수 메모 (기본 닫힌 토글) ===== */
+details.memo-box{border-top:1px solid var(--surface-c);}
+details.memo-box > summary{cursor:pointer;display:flex;align-items:center;gap:var(--base);
+  padding:var(--sm) var(--md);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);list-style:none;}
+details.memo-box > summary::-webkit-details-marker{display:none;}
+details.memo-box > summary::before{content:"▸";font-size:14px;}
+details.memo-box[open] > summary::before{content:"▾";}
+details.memo-box > summary:hover{color:var(--on-surface);background:var(--surface-low);}
+.memo-badge{padding:2px 9px;font-size:11px;font-weight:800;letter-spacing:.03em;border-radius:999px;
+  background:var(--primary);color:var(--on-primary);text-transform:none;}
+.memo-box .saved{margin-left:auto;font-size:11px;font-weight:700;text-transform:none;opacity:0;transition:opacity .2s;}
+.memo-box .saved.on{opacity:1;}
+.memo-body{padding:0 var(--md) var(--md);}
+.memo-box textarea{width:100%;min-height:112px;padding:var(--sm);resize:vertical;border-radius:var(--r-lg);
+  border:1px solid var(--outline-variant);background:var(--surface-lowest);
+  font-family:inherit;font-size:15px;line-height:1.65;color:var(--on-surface);}
+.memo-box textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.memo-box textarea.has{border-color:var(--primary);background:var(--surface-low);}
+.memo-tools{display:flex;gap:var(--base);margin-top:var(--base);flex-wrap:wrap;}
+.icon-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;cursor:pointer;border-radius:var(--r);
+  background:transparent;border:1px solid var(--surface-highest);color:var(--on-surface-variant);
+  font-family:inherit;font-size:12px;font-weight:700;transition:.18s;}
+.icon-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--surface-low);}
+
+details.rv{border-top:1px solid var(--surface-c);margin-top:var(--sm);padding-top:var(--base);}
+details.rv summary{cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);list-style:none;}
+details.rv summary::-webkit-details-marker{display:none;}
+details.rv summary::before{content:"▸ ";}
+details.rv[open] summary::before{content:"▾ ";}
+.rv-body{margin-top:var(--base);font-size:13px;line-height:1.85;color:var(--on-surface-variant);}
+.rv-body code{background:var(--surface-c);border-radius:var(--r-sm);padding:1px 6px;color:var(--on-surface);
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;}
+
+/* ===== Bottom bar ===== */
+.bar{position:fixed;left:var(--rail);right:0;bottom:0;background:var(--surface-high);
+  border-top:1px solid var(--surface-highest);box-shadow:0 -2px 12px rgba(0,0,0,.06);
+  padding:var(--sm) var(--md);display:flex;align-items:center;gap:var(--sm);flex-wrap:wrap;z-index:60;}
+.bar .count{display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;
+  background:var(--primary);color:var(--on-primary);font-size:14px;font-weight:800;white-space:nowrap;}
+.bar .count.full{background:var(--on-primary-container);}
+.bar .picks{display:flex;gap:var(--xs);flex-wrap:wrap;}
+.bar .pk{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:var(--r);
+  font-size:12px;font-weight:800;background:var(--surface-lowest);border:1px solid var(--surface-highest);}
+.bar .pk.set{border-color:var(--primary-fixed-dim);background:var(--primary-fixed);}
+.bar .pk .no{color:var(--on-surface-variant);min-width:9px;text-align:center;}
+/* A·B를 각각 네모 테두리로 감싼다 — 붙여 놓으면 두 개가 아니라 한 개로 읽힌다 */
+.bar .pk .k{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  border:1px solid var(--primary);border-radius:var(--r-sm);background:var(--primary);color:var(--on-primary);
+  font-size:11px;font-weight:800;}
+.bar .pk .none{color:var(--outline);}
+.bar .star{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;
+  background:var(--primary-fixed);color:var(--on-primary-container);font-size:12px;font-weight:800;white-space:nowrap;}
+.bar .star[hidden]{display:none;}
+/* 다시 만들 자리 배지 — 별표(채운 배경)와 구분되게 테두리형으로 둔다 */
+.bar .regen{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;
+  border:2px solid var(--primary);color:var(--primary);font-size:12px;font-weight:800;white-space:nowrap;}
+.bar .regen[hidden]{display:none;}
+.bar .warn{font-size:13px;font-weight:600;font-style:italic;color:var(--on-surface-variant);}
+.bar button:disabled{opacity:.45;cursor:not-allowed;}
+
+/* ===== 다시 만들 문항 고르기 (모달) ===== */
+.modal{position:fixed;inset:0;background:rgba(11,28,48,.55);z-index:90;
+  display:flex;align-items:center;justify-content:center;padding:var(--md);}
+.modal[hidden]{display:none;}
+.modal-card{background:var(--surface-lowest);border-radius:var(--r-xl);width:100%;max-width:760px;
+  max-height:86vh;overflow-y:auto;padding:var(--md);box-shadow:0 12px 48px rgba(0,0,0,.28);}
+.modal-card h2{margin:0 0 var(--base);font-size:26px;font-weight:800;letter-spacing:-.01em;}
+.modal-lead{font-size:14px;line-height:1.85;color:var(--on-surface-variant);margin-bottom:var(--sm);}
+.modal-lead b{color:var(--on-surface);font-weight:800;}
+.rg-row{display:flex;align-items:center;gap:var(--sm);padding:11px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  margin-bottom:var(--base);transition:.14s;}
+.rg-row:hover{border-color:var(--outline);background:var(--surface-low);}
+.rg-row.on{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.05);}
+.rg-row input{width:18px;height:18px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.rg-no{width:26px;height:26px;flex:none;border-radius:var(--r);background:var(--surface-c);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+.rg-row.on .rg-no{background:var(--primary);color:var(--on-primary);}
+.rg-meta{font-size:14px;font-weight:700;}
+.rg-state{margin-left:auto;font-size:12px;font-weight:700;color:var(--on-surface-variant);white-space:nowrap;}
+.rg-state.empty{color:var(--error);}
+.modal-card textarea{width:100%;min-height:96px;padding:var(--sm);resize:vertical;border-radius:var(--r-lg);
+  border:1px solid var(--outline-variant);background:var(--surface-lowest);margin-top:var(--base);
+  font-family:inherit;font-size:15px;line-height:1.65;color:var(--on-surface);}
+.modal-card textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.modal-sub{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);margin:var(--md) 0 var(--base);}
+.modal-foot{display:flex;gap:var(--base);justify-content:flex-end;margin-top:var(--md);flex-wrap:wrap;align-items:center;}
+.modal-foot .spacer{flex:1;}
+.regen-hint{font-size:13px;font-weight:700;color:var(--on-surface-variant);}
+.regen-hint.saved{color:var(--primary);}
+
+.confirm{border-left:4px solid var(--primary);background:var(--primary-fixed);color:var(--on-primary-container);
+  padding:var(--sm) var(--md);border-radius:0 var(--r-lg) var(--r-lg) 0;font-size:14px;font-weight:600;line-height:1.8;}
+@media (max-width:1100px){
+  .panes.side{grid-template-columns:1fr;}
+  .panes.side .pane + .pane{border-left:0;border-top:1px solid var(--surface-c);}
+}
+@media (max-width:860px){
+  .rail{display:none;} .shell{padding-left:0;} .bar{left:0;}
+  main{padding:var(--sm) var(--margin-mobile) 220px;}
+  h1{font-size:28px;} .topbar{height:auto;padding:var(--base) var(--sm);flex-wrap:wrap;}
+  .topbar .ttl{font-size:18px;} .rev input{width:100%;max-width:none;}
+  .ab-tabs{margin-left:0;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<aside class="rail">
+  <div class="brand">
+    <div class="brand-mark">Q</div>
+    <div class="brand-name">QuizReview</div>
+  </div>
+  <div class="brand-rule"></div>
+  <nav class="nav" id="rail-nav">
+    <div class="grp">문항 7자리</div>
+    <!-- 문항 링크는 스크립트가 채웁니다 -->
+    <div class="grp">현황판</div>
+    <a href="../퀴즈제작현황_대시보드_v2.html"><span class="qn">▤</span>퀴즈 제작 현황</a>
+  </nav>
+  <div class="rail-foot">
+    <div class="rail-card">
+      <span class="k">반영 대상</span>
+      <span class="v">산출물/대단원별/03_물질_원자가_만드는_세계.csv · 23~29행</span>
+    </div>
+  </div>
+</aside>
+
+<div class="shell">
+  <header class="topbar">
+    <span class="ttl">퀴즈 검수 — 14개 중 7개 선택</span>
+    <span class="rev">
+      <label for="reviewer">검수자</label>
+      <input type="text" id="reviewer" placeholder="이름을 입력하세요 — 선택 결과에 함께 기록됩니다" autocomplete="off">
+    </span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="sq"></span><span>Quiz Preview · 후보 14개 중 7개 선택</span></div>
+      <h1>B. 비금속</h1>
+      <div class="chips">
+        <span class="chip k">화학</span>
+        <span class="chip">3. 물질 — 원자가 만드는 세계</span>
+        <span class="chip">3-2) 원소의 지도 — 주기율표</span>
+        <span class="chip">7자리 × 2안 = 후보 14문항</span>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="btn sec" id="btn-allA">A안 7개 전부 선택</button>
+      <button class="btn sec" id="btn-allB">B안 7개 전부 선택</button>
+      <label class="sw"><input type="checkbox" id="sw-both" checked><span class="tr"></span>둘 다 보기 (좌우 비교)</label>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="btn-reveal">전체 정답 보기</button>
+      <button class="btn ghost" id="btn-reset">다시 풀기</button>
+    </div>
+
+    <div id="quiz" style="display:flex;flex-direction:column;gap:var(--md);"></div>
+
+    <div class="confirm">
+      ⚠️ 아래 항목은 반드시 사람이 최종 확인합니다: 과학적 사실 오류 여부 / 정답 타당성 / 최종 발행 승인<br>
+      ⚠️ 미발행 원고는 외부 도구에 원문 저장 금지(세션 내 사용만) 준수 여부
+    </div>
+  </main>
+</div>
+
+<div class="bar">
+  <span class="count" id="bar-count">0 / 7 선택</span>
+  <span class="picks" id="bar-picks"></span>
+  <span class="star" id="bar-star" hidden></span>
+  <span class="regen" id="bar-regen" hidden></span>
+  <span class="warn" id="bar-warn"></span>
+  <span class="spacer"></span>
+  <button class="btn ghost" id="btn-clearpick" disabled>선택 초기화</button>
+  <button class="btn sec" id="btn-regen">다시 만들 문항 고르기</button>
+  <button class="btn" id="btn-copy" disabled>선택 결과 복사</button>
+</div>
+
+<div class="modal" id="regen-modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="regen-title">
+    <h2 id="regen-title">다시 만들 문항 고르기</h2>
+    <div class="modal-lead" id="regen-lead"></div>
+    <div id="regen-list"></div>
+    <div class="modal-sub">어떻게 다시 만들면 좋을지 (선택)</div>
+    <textarea id="regen-note" placeholder="예) 4번은 연도를 외우게 하지 말고 실험 절차 순서로 바꿔주세요. 6번은 보기가 너무 길어요."></textarea>
+    <div class="modal-foot">
+      <span class="regen-hint" id="regen-hint"></span>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="regen-close">닫기</button>
+      <button class="btn" id="regen-save">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var ARTICLE_ID = "03_물질_B_비금속";
+var META = {"분과":"화학","대단원":"3. 물질 — 원자가 만드는 세계","중단원":"3-2) 원소의 지도 — 주기율표","아티클":"B. 비금속","csv":"산출물/대단원별/03_물질_원자가_만드는_세계.csv","행":"23~29행","원고":"재료/최종 원고/3. 물질-원자가 만드는 세계/3-2) 주기율표/3_2)_B_비금속_DF.docx"};
+
+/* 자리마다 후보 2안(A/B). 두 안은 서로 다른 내용을 묻거나 다른 방식으로 묻는다.
+   A·B는 대등한 후보이며, 14개 중 고른 7개만 CSV에 반영된다. */
+var SLOTS = [
+ {
+  "no": 1,
+  "lv": "하",
+  "type": "인라인",
+  "axis": "A = 몸·대기의 구성 원소를 이름으로 짝짓기 · B = 원인 → 결과(규소의 결합이 길고 약해서 광물·암석으로 남았다). 구성 원소 ↔ 규소의 결합으로 내용이 갈림",
+  "A": {
+   "q": "다음은 우리 몸과 지구 대기를 이루는 원소에 대한 설명입니다. 빈칸에 들어갈 원소를 각각 고르세요.",
+   "ex": "우리 몸을 이루는 원자를 무게로 따지면 [1]이(가) 가장 큰 비율을 차지한다. 한편 지구 대기에서 가장 큰 비율을 차지하는 기체는 [2](이)다.",
+   "blanks": [
+    {
+     "opts": [
+      "산소",
+      "탄소",
+      "질소"
+     ],
+     "ans": 1
+    },
+    {
+     "opts": [
+      "산소",
+      "수소",
+      "질소"
+     ],
+     "ans": 3
+    }
+   ],
+   "sol": "우리 몸을 무게로 따지면 산소가 약 65퍼센트로 가장 많아요. 반면 지구 대기에서는 질소가 약 78퍼센트로 가장 큰 비율을 차지하지요. 같은 비금속이라도 어디를 기준으로 삼느냐에 따라 가장 많은 원소가 달라진답니다.",
+   "raw": "<b>A안</b> · 정답 1 = <code>1</code> · 정답 2 = <code>3</code> · 보기 1 = <code>산소/탄소/질소</code> · 보기 2 = <code>산소/수소/질소</code> · 보기 3~6 빈칸 · 근거 = 원고 7행 · 퍼센트 수치는 해설에만 등장하고 정답이 아님"
+  },
+  "B": {
+   "q": "다음은 규소와 탄소를 비교한 설명입니다. 빈칸에 들어갈 말을 각각 고르세요.",
+   "ex": "규소 원자 사이의 결합은 탄소 원자 사이의 결합보다 길고 [1]. 그래서 규소는 생명의 뼈대 대신 [2]을(를) 이루는 주요 원소로 남았다.",
+   "blanks": [
+    {
+     "opts": [
+      "약하다",
+      "강하다",
+      "짧다"
+     ],
+     "ans": 1
+    },
+    {
+     "opts": [
+      "광물과 암석",
+      "단백질과 DNA",
+      "공기 중의 기체"
+     ],
+     "ans": 1
+    }
+   ],
+   "sol": "규소도 탄소처럼 결합할 손이 네 개예요. 하지만 규소 원자 사이의 결합은 탄소 쪽보다 길고 약해서 생명 분자의 골격으로 버티기 어려워요. 대신 산소와 강하게 결합해 단단한 광물과 암석을 이루었지요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>1</code> · 정답 2 = <code>1</code> · 보기 1 = <code>약하다/강하다/짧다</code> · 보기 2 = <code>광물과 암석/단백질과 DNA/공기 중의 기체</code> · 보기 3~6 빈칸 · 근거 = 원고 17행 · 비교 표현을 \"규소 원자 사이의 결합 / 탄소 원자 사이의 결합\"으로 평행하게 씀 · 3A와 배경(규소·탄소 비교)을 공유하나 묻는 것이 다름"
+  }
+ },
+ {
+  "no": 2,
+  "lv": "하",
+  "type": "OX",
+  "axis": "A = 사실 확인형(정답 O, 자연에서의 질소 고정 조건) · B = 오개념 반박형(정답 X, 산소 농도가 줄곧 이어져 왔다). 질소 ↔ 산소로 원소가 갈리고 참/거짓 방향이 반대",
+  "A": {
+   "q": "두 질소 원자를 잇는 삼중결합이 매우 강하기 때문에, 자연에서 이 결합을 끊는 일은 질소고정 미생물이나 번개 같은 극한 조건에서 일어난다.",
+   "ox": {
+    "opts": [
+     "O",
+     "X"
+    ],
+    "ans": 1
+   },
+   "sol": "대기의 약 78퍼센트가 질소인데도 생물은 이를 곧바로 쓰지 못해요. 두 질소 원자를 잇는 삼중결합이 워낙 강하기 때문이에요. 자연에서 이 결합을 끊는 일은 질소고정 미생물이나 번개 같은 극한 조건이 맡는답니다.",
+   "raw": "<b>A안</b> · 정답 1 = <code>O</code> · 정답 2 빈칸 · 보기 1 = <code>O</code> · 보기 2 = <code>X</code> · 예문 = <code>-</code> · 근거 = 원고 25행 · 관형어를 \"두 질소 원자를 잇는\" 한 겹만 남기고 주절을 분리 · ⚠️ <b>7A·6B와 함께 고르면 질소 소재가 세 자리에 걸칩니다</b>"
+  },
+  "B": {
+   "q": "지구 대기의 산소 농도가 약 21퍼센트인 것은 지구가 탄생한 이래 줄곧 이어져 온 상태다.",
+   "ox": {
+    "opts": [
+     "O",
+     "X"
+    ],
+    "ans": 2
+   },
+   "sol": "지금의 산소 농도는 지구 역사 전체로 보면 아주 최근에 형성된 값이에요. 남세균은 약 27억 년 전부터 산소를 내뿜었지만, 그 산소는 오랫동안 바다와 암석에 갇혀 있었어요. 대기에 본격적으로 쌓이기 시작한 것은 약 24억 년 전부터랍니다.",
+   "raw": "<b>B안</b> · 정답 1 = <code>X</code> · 정답 2 빈칸 · 보기 1 = <code>O</code> · 보기 2 = <code>X</code> · 예문 = <code>-</code> · 근거 = 원고 21행 · 판단 대상은 \"농도가 언제 형성되었는가\"이고 정답은 O/X이므로 숫자 암기형이 아님 · ⚠️ <b>4A와 함께 고르면</b> 산소 축적 이야기를 두 번 보게 됩니다"
+  }
+ },
+ {
+  "no": 3,
+  "lv": "중",
+  "type": "사지선다 (단수)",
+  "axis": "A = 탄소가 결합 손을 네 개 갖는 까닭(개념 정의) · B = 머리카락·파마 사례에 공통으로 관여하는 것(구체 사례 해석). 탄소 ↔ 황으로 원소가 갈림 — 6번(산소 / 질소)과도 네 조합 모두 원소가 다름",
+  "A": {
+   "q": "탄소 원자가 이웃한 원자와 최대 네 개의 결합을 만들 수 있는 까닭은 무엇인가요?",
+   "single": {
+    "opts": [
+     "원자핵 속 양성자가 네 개여서 전하가 균형을 이루기 때문이다.",
+     "가장 바깥쪽 전자 껍질에 전자가 네 개 있기 때문이다.",
+     "다른 원소보다 원자 하나가 가볍고 크기가 작기 때문이다.",
+     "이웃한 원자에게 전자를 완전히 넘겨줄 수 있기 때문이다."
+    ],
+    "ans": 2
+   },
+   "sol": "탄소는 가장 바깥 전자 껍질에 전자가 네 개 있어요. 그래서 이웃한 원자에게 결합할 손을 네 개까지 뻗을 수 있지요. 손이 네 개면 이어 붙이는 경우의 수가 폭발적으로 늘어나, 거의 무한대의 분자를 빚어낼 수 있어요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>2</code> · 정답 2 빈칸 · 예문 = <code>-</code> · 근거 = 원고 13행 · 보기 4개를 \"~때문이다\"로 통일"
+  },
+  "B": {
+   "q": "다음 현상에 공통으로 관여하는 것은 무엇인가요?",
+   "ex": "머리카락이 곱슬거리는 것, 손톱이 단단한 것, 파마가 오래 유지되는 것에는 모두 같은 결합이 관여한다.",
+   "single": {
+    "opts": [
+     "탄소 원자가 정사면체 구조로 결합해 단단한 골격을 이룬다.",
+     "인이 산소와 만나 이룬 물질이 긴 분자의 골격을 이어 준다.",
+     "두 시스테인의 황 원자가 이황화 결합을 이루어 단백질의 모양을 유지한다.",
+     "질소 분자의 삼중결합이 저절로 끊어져 새로운 결합을 만든다."
+    ],
+    "ans": 3
+   },
+   "sol": "단백질 속 시스테인 두 개가 만나면 황 원자끼리 다리를 놓아요. 이 이황화 결합이 단백질의 3차원 모양을 붙잡아 주지요. 머리카락이 곱슬거리는 것도, 파마가 오래 유지되는 것도 이 다리 덕분이랍니다.",
+   "raw": "<b>B안</b> · 정답 1 = <code>3</code> · 정답 2 빈칸 · 근거 = 원고 31행 · <b>정답 노출 차단</b>: 오답에서 \"질소가 단백질 골격·DNA 염기를 이룬다\"(6B 정답)를 뺐고, 보기 2는 인산염을 <b>이름 없이</b> 서술해 5A 정답을 가림"
+  }
+ },
+ {
+  "no": 4,
+  "lv": "중-상",
+  "type": "순서배열",
+  "axis": "A = 사건이 일어난 순서(대산소화) · B = 설명의 흐름(비금속의 성질 → 공유 결합 → 분자 → 자기복제 분자). 지구사 ↔ 결합 원리로 소재가 완전히 다름",
+  "A": {
+   "q": "다음 카드는 지구 대기에 산소가 쌓이게 된 과정을 나타냅니다. 사건이 일어난 순서대로 배열하세요.",
+   "order": {
+    "opts": [
+     "산소가 대기에 본격적으로 쌓이기 시작했다.",
+     "남세균이 광합성을 하며 산소를 내뿜기 시작했다.",
+     "지구 대기의 산소 분자 농도가 약 21퍼센트에 이르렀다.",
+     "산소가 오랫동안 바다와 암석에 갇혀 있었다."
+    ],
+    "ans": [
+     2,
+     4,
+     1,
+     3
+    ]
+   },
+   "sol": "산소는 남세균의 광합성으로 먼저 생성되었어요. 하지만 그 산소는 오랫동안 바다와 암석에 붙잡혀 대기로 나오지 못했지요. 그 뒤에야 대기에 본격적으로 쌓이기 시작했고, 이 거대한 변화를 대산소화 사건이라고 불러요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>2-4-1-3</code> · 정답 2 빈칸 · 예문 = <code>-</code> · 근거 = 원고 21행 · 카드에서 27억·24억 연도를 <b>일부러 뺐고</b> 남은 21퍼센트는 정답이 아님 · <b>⚠️ 자기검수 12번 미통과</b> — 대기 조성의 장기 변화라 화학보다 <b>지구환경 성격이 강합니다</b>. 화학 가이드를 4~7번에 엄격히 적용해야 하면 4B로 대체하거나 교체 검토 필요"
+  },
+  "B": {
+   "q": "다음 카드는 생명이 비금속 원소를 기반으로 탄생한 이유를 설명한 것입니다. 설명의 흐름에 맞게 배열하세요.",
+   "order": {
+    "opts": [
+     "비금속끼리 만나면 전자를 함께 나누어 갖는 공유 결합이 형성된다.",
+     "자기 자신을 복제하는 분자가 등장했다.",
+     "비금속 원소는 전기음성도가 비교적 커서 전자를 끌어당기는 힘이 강하다.",
+     "공유 결합을 통해 다양한 모양의 분자가 생성된다."
+    ],
+    "ans": [
+     3,
+     1,
+     4,
+     2
+    ]
+   },
+   "sol": "비금속 원소는 전자를 끌어당기는 힘이 비교적 세요. 비슷한 힘을 가진 비금속끼리 만나면 한쪽이 전자를 빼앗지 못하고 함께 나누어 갖는데, 이것이 공유 결합이에요. 이 결합 덕분에 다양한 분자가 생성되었고, 마침내 자기 자신을 복제하는 분자까지 등장했지요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>3-1-4-2</code> · 정답 2 빈칸 · 예문 = <code>-</code> · 근거 = 원고 9·11행 · 카드 23~33자 · 지시어를 모두 실명으로 교체 · ⚠️ 전기음성도가 카드 3에 등장 — <code>A. 원소의 주기적 성질</code>이 다루는 <b>주기적 경향성</b>과는 축이 다르나 대조 권장"
+  }
+ },
+ {
+  "no": 5,
+  "lv": "상",
+  "type": "직접 입력",
+  "axis": "A = 정의에서 용어 끌어내기(인산염) · B = 사례에서 끌어내기(동소체). 인 ↔ 탄소로 소재가 갈림",
+  "A": {
+   "q": "인이 산소와 결합해 생성되는 안정한 물질을 무엇이라고 하나요? [ 빈칸 ] (3글자)",
+   "ex": "인은 가장 바깥쪽 전자 껍질에 전자가 다섯 개 있는 원소다. 인이 산소와 만나면 매우 안정한 물질이 생성되는데, 이 물질은 물속에서도 쉽게 분해되지 않아 긴 분자의 골격을 안정적으로 이어 준다.",
+   "text": {
+    "ans": "인산염"
+   },
+   "sol": "인은 산소와 만나면 매우 안정한 인산염을 이뤄요. 인산염은 물속에서도 쉽게 분해되지 않아 긴 분자의 골격을 붙잡아 주지요. 탄소가 분자의 뼈대를 만든다면, 인은 그 뼈대를 오래 유지하도록 돕는 원소랍니다.",
+   "raw": "<b>A안</b> · 정답 1 = <code>인산염</code> · 정답 2 빈칸 · 보기 1~6 모두 빈칸 · 근거 = 원고 29행 · <b>띄어쓰기 충돌 없음</b> — 원고에 붙여 쓴 단일 단어 · 참고: 원고의 <code>공유 결합</code>·<code>이황화 결합</code>·<code>대산소화 사건</code>은 원고에서 띄어 쓰여 있어 5번 정답 후보에서 제외했습니다(임의로 붙여 쓰지 않음)"
+  },
+  "B": {
+   "q": "같은 원소로 이루어졌지만 성질이 서로 다른 물질을 무엇이라고 하나요? [ 빈칸 ] (3글자)",
+   "ex": "다이아몬드와 흑연은 화학식이 둘 다 C로 같다. 그러나 탄소 원자가 3차원 정사면체 구조로 결합하면 다이아몬드가 되고, 육각형 평면 그물 구조로 여러 겹 쌓이면 흑연이 된다.",
+   "text": {
+    "ans": "동소체"
+   },
+   "sol": "다이아몬드와 흑연은 둘 다 탄소로만 이루어져 있어요. 그런데 원자가 결합해 이루는 구조가 달라서 단단함이 크게 차이 나지요. 이렇게 같은 원소로 이루어졌지만 성질이 다른 물질을 동소체라고 불러요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>동소체</code> · 정답 2 빈칸 · 보기 1~6 모두 빈칸 · 근거 = 원고 15행 · 띄어쓰기 충돌 없음 · ⚠️ <b>7B와 함께 고르면</b> 다이아몬드·흑연 소재가 겹칩니다(7B 카드에는 '동소체'라는 용어를 쓰지 않아 정답은 노출되지 않음)"
+  }
+ },
+ {
+  "no": 6,
+  "lv": "중",
+  "type": "사지선다 (복수)",
+  "axis": "A = 속성 나열형(산소의 성질) · B = 적용 사례형(질소가 화합물에서 맡는 역할). 산소 ↔ 질소로 원소가 갈림",
+  "A": {
+   "q": "산소에 대한 설명으로 옳은 것을 모두 고르세요.",
+   "multi": {
+    "opts": [
+     "다른 원소와 만나면 안정한 화학 결합을 형성한다.",
+     "전기음성도가 모든 원소 가운데 가장 높은 값이다.",
+     "연소와 호흡이 일어날 때 산소가 다른 물질과 결합한다.",
+     "다른 원소와 결합할 때 전자를 상대에게 완전히 내어 준다."
+    ],
+    "ans": [
+     1,
+     3
+    ]
+   },
+   "sol": "산소는 전자를 끌어당기는 힘이 매우 커서 다른 원소와 안정한 결합을 이뤄요. 다만 전기음성도가 가장 높은 원소는 플루오린이고, 산소는 그다음이랍니다. 연소와 호흡도 산소가 다른 물질과 결합하면서 일어나는 현상이에요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>1</code> · 정답 2 = <code>3</code> · 예문 = <code>-</code> · 근거 = 원고 19행 · 보기는 주어 생략형으로 통일 · ⚠️ 기획자 확인 2건 — 보기 4(\"전자를 상대에게 완전히 내어 준다\")를 <b>거짓으로 판정한 근거</b>는 원고의 \"전자를 특히 강하게 끌어당기는 원소\"인데, 산소가 전자를 내어 주는 예외적 화합물이 있음 / 보기 2의 거짓 판정 근거는 원고의 \"플루오린 다음으로 높은 값인 3.44\""
+  },
+  "B": {
+   "q": "질소가 화합물에 포함되었을 때 하는 일로 알맞은 것을 모두 고르세요.",
+   "multi": {
+    "opts": [
+     "단백질의 3차원 모양을 붙잡는 다리를 놓는다.",
+     "단백질의 골격을 이루는 원소가 된다.",
+     "긴 분자의 골격이 분해되지 않도록 지켜 준다.",
+     "DNA를 이루는 염기의 재료가 된다."
+    ],
+    "ans": [
+     2,
+     4
+    ]
+   },
+   "sol": "질소는 화합물 속으로 들어가면 생명의 핵심 부품이 돼요. 단백질의 골격과 DNA의 염기, 뇌가 쓰는 신호 분자에 모두 질소가 들어 있지요. 단백질의 모양을 붙잡는 일은 황이, 긴 분자의 골격을 지키는 일은 인이 맡는답니다.",
+   "raw": "<b>B안</b> · 정답 1 = <code>2</code> · 정답 2 = <code>4</code> · 예문 = <code>-</code> · 근거 = 원고 27행 · 오답 1·3은 각각 황(3B)·인(5A)의 역할이라 <b>세 원소의 역할을 구분</b>하게 함 · ⚠️ <b>2A·7A와 함께 고르면</b> 질소 비중이 커집니다"
+  }
+ },
+ {
+  "no": 7,
+  "lv": "중-상",
+  "type": "순서배열",
+  "axis": "A = 인과 연쇄(삼중결합이 강함 → 하버 → 보슈 → 인구 증가) · B = 관찰 → 해석(다이아몬드·흑연 비교). 질소 고정의 산업화 ↔ 동소체로 소재가 완전히 다름",
+  "A": {
+   "q": "다음 카드는 인류가 공기 중 질소를 이용하게 된 과정을 나타냅니다. 원인과 결과가 자연스럽게 이어지도록 배열하세요.",
+   "order": {
+    "opts": [
+     "질소 비료가 널리 쓰이면서 세계 인구가 빠르게 늘어났다.",
+     "하버가 질소와 수소로 암모니아를 합성하는 방법을 개발했다.",
+     "대기의 질소는 삼중결합이 강해 생물이 직접 이용하지 못한다.",
+     "보슈가 암모니아 합성법을 산업 규모의 공정으로 발전시켰다."
+    ],
+    "ans": [
+     3,
+     2,
+     4,
+     1
+    ]
+   },
+   "sol": "대기의 질소는 삼중결합이 강해 생물이 그대로 쓰기 어려워요. 하버가 이 결합을 끊어 암모니아를 합성하는 길을 열었고, 보슈가 이를 산업 공정으로 키웠지요. 이렇게 생산된 질소 비료가 20세기의 인구 증가를 뒷받침했답니다.",
+   "raw": "<b>A안</b> · 정답 1 = <code>3-2-4-1</code> · 정답 2 빈칸 · 예문 = <code>-</code> · 근거 = 원고 25·27행 · 카드 22~30자로 통일 · 지시어(\"이 방법\")를 실명으로 교체 · ⚠️ <b>2A·6B와 함께 고르면</b> 질소 소재가 겹칩니다"
+  },
+  "B": {
+   "q": "다음 카드는 다이아몬드와 흑연을 비교한 관찰과 그 해석입니다. 관찰한 사실이 앞에, 해석이 뒤에 오도록 배열하세요.",
+   "order": {
+    "opts": [
+     "같은 원소로 이루어져도 결합 구조가 다르면 성질이 달라진다.",
+     "다이아몬드와 흑연은 화학식이 둘 다 C로 같다.",
+     "성질의 차이는 탄소 원자가 이루는 결합 구조에서 비롯된다.",
+     "다이아몬드는 매우 단단하고 흑연은 부드럽다."
+    ],
+    "ans": [
+     2,
+     4,
+     3,
+     1
+    ]
+   },
+   "sol": "다이아몬드와 흑연은 화학식이 둘 다 C로 같아요. 그런데 탄소 원자가 3차원 정사면체로 결합하면 다이아몬드가, 육각형 평면 그물이 여러 겹 쌓이면 흑연이 되지요. 성분이 같아도 결합 구조가 달라지면 성질은 이렇게 크게 달라진답니다.",
+   "raw": "<b>B안</b> · 정답 1 = <code>2-4-3-1</code> · 정답 2 빈칸 · 예문 = <code>-</code> · 근거 = 원고 15행 · 카드 3은 지시어 대신 핵심 명사 \"성질의 차이\"를 다시 씀 · 보기 4의 \"다이아몬드는 ~ 흑연은\"은 실제 대조라 '은/는' 2회 유지 · ⚠️ 원고 표현 \"자연계에서 가장 단단한 물질로 불리는\"을 <b>\"매우 단단하고\"로 완화</b>했습니다 — 원문대로 쓸지 기획자 확인 대상 · ⚠️ <b>5B와 함께 고르면</b> 소재가 겹칩니다"
+  }
+ }
+];
+var TAG = { A:'A안', B:'B안' };
+var MAX = 7;
+</script>
+<script>
+/* ===== 상태 ===== */
+var sel = {};          /* '1A' -> true. 자리 하나에서 A·B를 둘 다 담을 수 있다 */
+var starred = {};      /* '1A' -> true. 모범 문제 표시. 선택 7개 제한과는 무관하다 */
+var view = {};
+var graded = {};
+var orderPick = {};
+var showBoth = true;   /* A·B를 나란히 놓아야 두 개를 함께 고를 수 있으므로 기본 켜짐 */
+var root = document.getElementById('quiz');
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function exHTML(t){ return esc(t).replace(/\[1\]/g,'<b>[1]</b>').replace(/\[2\]/g,'<b>[2]</b>'); }
+function slotOf(no){ return SLOTS.filter(function(s){ return s.no === no; })[0]; }
+function memoKey(no){ return 'qzmemo:' + ARTICLE_ID + ':q' + no; }
+function selKey(){ return 'qzsel:' + ARTICLE_ID; }
+function starKey(){ return 'qzstar:' + ARTICLE_ID; }
+function nameKey(){ return 'qzmemo:' + ARTICLE_ID + ':reviewer'; }
+/* 다시 만들 자리와 그 메모도 저장한다 — 예전에는 메모리에만 있어서 모달을 닫으면 사라졌다 */
+function regenKey(){ return 'qzregen:' + ARTICLE_ID; }
+function regenNoteKey(){ return 'qzregen:' + ARTICLE_ID + ':note'; }
+function lsGet(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
+function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+/* 선택 집계 */
+function selCount(){ return Object.keys(sel).length; }
+function slotKeys(no){
+  return ['A','B'].filter(function(k){ return !!sel[no + k]; });
+}
+function emptySlots(){
+  return SLOTS.filter(function(s){ return slotKeys(s.no).length === 0; }).map(function(s){ return s.no; });
+}
+/* 다시 만들기로 저장해 둔 자리 (번호 오름차순) */
+function regenSlots(){
+  return SLOTS.map(function(s){ return s.no; }).filter(function(no){ return !!regenPick[no]; });
+}
+function regenNote(){ return (lsGet(regenNoteKey()) || '').trim(); }
+
+function memoTemplate(no){
+  var s = slotOf(no), ks = slotKeys(no);
+  return META.대단원 + ' > ' + META.중단원 + ' > ' + META.아티클 + '\n'
+       + '문항 ' + no + ' · ' + s.lv + ' · ' + s.type + ' (' + (ks.length ? ks.join('·') + '안' : '미선택') + ')\n'
+       + '요청사항: ';
+}
+function extractRequest(t){
+  var i = String(t).indexOf('요청사항:');
+  return (i >= 0 ? String(t).slice(i+5) : String(t)).trim();
+}
+function hasRequest(t){ return extractRequest(t).length > 0; }
+
+/* 메모 토글 summary의 '작성됨' 배지를 현재 입력값과 맞춘다.
+   전체 재렌더를 하면 풀던 답이 지워지므로 배지만 즉시 갱신한다. */
+function syncMemoBadge(no){
+  var ta = document.querySelector('[data-memo="' + no + '"]');
+  if (!ta) return;
+  var det = ta.closest('details.memo-box'); if (!det) return;
+  var sum = det.querySelector('summary'); if (!sum) return;
+  var badge = sum.querySelector('.memo-badge'), on = hasRequest(ta.value);
+  if (on && !badge){
+    var sp = document.createElement('span');
+    sp.className = 'memo-badge'; sp.textContent = '작성됨';
+    sum.insertBefore(sp, sum.querySelector('.saved'));
+  } else if (!on && badge){
+    badge.parentNode.removeChild(badge);
+  }
+}
+
+/* ===== 렌더 ===== */
+function paneHTML(no, key){
+  var s = slotOf(no), item = s[key], id = 'q' + no + key;
+  var on = !!sel[no + key], st = !!starred[no + key];
+  var b = '<div class="pane' + (on ? ' picked' : '') + '" data-pane="' + id + '">';
+
+  /* 문항 상단 바 — 왼쪽 = 문항 선택 체크박스 / 오른쪽 = 모범 문제 별표 체크박스 */
+  b += '<div class="selbar">'
+     + '<label class="selbox' + (on ? ' on' : '') + '">'
+     + '<input type="checkbox" data-sel="' + no + '|' + key + '"' + (on ? ' checked' : '') + '>'
+     + '<span class="tag">' + TAG[key] + '</span></label>'
+     + '<label class="starbox' + (st ? ' on' : '') + '"'
+     + ' title="모범 문제 — 이 문항 유형은 학습할 만한 좋은 모델입니다">'
+     + '<input type="checkbox" data-star="' + no + '|' + key + '"' + (st ? ' checked' : '')
+     + ' aria-label="' + TAG[key] + '을 모범 문제로 표시">'
+     + '<span class="ico">' + (st ? '★' : '☆') + '</span></label>'
+     + '</div>';
+
+  if (item.exFirst && item.ex) b += '<div class="ex">' + exHTML(item.ex) + '</div>';
+  b += '<div class="q-text">' + esc(item.q) + '</div>';
+  if (!item.exFirst && item.ex) b += '<div class="ex">' + exHTML(item.ex) + '</div>';
+
+  if (item.blanks){
+    item.blanks.forEach(function(bl, bi){
+      b += '<div class="blank-label">빈칸 [' + (bi+1) + '] 선택</div><div class="opts">';
+      bl.opts.forEach(function(o, oi){
+        b += '<label class="opt"><input type="radio" name="' + id + 'b' + bi + '" value="' + (oi+1) + '">'
+          + '<span class="n">' + (oi+1) + '.</span><span>' + esc(o) + '</span></label>';
+      });
+      b += '</div>';
+    });
+  } else if (item.ox){
+    b += '<div class="opts row">';
+    item.ox.opts.forEach(function(o, oi){
+      b += '<label class="opt"><input type="radio" name="' + id + '" value="' + (oi+1) + '"><span>' + esc(o) + '</span></label>';
+    });
+    b += '</div>';
+  } else if (item.single || item.multi){
+    var conf = item.single || item.multi, tp = item.single ? 'radio' : 'checkbox';
+    b += '<div class="opts">';
+    conf.opts.forEach(function(o, oi){
+      b += '<label class="opt"><input type="' + tp + '" name="' + id + '" value="' + (oi+1) + '">'
+        + '<span class="n">' + (oi+1) + '.</span><span>' + esc(o) + '</span></label>';
+    });
+    b += '</div>';
+  } else if (item.order){
+    b += '<div class="order-hint">카드를 순서대로 클릭하세요. 다시 클릭하면 해제됩니다.</div>';
+    b += '<div class="order" data-order="' + id + '">';
+    item.order.opts.forEach(function(o, oi){
+      b += '<div class="ocard" data-n="' + (oi+1) + '"><span class="seq">' + (oi+1) + '</span><span>' + esc(o) + '</span></div>';
+    });
+    b += '</div>';
+  } else if (item.text){
+    b += '<input type="text" class="ans" name="' + id + '" placeholder="정답을 입력하세요" autocomplete="off">';
+  }
+
+  b += '<div class="q-actions"><button class="btn" data-check="' + id + '">정답 확인</button>'
+     + '<button class="btn ghost" data-clear="' + id + '">지우기</button></div>';
+  b += '<div class="res" id="res' + id + '"><div class="verdict"></div><div class="sol"></div><div class="key"></div></div>';
+  b += '<details class="rv"><summary>검수 정보 (17열에 들어갈 값 · 글자 수는 공백·문장부호 포함 기준)</summary><div class="rv-body">' + item.raw + '</div></details>';
+  b += '</div>';
+  return b;
+}
+
+function render(){
+  root.innerHTML = '';
+  orderPick = {};
+  SLOTS.forEach(function(s){
+    var card = document.createElement('div');
+    card.className = 'slot' + (slotKeys(s.no).length ? ' chosen' : '');
+    card.id = 'slot' + s.no;
+    var b = '<div class="slot-head"><span class="slot-no">' + s.no + '</span>'
+          + '<span class="chip">' + esc(s.lv) + '</span><span class="chip">' + esc(s.type) + '</span>';
+    if (!showBoth){
+      b += '<span class="ab-tabs">'
+        + '<button class="ab-tab' + (view[s.no] === 'A' ? ' on' : '') + '" data-view="' + s.no + '|A">A안</button>'
+        + '<button class="ab-tab' + (view[s.no] === 'B' ? ' on' : '') + '" data-view="' + s.no + '|B">B안</button></span>';
+    }
+    b += '</div>';
+    b += '<div class="axis">두 문항의 차이 — ' + esc(s.axis) + '</div>';
+    b += '<div class="panes' + (showBoth ? ' side' : '') + '">';
+    if (showBoth){ b += paneHTML(s.no, 'A') + paneHTML(s.no, 'B'); }
+    else { b += paneHTML(s.no, view[s.no] || 'A'); }
+    b += '</div>';
+
+    var written = hasRequest(lsGet(memoKey(s.no)));
+    b += '<details class="memo-box"' + (written ? ' open' : '') + '>'
+      + '<summary>검수 메모 적기'
+      + (written ? '<span class="memo-badge">작성됨</span>' : '')
+      + '<span class="saved" id="sv' + s.no + '">저장됨</span></summary>'
+      + '<div class="memo-body"><textarea data-memo="' + s.no + '"></textarea>'
+      + '<div class="memo-tools">'
+      + '<button class="icon-btn" data-copymemo="' + s.no + '"><span aria-hidden="true">⧉</span> 이 메모 복사</button>'
+      + '<button class="icon-btn" data-resetmemo="' + s.no + '"><span aria-hidden="true">↺</span> 양식 초기화</button>'
+      + '</div></div></details>';
+    card.innerHTML = b;
+    root.appendChild(card);
+  });
+
+  document.querySelectorAll('[data-order]').forEach(function(box){
+    var id = box.getAttribute('data-order');
+    orderPick[id] = [];
+    box.querySelectorAll('.ocard').forEach(function(c){
+      c.addEventListener('click', function(){
+        var n = parseInt(c.getAttribute('data-n'), 10), arr = orderPick[id], i = arr.indexOf(n);
+        if (i >= 0) arr.splice(i, 1); else arr.push(n);
+        redrawOrder(id);
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-memo]').forEach(function(ta){
+    var no = ta.getAttribute('data-memo'), k = memoKey(no);
+    ta.value = lsGet(k) || memoTemplate(parseInt(no, 10));
+    ta.classList.toggle('has', hasRequest(ta.value));
+    var timer = null;
+    ta.addEventListener('input', function(){
+      ta.classList.toggle('has', hasRequest(ta.value));
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+        if (hasRequest(ta.value)) lsSet(k, ta.value); else lsDel(k);
+        syncMemoBadge(no);
+        var sv = document.getElementById('sv' + no);
+        sv.classList.add('on'); setTimeout(function(){ sv.classList.remove('on'); }, 900);
+      }, 350);
+    });
+  });
+
+  applySelUI();
+}
+
+function redrawOrder(id){
+  var box = document.querySelector('[data-order="' + id + '"]'), arr = orderPick[id];
+  box.querySelectorAll('.ocard').forEach(function(c){
+    var n = parseInt(c.getAttribute('data-n'), 10), p = arr.indexOf(n), seq = c.querySelector('.seq');
+    if (p >= 0){ c.classList.add('picked'); seq.textContent = p + 1; }
+    else { c.classList.remove('picked'); seq.textContent = n; }
+  });
+}
+
+/* 선택 상태만 화면에 반영한다 — 전체 재렌더를 하면 풀던 답이 지워지므로 하지 않는다 */
+function applySelUI(){
+  var n = selCount();
+  document.querySelectorAll('[data-sel]').forEach(function(cb){
+    var p = cb.getAttribute('data-sel').split('|'), k = p[0] + p[1];
+    var on = !!sel[k], lock = !on && n >= MAX;
+    var box = cb.closest('.selbox'), pane = cb.closest('.pane');
+    cb.checked = on;
+    cb.disabled = lock;
+    box.classList.toggle('on', on);
+    box.classList.toggle('off', lock);
+    if (pane) pane.classList.toggle('picked', on);
+  });
+  document.querySelectorAll('[data-star]').forEach(function(cb){
+    var p = cb.getAttribute('data-star').split('|'), k = p[0] + p[1];
+    var st = !!starred[k], box = cb.closest('.starbox');
+    cb.checked = st;
+    box.classList.toggle('on', st);
+    box.querySelector('.ico').textContent = st ? '★' : '☆';
+  });
+  SLOTS.forEach(function(s){
+    var el = document.getElementById('slot' + s.no);
+    if (el) el.classList.toggle('chosen', slotKeys(s.no).length > 0);
+    syncMemoHeader(s.no);
+  });
+  updateBar();
+}
+
+/* 메모 기본 양식의 머리글에는 선택 상태가 들어간다. 아직 아무것도 쓰지 않은 메모만
+   현재 선택으로 다시 채운다 — 사람이 쓴 글은 건드리지 않는다 */
+function syncMemoHeader(no){
+  var ta = document.querySelector('[data-memo="' + no + '"]');
+  if (ta && !hasRequest(ta.value)) ta.value = memoTemplate(no);
+}
+
+/* ===== 채점 ===== */
+function grade(id, reveal){
+  var no = parseInt(id.replace('q','').slice(0, -1), 10), key = id.slice(-1);
+  var item = slotOf(no)[key], res = document.getElementById('res' + id);
+  if (!res) return;
+  var correct = null, keyText = '';
+
+  if (item.blanks){
+    var got = item.blanks.map(function(bl, bi){
+      var c = document.querySelector('input[name="' + id + 'b' + bi + '"]:checked');
+      return c ? parseInt(c.value, 10) : null;
+    });
+    if (got.some(function(v){ return v === null; }) && !reveal) return needPick(res);
+    correct = item.blanks.every(function(bl, bi){ return got[bi] === bl.ans; });
+    keyText = '정답 — 빈칸[1] = ' + item.blanks[0].ans + '번(' + item.blanks[0].opts[item.blanks[0].ans-1] + '), 빈칸[2] = '
+            + item.blanks[1].ans + '번(' + item.blanks[1].opts[item.blanks[1].ans-1] + ')';
+  } else if (item.ox){
+    var c1 = document.querySelector('input[name="' + id + '"]:checked');
+    if (!c1 && !reveal) return needPick(res);
+    correct = c1 ? parseInt(c1.value,10) === item.ox.ans : false;
+    keyText = '정답 — ' + item.ox.opts[item.ox.ans-1];
+  } else if (item.single){
+    var c2 = document.querySelector('input[name="' + id + '"]:checked');
+    if (!c2 && !reveal) return needPick(res);
+    correct = c2 ? parseInt(c2.value,10) === item.single.ans : false;
+    keyText = '정답 — ' + item.single.ans + '번';
+  } else if (item.multi){
+    var picked = Array.prototype.slice.call(document.querySelectorAll('input[name="' + id + '"]:checked'))
+      .map(function(x){ return parseInt(x.value,10); }).sort();
+    if (!picked.length && !reveal) return needPick(res);
+    var want = item.multi.ans.slice().sort();
+    correct = picked.length === want.length && picked.every(function(v,i){ return v === want[i]; });
+    keyText = '정답 — ' + item.multi.ans.join('번, ') + '번 (2개 모두)';
+  } else if (item.order){
+    var arr = orderPick[id] || [];
+    if (arr.length !== item.order.ans.length && !reveal) return needPick(res);
+    correct = arr.length === item.order.ans.length && arr.every(function(v,i){ return v === item.order.ans[i]; });
+    keyText = '정답 — ' + item.order.ans.join('-');
+  } else if (item.text){
+    var el = document.querySelector('input[name="' + id + '"]');
+    var v = (el.value || '').replace(/\s/g,'');
+    if (!v && !reveal) return needPick(res);
+    correct = v === item.text.ans;
+    keyText = '정답 — ' + item.text.ans;
+  }
+
+  graded[id] = { correct: correct };
+  res.className = 'res show ' + (correct ? 'ok' : 'no');
+  res.querySelector('.verdict').textContent = '';
+  res.querySelector('.sol').textContent = item.sol;
+  res.querySelector('.key').textContent = keyText;
+}
+function needPick(res){
+  res.className = 'res show';
+  res.querySelector('.verdict').textContent = '먼저 답을 선택하거나 입력해 주세요.';
+  res.querySelector('.sol').textContent = '';
+  res.querySelector('.key').textContent = '';
+}
+function clearOne(id){
+  var pane = document.querySelector('[data-pane="' + id + '"]');
+  if (!pane) return;
+  pane.querySelectorAll('input').forEach(function(i){
+    /* 문항 선택·모범 문제 체크박스는 '다시 풀기'로 지우지 않는다 */
+    if (i.hasAttribute('data-sel') || i.hasAttribute('data-star')) return;
+    if (i.type === 'text') i.value = ''; else i.checked = false;
+  });
+  pane.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); });
+  if (orderPick[id]){ orderPick[id] = []; redrawOrder(id); }
+  var res = document.getElementById('res' + id);
+  if (res) res.className = 'res';
+  delete graded[id];
+}
+
+/* ===== 선택 바 + 레일 ===== */
+function updateBar(){
+  var n = selCount(), picksEl = document.getElementById('bar-picks'), empty = emptySlots();
+  picksEl.innerHTML = '';
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no);
+    var sp = document.createElement('span');
+    sp.className = 'pk' + (ks.length ? ' set' : '');
+    /* A·B를 각각 네모 테두리로 감싼다 — 'AB'로 붙여 놓으면 한 개를 고른 것처럼 읽힌다 */
+    sp.innerHTML = '<span class="no">' + s.no + '</span>'
+      + (ks.length ? ks.map(function(k){ return '<span class="k">' + k + '</span>'; }).join('')
+                   : '<span class="none">–</span>');
+    picksEl.appendChild(sp);
+  });
+
+  var cnt = document.getElementById('bar-count');
+  cnt.textContent = n + ' / ' + MAX + ' 선택';
+  cnt.classList.toggle('full', n === MAX);
+
+  /* 다시 만들 자리는 사람이 고른 값이므로 '고른 문항이 없는 자리'와 따로 센다 */
+  var rg = regenSlots();
+  var rgEl = document.getElementById('bar-regen');
+  rgEl.hidden = (rg.length === 0);
+  rgEl.textContent = '↻ 다시 만들 자리 ' + rg.length + '개';
+
+  var warn, rest = empty.filter(function(no){ return rg.indexOf(no) < 0; });
+  if (n === 0 && rg.length === 0){
+    warn = '마음에 드는 문항을 고르세요. 다시 만들고 싶은 자리는 「다시 만들 문항 고르기」에 담아 두면 됩니다.';
+  } else if (rest.length){
+    /* 최소 개수는 없다. 고르지도, 다시 만들기로 담지도 않은 자리만 알려준다 */
+    warn = rest.join(', ') + '번 자리가 아직 비어 있습니다 — 문항을 고르거나 다시 만들 자리에 담아주세요.';
+  } else if (n === MAX){
+    warn = '7자리를 모두 채웠습니다 — 「선택 결과 복사」로 넘기세요.';
+  } else {
+    warn = '고른 ' + n + '개와 다시 만들 ' + rg.length + '개가 함께 복사됩니다 — 「선택 결과 복사」로 넘기세요.';
+  }
+  document.getElementById('bar-warn').textContent = warn;
+
+  /* 최대 7개 상한만 있고 최소 개수는 없다 — 고른 것이나 다시 만들 자리가 하나라도 있으면 복사할 수 있다.
+     (예전에는 n !== MAX 로 잠겨 있어 "4개는 확정, 3개는 다시 만들기"를 내보낼 방법이 없었다) */
+  document.getElementById('btn-copy').disabled = (n === 0 && rg.length === 0);
+  document.getElementById('btn-clearpick').disabled = (n === 0);
+
+  var sn = Object.keys(starred).length;
+  var starEl = document.getElementById('bar-star');
+  starEl.hidden = (sn === 0);
+  starEl.textContent = '★ 모범 ' + sn + '개';
+
+  if (n === 0) lsDel(selKey()); else lsSet(selKey(), JSON.stringify(Object.keys(sel)));
+  if (sn === 0) lsDel(starKey()); else lsSet(starKey(), JSON.stringify(Object.keys(starred)));
+  renderRail();
+}
+
+function renderRail(){
+  var nav = document.getElementById('rail-nav');
+  nav.querySelectorAll('a[data-slot]').forEach(function(a){ a.parentNode.removeChild(a); });
+  var anchor = nav.querySelectorAll('.grp')[1];
+  /* insertBefore(anchor)로 차례로 넣으면 넣은 순서대로 쌓인다 — 배열을 뒤집으면 7→1이 된다 */
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no);
+    var a = document.createElement('a');
+    a.href = '#slot' + s.no;
+    a.setAttribute('data-slot', s.no);
+    if (ks.length) a.className = 'picked';
+    a.innerHTML = '<span class="qn">' + s.no + '</span>' + esc(s.type)
+                + '<span class="st">'
+                + (ks.length ? ks.map(function(k){ return '<span class="k">' + k + '</span>'; }).join('')
+                             : '<span class="none">—</span>')
+                + '</span>';
+    nav.insertBefore(a, anchor);
+  });
+}
+
+function selectedIds(){
+  var out = [];
+  SLOTS.forEach(function(s){ slotKeys(s.no).forEach(function(k){ out.push({ no:s.no, key:k }); }); });
+  return out;
+}
+function starredIds(){
+  var out = [];
+  SLOTS.forEach(function(s){ ['A','B'].forEach(function(k){ if (starred[s.no + k]) out.push(s.no + k); }); });
+  return out;
+}
+function reviewerName(){
+  return (document.getElementById('reviewer').value || '').trim() || '(검수자 미입력)';
+}
+function memoLines(){
+  var out = [];
+  SLOTS.forEach(function(s){
+    var ta = document.querySelector('[data-memo="' + s.no + '"]');
+    if (ta && hasRequest(ta.value)) out.push('- ' + s.no + '번: ' + extractRequest(ta.value).replace(/\n/g, ' / '));
+  });
+  return out;
+}
+
+function buildResult(){
+  var ids = selectedIds(), empty = emptySlots(), rg = regenSlots(), L = [];
+  /* 고른 문항이 7개가 아니어도 복사할 수 있다. 이때는 "확정 + 다시 만들기" 두 가지 일이
+     한 텍스트에 담기므로, 맨 위 지시문도 상황에 맞게 바꾼다. */
+  L.push(rg.length
+    ? '아래에서 고른 문항은 CSV에 반영하고, 다시 만들 자리는 새로 만들어줘.'
+    : '아래 선택대로 CSV에 반영해줘.');
+  L.push('');
+  L.push('대상: ' + META.csv + ' ' + META.행);
+  L.push('아티클: ' + META.분과 + ' / ' + META.중단원 + ' / ' + META.아티클);
+  L.push('원고: ' + META.원고);
+  L.push('선택 (' + ids.length + '개): ' + (ids.length ? ids.map(function(x){ return x.no + x.key; }).join(' ') : '없음'));
+  if (rg.length) L.push('다시 만들 자리 (' + rg.length + '개): ' + rg.map(function(no){ return no + '번'; }).join(' '));
+  L.push('검수자: ' + reviewerName());
+  L.push('');
+  ids.forEach(function(x){
+    var s = slotOf(x.no), item = s[x.key];
+    var q = item.q.length > 40 ? item.q.slice(0, 40) + '…' : item.q;
+    L.push(x.no + x.key + ' · ' + s.lv + ' · ' + s.type + ' · ' + q);
+  });
+  if (rg.length){
+    L.push('');
+    L.push('■ 다시 만들 자리 (' + rg.length + '개) — 아래 조건대로 새로 만들어줘');
+    rg.forEach(function(no){
+      var s = slotOf(no), ks = slotKeys(no);
+      L.push('- ' + no + '번 · ' + s.lv + ' · ' + s.type
+           + ' — ' + (ks.length ? '현재 ' + ks.join('·') + '안 선택됨' : '고른 문항 없음'));
+    });
+    L.push('- 자리마다 후보 2안(A/B)을 새로 만들고, 두 안은 서로 다른 내용을 묻거나 다른 방식으로 묻게 할 것.');
+    L.push('- 그 자리의 난이도·퀴즈 유형은 위에 적힌 대로 유지할 것.');
+    L.push('- 위에서 고른 문항은 건드리지 말고, 소재·정답이 겹치지 않게 할 것.');
+    L.push('- 파일은 저장하지 말고 결과만 보여줄 것.');
+    var rnote = regenNote();
+    if (rnote){
+      L.push('- 어떻게 다시 만들면 좋을지:');
+      rnote.split('\n').forEach(function(t){ L.push('  ' + t); });
+    }
+  }
+  /* 고르지도, 다시 만들기로 담지도 않은 자리만 남은 문제로 알린다 */
+  var rest = empty.filter(function(no){ return rg.indexOf(no) < 0; });
+  if (rest.length){
+    L.push('');
+    L.push('※ 아직 비어 있는 자리: ' + rest.map(function(no){
+      var s = slotOf(no); return no + '번(' + s.lv + ' · ' + s.type + ')';
+    }).join(', '));
+  }
+  if (ids.length > SLOTS.length - empty.length){
+    L.push('※ 같은 자리에서 두 개를 고른 만큼 유형 배열이 달라집니다 — 이대로 반영할지 확인해줘.');
+  }
+  var stars = starredIds();
+  if (stars.length){
+    L.push('');
+    L.push('모범 문제로 표시한 문항 (' + stars.length + '개): ' + stars.join(' '));
+  }
+  var memos = memoLines();
+  if (memos.length){
+    L.push('');
+    L.push('추가 요청사항:');
+    memos.forEach(function(m){ L.push(m); });
+  }
+  return L.join('\n');
+}
+
+/* ===== 다시 만들 문항 고르기 (모달) ===== */
+/* 이 선택은 localStorage(qzregen:…)에 저장된다. 예전에는 메모리 변수뿐이라 모달을 닫거나
+   새로고침하면 고른 값이 통째로 사라졌다. */
+var regenPick = {};
+var regenSaved = false;   /* 이번에 연 뒤 저장을 눌렀는지 */
+var modal = document.getElementById('regen-modal');
+
+function openRegen(){
+  var n = selCount(), empty = emptySlots(), first = (lsGet(regenKey()) === '');
+  /* 저장해 둔 값이 있으면 그대로 복원한다. 한 번도 저장한 적이 없을 때만
+     '고른 문항이 없는 자리'를 미리 켜 준다 — 사람이 끈 자리가 되살아나면 안 되기 때문이다. */
+  if (first) empty.forEach(function(no){ regenPick[no] = true; });
+
+  document.getElementById('regen-note').value = lsGet(regenNoteKey());
+  regenSaved = false;
+  setRegenHint('');
+
+  document.getElementById('regen-lead').innerHTML =
+    '지금까지 <b>' + n + '개</b>를 고르셨습니다. 어느 자리를 다시 만들지 골라주세요.' +
+    (first ? ' 고른 문항이 없는 자리는 미리 켜 두었습니다.' : ' 지난번에 저장한 선택을 불러왔습니다.') +
+    ' <b>7개를 다 채우지 않아도 됩니다</b> — 저장한 뒤 「선택 결과 복사」를 누르면 고른 문항과 함께 나갑니다.' +
+    ' 새로 만드는 2안도 <b>서로 다른 내용이나 다른 방식으로</b> 묻도록 만듭니다.';
+
+  var box = document.getElementById('regen-list');
+  box.innerHTML = '';
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no), on = !!regenPick[s.no];
+    var row = document.createElement('label');
+    row.className = 'rg-row' + (on ? ' on' : '');
+    row.innerHTML = '<input type="checkbox" data-regen="' + s.no + '"' + (on ? ' checked' : '') + '>'
+      + '<span class="rg-no">' + s.no + '</span>'
+      + '<span class="rg-meta">' + esc(s.lv) + ' · ' + esc(s.type) + '</span>'
+      + '<span class="rg-state' + (ks.length ? '' : ' empty') + '">'
+      + (ks.length ? '현재 ' + ks.join('·') + '안 선택' : '고른 문항 없음') + '</span>';
+    box.appendChild(row);
+  });
+  modal.hidden = false;
+}
+function closeRegen(){ modal.hidden = true; }
+
+function setRegenHint(msg){
+  var el = document.getElementById('regen-hint');
+  el.textContent = msg;
+  el.className = 'regen-hint' + (msg ? ' saved' : '');
+}
+
+/* 저장 — 고른 자리와 메모를 localStorage에 넣고 하단 바를 갱신한다.
+   전체 재렌더(render)를 부르지 않는다. 사용자가 풀던 답이 지워지기 때문이다. */
+function saveRegen(){
+  var nos = regenSlots();
+  if (nos.length) lsSet(regenKey(), JSON.stringify(nos)); else lsDel(regenKey());
+  var note = (document.getElementById('regen-note').value || '').trim();
+  if (note) lsSet(regenNoteKey(), note); else lsDel(regenNoteKey());
+  regenSaved = true;
+  setRegenHint(nos.length ? '저장했습니다 — ' + nos.join(', ') + '번' : '저장했습니다 — 다시 만들 자리 없음');
+  updateBar();
+  SLOTS.forEach(function(s){ syncMemoHeader(s.no); });
+}
+
+
+/* ===== 복사 ===== */
+function copyText(text, btn){
+  var original = btn.innerHTML;
+  var done = function(){ btn.textContent = '복사됨 ✓'; setTimeout(function(){ btn.innerHTML = original; }, 1800); };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done){
+  var t = document.createElement('textarea');
+  t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+  document.body.appendChild(t); t.select();
+  try { document.execCommand('copy'); done(); }
+  catch(e){ window.prompt('아래 내용을 복사하세요', text); }
+  document.body.removeChild(t);
+}
+
+/* ===== 이벤트 ===== */
+document.addEventListener('change', function(e){
+  var el = e.target;
+
+  /* 문항 선택 체크박스 */
+  if (el.hasAttribute && el.hasAttribute('data-sel')){
+    var p = el.getAttribute('data-sel').split('|'), k = p[0] + p[1];
+    if (el.checked){
+      if (selCount() >= MAX){ el.checked = false; return; }
+      sel[k] = true;
+    } else {
+      delete sel[k];
+    }
+    applySelUI();
+    return;
+  }
+
+  /* 모범 문제 별표 — 선택 7개 제한과 무관하며 개수 제한도 없다 */
+  if (el.hasAttribute && el.hasAttribute('data-star')){
+    var sp = el.getAttribute('data-star').split('|'), sk = sp[0] + sp[1];
+    if (el.checked) starred[sk] = true; else delete starred[sk];
+    applySelUI();
+    return;
+  }
+
+  /* 모달의 자리 선택 — 실제 저장은 「저장」 버튼에서 한다 */
+  if (el.hasAttribute && el.hasAttribute('data-regen')){
+    var no = parseInt(el.getAttribute('data-regen'), 10);
+    if (el.checked) regenPick[no] = true; else delete regenPick[no];
+    el.closest('.rg-row').classList.toggle('on', el.checked);
+    setRegenHint('');   /* 저장 뒤 다시 만졌으면 "저장했습니다" 표시를 지운다 */
+    regenSaved = false;
+    return;
+  }
+
+  /* 문항을 풀 때의 보기 강조 */
+  if (el.type === 'radio' || el.type === 'checkbox'){
+    var scope = el.closest('.opts'); if (!scope) return;
+    if (el.type === 'radio') scope.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); });
+    var lab = el.closest('.opt');
+    if (el.type === 'checkbox') lab.classList.toggle('sel', el.checked); else lab.classList.add('sel');
+  }
+});
+
+document.addEventListener('click', function(e){
+  var v = e.target.closest('[data-view]');
+  if (v){ var p = v.getAttribute('data-view').split('|'); view[p[0]] = p[1]; render(); return; }
+  var ck = e.target.closest('[data-check]');
+  if (ck){ grade(ck.getAttribute('data-check'), false); return; }
+  var cl = e.target.closest('[data-clear]');
+  if (cl){ clearOne(cl.getAttribute('data-clear')); return; }
+  var cm = e.target.closest('[data-copymemo]');
+  if (cm){
+    var who = (document.getElementById('reviewer').value || '').trim();
+    var ta = document.querySelector('[data-memo="' + cm.getAttribute('data-copymemo') + '"]');
+    copyText(ta.value + (who ? '\n검수자: ' + who : ''), cm);
+    return;
+  }
+  var rm = e.target.closest('[data-resetmemo]');
+  if (rm){
+    var no = rm.getAttribute('data-resetmemo');
+    if (!window.confirm('문항 ' + no + ' 메모를 기본 양식으로 되돌립니다. 계속할까요?')) return;
+    var t2 = document.querySelector('[data-memo="' + no + '"]');
+    t2.value = memoTemplate(parseInt(no, 10)); t2.classList.remove('has');
+    lsDel(memoKey(no));
+    syncMemoBadge(no);
+    return;
+  }
+});
+
+function fillAll(key){
+  sel = {};
+  SLOTS.forEach(function(s){ sel[s.no + key] = true; });
+  /* 재렌더하지 않는다 — 탭 모드에서 눌러도 풀던 답이 지워지지 않도록 */
+  applySelUI();
+}
+document.getElementById('btn-allA').addEventListener('click', function(){ fillAll('A'); });
+document.getElementById('btn-allB').addEventListener('click', function(){ fillAll('B'); });
+
+document.getElementById('sw-both').addEventListener('change', function(){
+  showBoth = this.checked; render();
+});
+document.getElementById('btn-reveal').addEventListener('click', function(){
+  document.querySelectorAll('[data-check]').forEach(function(b){ grade(b.getAttribute('data-check'), true); });
+});
+document.getElementById('btn-reset').addEventListener('click', function(){
+  document.querySelectorAll('[data-clear]').forEach(function(b){ clearOne(b.getAttribute('data-clear')); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-clearpick').addEventListener('click', function(){
+  if (!selCount()) return;
+  if (!window.confirm('선택한 문항을 모두 지우고 처음부터 다시 고릅니다.\n풀던 답과 별표, 검수 메모는 그대로 남습니다. 계속할까요?')) return;
+  sel = {};
+  lsDel(selKey());
+  applySelUI();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-copy').addEventListener('click', function(){
+  copyText(buildResult(), this);
+});
+
+document.getElementById('btn-regen').addEventListener('click', openRegen);
+document.getElementById('regen-save').addEventListener('click', function(){
+  saveRegen();
+  closeRegen();
+});
+/* 저장하지 않고 닫으면 이번에 만진 체크는 버리고 저장돼 있던 값으로 되돌린다 —
+   "닫기"가 곧 취소가 되도록. */
+function cancelRegen(){
+  if (!regenSaved){
+    regenPick = {};
+    loadRegen();
+  }
+  closeRegen();
+}
+document.getElementById('regen-close').addEventListener('click', cancelRegen);
+modal.addEventListener('click', function(e){ if (e.target === modal) cancelRegen(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !modal.hidden) cancelRegen(); });
+
+var nameInput = document.getElementById('reviewer');
+nameInput.value = lsGet(nameKey());
+nameInput.addEventListener('input', function(){ lsSet(nameKey(), nameInput.value); });
+
+function loadIds(raw, limit, into){
+  try {
+    var saved = JSON.parse(raw || '[]');
+    if (Object.prototype.toString.call(saved) !== '[object Array]') return;
+    (limit ? saved.slice(0, limit) : saved).forEach(function(k){
+      var no = parseInt(k, 10), key = String(k).slice(-1);
+      if (slotOf(no) && (key === 'A' || key === 'B')) into[no + key] = true;
+    });
+  } catch(e){}
+}
+loadIds(lsGet(selKey()), MAX, sel);      /* 선택은 7개까지만 복원 */
+loadIds(lsGet(starKey()), 0, starred);   /* 별표는 개수 제한 없음 */
+
+/* 다시 만들 자리 복원 — 자리 번호 배열이라 loadIds(A/B 키)와 형식이 다르다 */
+function loadRegen(){
+  try {
+    var saved = JSON.parse(lsGet(regenKey()) || '[]');
+    if (Object.prototype.toString.call(saved) !== '[object Array]') return;
+    saved.forEach(function(v){
+      var no = parseInt(v, 10);
+      if (slotOf(no)) regenPick[no] = true;
+    });
+  } catch(e){}
+}
+loadRegen();
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>퀴즈 제작 현황 — STORY 퀴즈 (v2)</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Executive Kinetic 토큰 (primary #904d00, Manrope) =====
+   근거가 된 `재료/design/DESIGN.md`는 이 패키지에 넣지 않았다 — README_시작하기.md 6장 참고. */
+:root{
+  --surface:#f8f9ff; --surface-bright:#f8f9ff; --surface-dim:#cbdbf5;
+  --surface-lowest:#ffffff; --surface-low:#eff4ff; --surface-c:#e5eeff;
+  --surface-high:#dce9ff; --surface-highest:#d3e4fe; --surface-variant:#d3e4fe;
+  --on-surface:#0b1c30; --on-surface-variant:#554335;
+  --inverse-surface:#213145; --inverse-on-surface:#eaf1ff;
+  --outline:#887363; --outline-variant:#dcc2af;
+  --primary:#904d00; --on-primary:#ffffff;
+  --primary-container:#f78d1e; --on-primary-container:#5f3100;
+  --primary-fixed:#ffdcc2; --primary-fixed-dim:#ffb77c;
+  --secondary:#5f5e5f; --secondary-container:#e2dfe0; --on-secondary-container:#636263;
+  --error:#ba1a1a; --error-c:#ffdad6; --on-error-c:#93000a;
+  /* spacing */
+  --xs:4px; --base:8px; --sm:12px; --md:24px; --lg:48px; --xl:80px;
+  --gutter:24px; --margin-desktop:64px; --margin-mobile:16px;
+  --rail:280px;
+  /* shape */
+  --r-sm:2px; --r:4px; --r-md:6px; --r-lg:8px; --r-xl:12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--surface);color:var(--on-surface);
+  font-family:'Manrope','Pretendard','Malgun Gothic','맑은 고딕',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+
+/* ===== Rail ===== */
+.rail{position:fixed;left:0;top:0;height:100%;width:var(--rail);background:var(--surface-low);
+  display:flex;flex-direction:column;padding:var(--md) 0 var(--lg);z-index:50;
+  box-shadow:0 1px 8px rgba(0,0,0,.04);}
+.brand{display:flex;align-items:center;gap:var(--sm);padding:0 var(--md);margin-bottom:var(--base);}
+.brand-mark{width:34px;height:34px;background:var(--primary);color:var(--on-primary);border-radius:var(--r-lg);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex:none;}
+.brand-name{font-size:22px;font-weight:800;line-height:1.2;letter-spacing:-.01em;}
+.brand-rule{height:2px;width:48px;background:var(--primary);opacity:.2;margin:0 var(--md) var(--md);}
+.nav{flex:1;padding:0 var(--sm);display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.nav .grp{padding:var(--sm) var(--sm) var(--xs);font-size:12px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--on-surface-variant);opacity:.6;}
+.nav a{display:flex;align-items:center;gap:var(--base);padding:10px var(--sm);border-radius:var(--r-xl);
+  font-size:14px;font-weight:600;color:var(--on-surface-variant);text-decoration:none;transition:.18s;}
+.nav a:hover{background:var(--surface-highest);color:var(--on-surface);}
+.nav a.active{background:var(--secondary-container);color:var(--on-surface);font-weight:700;}
+.nav .dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex:none;opacity:.7;}
+.rail-foot{padding:var(--sm) var(--md) 0;}
+.rail-card{background:var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);display:flex;flex-direction:column;gap:var(--xs);}
+.rail-card .k{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+.rail-card .v{font-size:13px;font-weight:600;word-break:break-all;}
+
+/* ===== Shell ===== */
+.shell{padding-left:var(--rail);}
+.topbar{position:sticky;top:0;height:72px;background:rgba(248,249,255,.85);backdrop-filter:blur(12px);
+  box-shadow:0 1px 8px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:space-between;
+  gap:var(--sm);padding:0 var(--md);z-index:40;}
+.crumb{font-size:14px;font-weight:700;color:var(--on-surface);}
+.stamp{font-size:12px;font-weight:600;color:var(--on-surface-variant);}
+main{padding:var(--md) var(--md) var(--xl);display:flex;flex-direction:column;gap:var(--lg);max-width:1440px;}
+
+.eyebrow{display:flex;align-items:center;gap:var(--base);margin-bottom:var(--base);}
+.eyebrow .sq{width:12px;height:12px;background:var(--primary-container);border-radius:var(--r-sm);}
+.eyebrow span{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+h1{font-size:48px;font-weight:800;line-height:56px;letter-spacing:-.02em;margin:0;}
+.sub{margin:var(--base) 0 0;font-size:18px;line-height:28px;color:var(--on-surface-variant);}
+
+/* ===== KPI ===== */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gutter);}
+.kpi-grid.kpi-3{grid-template-columns:repeat(3,1fr);}
+.kpi{background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-lg);
+  padding:var(--md);display:flex;flex-direction:column;gap:var(--sm);min-height:176px;transition:box-shadow .18s;}
+.kpi:hover{box-shadow:0 4px 12px rgba(0,0,0,.05);}
+.kpi.accent{border-color:var(--primary-container);box-shadow:inset 0 0 0 1px var(--primary-container);}
+.kpi-label{font-size:14px;font-weight:700;letter-spacing:.01em;color:var(--on-surface-variant);}
+.kpi.accent .kpi-label{color:var(--primary);}
+.kpi-num{display:flex;align-items:baseline;gap:var(--base);flex-wrap:wrap;}
+.kpi-num .big{font-size:48px;font-weight:800;line-height:1.05;letter-spacing:-.02em;}
+.kpi-num .of{font-size:20px;font-weight:700;color:var(--outline);}
+.kpi-num .note{font-size:14px;font-weight:600;color:var(--on-surface-variant);}
+.kpi.accent .kpi-num .note{color:var(--primary);}
+.track{width:100%;height:6px;background:var(--surface-c);border-radius:var(--r-sm);overflow:hidden;}
+.track > i{display:block;height:100%;background:var(--primary);border-radius:var(--r-sm);}
+.kpi-foot{margin-top:auto;font-size:13px;font-weight:600;line-height:1.6;color:var(--on-surface-variant);}
+
+/* ===== Panels ===== */
+.cols{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--gutter);}
+.span8{grid-column:span 8;} .span4{grid-column:span 4;} .span12{grid-column:span 12;}
+.panel{background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-xl);
+  padding:var(--md);display:flex;flex-direction:column;gap:var(--md);}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--sm);flex-wrap:wrap;
+  border-bottom:1px solid var(--surface-c);padding-bottom:var(--sm);}
+.panel-label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);margin-bottom:var(--xs);}
+.panel h2{font-size:32px;font-weight:700;line-height:40px;letter-spacing:-.01em;margin:0;}
+.panel h3{font-size:24px;font-weight:700;line-height:32px;margin:0;}
+.hint{font-size:13px;font-weight:600;color:var(--on-surface-variant);}
+.hint b{color:var(--on-surface);}
+
+/* ===== Accordion ===== */
+.eu{border:1px solid var(--surface-c);border-radius:var(--r-lg);margin-bottom:var(--base);overflow:hidden;}
+.eu:last-child{margin-bottom:0;}
+.eu > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:20px 300px 1fr 84px;
+  gap:var(--sm);align-items:center;padding:12px var(--sm);background:var(--surface-lowest);transition:background .15s;}
+.eu > summary::-webkit-details-marker{display:none;}
+.eu > summary:hover{background:var(--surface-low);}
+.eu[open] > summary{background:var(--surface-low);border-bottom:1px solid var(--surface-c);}
+.chev{width:0;height:0;border-left:5px solid var(--on-surface-variant);
+  border-top:4px solid transparent;border-bottom:4px solid transparent;justify-self:center;transition:transform .15s;}
+.eu[open] .chev{transform:rotate(90deg);}
+.eu-name{font-size:14px;font-weight:700;}
+.bar-track{height:8px;background:var(--surface-c);border-radius:var(--r);overflow:hidden;display:flex;}
+.eu[open] .bar-track{background:var(--surface-high);}
+.bar-scale{height:100%;position:relative;display:block;background:var(--surface-highest);}
+.bar-scale.neutral{background:var(--on-surface-variant);}
+.bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--primary);border-radius:var(--r);}
+.bar-val{font-size:13px;font-weight:600;color:var(--on-surface-variant);text-align:right;white-space:nowrap;}
+.bar-val b{color:var(--on-surface);font-weight:800;}
+.eu-body{padding:var(--sm) var(--sm) var(--md) 56px;background:var(--surface-lowest);}
+.filelinks{display:flex;gap:var(--base);flex-wrap:wrap;margin-bottom:var(--md);}
+.filelink{display:inline-flex;align-items:center;padding:7px 16px;border-radius:var(--r);text-decoration:none;
+  font-size:13px;font-weight:700;background:var(--surface-lowest);color:var(--on-surface);
+  border:1px solid var(--surface-highest);transition:.18s;}
+.filelink:hover{background:var(--surface-low);border-color:var(--outline);}
+.filelink.alt{color:var(--primary);border-color:var(--primary);}
+.filelink.alt:hover{background:var(--primary);color:var(--on-primary);}
+.mid{margin-bottom:var(--md);}
+.mid:last-child{margin-bottom:0;}
+.mid-name{font-size:13px;font-weight:800;padding-bottom:var(--base);margin-bottom:var(--base);
+  border-bottom:1px solid var(--surface-c);}
+.mid-name .mid-n{font-weight:600;color:var(--on-surface-variant);}
+.arts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
+.arts li{display:grid;grid-template-columns:1fr 76px 56px;gap:var(--sm);align-items:center;
+  padding:8px 0;font-size:14px;border-bottom:1px solid var(--surface-low);}
+.arts li:last-child{border-bottom:none;}
+.arts .dv{font-size:13px;color:var(--on-surface-variant);}
+.arts .cnt{font-size:13px;font-weight:700;text-align:right;color:var(--on-surface-variant);}
+.arts li.done{font-weight:700;background:rgba(144,77,0,.05);border-bottom:none;margin:2px 0;
+  padding:8px 8px 8px 12px;border-left:4px solid var(--primary);border-radius:0 var(--r) var(--r) 0;}
+.arts li.done .cnt{color:var(--primary);}
+.arts a{text-decoration:none;border-bottom:1px solid var(--outline-variant);}
+.arts a:hover{border-bottom-color:var(--primary);}
+.arts a.cand{color:var(--primary);}
+
+/* ===== 분과 bars ===== */
+.bars{display:flex;flex-direction:column;gap:var(--sm);}
+.bar-row{display:grid;grid-template-columns:76px 1fr 80px;gap:var(--sm);align-items:center;}
+.bar-name{font-size:14px;font-weight:700;}
+
+/* ===== List ===== */
+.list{display:flex;flex-direction:column;gap:var(--base);}
+.item{display:flex;align-items:flex-start;gap:var(--sm);padding:var(--sm);
+  background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-lg);}
+.item .badge{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;background:var(--surface-c);color:var(--on-surface);border-radius:var(--r);}
+.item .badge.on{background:var(--primary);color:var(--on-primary);}
+.item .meta{display:flex;flex-direction:column;min-width:0;gap:var(--xs);}
+.item .t{font-size:14px;font-weight:700;word-break:break-all;}
+.item .s{font-size:13px;font-weight:500;line-height:1.5;color:var(--on-surface-variant);}
+
+/* ===== Table ===== */
+.scroll-x{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;text-align:left;}
+th{font-size:13px;font-weight:700;color:var(--on-surface-variant);padding:12px var(--sm);
+  border-bottom:2px solid var(--surface-high);white-space:nowrap;}
+td{font-size:14px;padding:12px var(--sm);border-bottom:1px solid var(--surface-c);vertical-align:middle;}
+th.num,td.num{text-align:right;font-variant-numeric:tabular-nums;}
+tr.hl td{background:rgba(144,77,0,.05);}
+td a{text-decoration:none;font-weight:600;border-bottom:1px solid var(--outline-variant);}
+td a:hover{border-bottom-color:var(--primary);}
+tfoot td{font-weight:800;border-bottom:none;border-top:2px solid var(--surface-high);}
+.tag{display:inline-flex;align-items:center;padding:3px 10px;font-size:12px;font-weight:700;border-radius:999px;}
+.tag.k{background:var(--primary);color:var(--on-primary);}
+.tag.g{background:var(--secondary-container);color:var(--on-secondary-container);}
+
+/* ===== Steps ===== */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gutter);}
+.step{border:1px solid var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);
+  display:flex;flex-direction:column;gap:var(--base);background:var(--surface-lowest);}
+.step .n{width:30px;height:30px;background:var(--primary-fixed);color:var(--on-primary-container);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;}
+.step .t{font-size:16px;font-weight:700;}
+.step .d{font-size:14px;line-height:1.65;color:var(--on-surface-variant);}
+.callout{border-left:4px solid var(--primary);background:var(--surface-low);padding:var(--sm);
+  border-radius:0 var(--r-lg) var(--r-lg) 0;font-size:14px;line-height:1.7;}
+footer.note{border-top:1px solid var(--surface-c);padding-top:var(--md);
+  font-size:13px;line-height:1.8;color:var(--on-surface-variant);}
+footer.note code{background:var(--surface-low);border:1px solid var(--surface-c);border-radius:var(--r);
+  padding:2px 6px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--on-surface);}
+footer.note b{color:var(--on-surface);}
+
+@media (max-width:1200px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .span8,.span4{grid-column:span 12;}
+  .steps{grid-template-columns:repeat(2,1fr);}
+  .eu > summary{grid-template-columns:20px 200px 1fr 84px;}
+}
+@media (max-width:860px){
+  .rail{display:none;} .shell{padding-left:0;}
+  main{padding:var(--sm) var(--margin-mobile) var(--lg);gap:var(--md);}
+  .kpi-grid{grid-template-columns:1fr;} h1{font-size:36px;line-height:44px;}
+  .panel h2{font-size:24px;line-height:32px;}
+  .eu > summary{grid-template-columns:16px 1fr 76px;}
+  .eu > summary .bar-track{display:none;}
+  .eu-body{padding-left:var(--sm);}
+  .steps{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<aside class="rail">
+  <div class="brand">
+    <div class="brand-mark">Q</div>
+    <div class="brand-name">STORY_QUIZ</div>
+  </div>
+  <div class="brand-rule"></div>
+  <nav class="nav">
+    <div class="grp">현황</div>
+    <a class="active" href="#overview"><span class="dot"></span>현황 개요</a>
+    <a href="#matrix"><span class="dot"></span>대단원별 규모와 진행</a>
+  </nav>
+  <div class="rail-foot">
+    <div class="rail-card">
+      <span class="k">Data source</span>
+      <span class="v">산출물/대단원별/*.csv<br>산출물/퀴즈데이터/*.json<br>산출물/퀴즈미리보기/*.html<br>재료/Story전체 목차_0730.csv</span>
+    </div>
+  </div>
+</aside>
+
+<div class="shell">
+  <header class="topbar">
+    <span class="crumb">STORY 퀴즈 / 제작 현황</span>
+    <span class="stamp">집계 2026-09-11 · 정적 스냅샷 · v2</span>
+  </header>
+
+  <main>
+    <section id="overview">
+      <div class="eyebrow"><span class="sq"></span><span>Production Overview</span></div>
+      <h1>퀴즈 제작 현황</h1>
+      <p class="sub">아티클 1건 = 문항 7개. 문항 수·완료 여부와 중단원명·아티클명·분과는 <code>산출물/대단원별/*.csv</code> 9개 파일에서, 미리보기 유무는 <code>산출물/퀴즈데이터/</code>·<code>산출물/퀴즈미리보기/</code>에서, 대단원명은 <code>재료/Story전체 목차_0730.csv</code>에서 그대로 읽어 채운 값입니다.</p>
+    </section>
+
+    <section class="kpi-grid kpi-3">
+      <div class="kpi">
+        <span class="kpi-label">진행 중인 아티클</span>
+        <div class="kpi-num"><span class="big">9</span><span class="of">/ 128</span></div>
+        <div class="track"><i style="width:7.0%"></i></div>
+        <div class="kpi-foot">퀴즈를 만들었거나 CSV에 반영한 아티클 · 대단원 9개</div>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">기획자 검수 완료 퀴즈</span>
+        <div class="kpi-num"><span class="big">35</span><span class="of">/ 896</span></div>
+        <div class="track"><i style="width:3.9%"></i></div>
+        <div class="kpi-foot">검수를 마치고 대단원별 CSV에 반영된 문항 · 진행률 3.9%</div>
+      </div>
+      <div class="kpi accent">
+        <span class="kpi-label">검토 대기 퀴즈</span>
+        <div class="kpi-num"><span class="big">4</span><span class="note">미리보기</span></div>
+        <div class="kpi-foot">14개 중 7개를 고르면 CSV에 반영됩니다</div>
+      </div>
+    </section>
+
+    <section class="cols" id="matrix">
+      <div class="panel span8">
+        <div class="panel-head">
+          <div><div class="panel-label">Volume &amp; Progress</div><h2>대단원별 규모와 진행</h2></div>
+          <div class="hint">막대 길이 = 아티클 수 · <b>주황 채움</b> = 완료 아티클 · 행을 클릭하면 펼쳐집니다</div>
+        </div>
+        <div>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">00 · 프롤로그 과학이란 무엇인가 — 자연을 읽는 언어</span>
+        <span class="bar-track"><span class="bar-scale" style="width:13.2%"><span class="bar-fill" style="width:0.0%"></span></span></span>
+        <span class="bar-val"><b>0</b> / 5</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_%EA%B3%BC%ED%95%99%EC%9D%B4%EB%9E%80_%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80.csv">CSV 열기</a> <a class="filelink alt" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_A_%EC%9E%90%EC%97%B0%EA%B3%BC%ED%95%99%EC%86%8C%EA%B0%9C.html" target="_blank" rel="noopener">후보 A/B · A. 자연과학 소개 <span aria-hidden="true">↗</span></a> <a class="filelink alt" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_B_%EA%B3%BC%ED%95%99%EC%97%B0%EA%B5%AC%EC%9D%98%EB%AA%A9%ED%91%9C.html" target="_blank" rel="noopener">후보 A/B · B. 과학 연구의 목표 <span aria-hidden="true">↗</span></a> <a class="filelink alt" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_A_%EB%8B%A8%EC%9C%84.html" target="_blank" rel="noopener">후보 A/B · A. 단위 <span aria-hidden="true">↗</span></a> <a class="filelink alt" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_B_%EA%B3%BC%ED%95%99%EC%97%B0%EA%B5%AC%EC%9D%98%EC%B8%A1%EC%A0%95.html" target="_blank" rel="noopener">후보 A/B · B. 과학 연구의 측정 <span aria-hidden="true">↗</span></a></div>
+      <div class="mid">
+        <div class="mid-name">P-1) 과학적 사고란 무엇인가 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an"><a class="cand" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_A_%EC%9E%90%EC%97%B0%EA%B3%BC%ED%95%99%EC%86%8C%EA%B0%9C.html" target="_blank" rel="noopener">A. 자연과학 소개</a></span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an"><a class="cand" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_B_%EA%B3%BC%ED%95%99%EC%97%B0%EA%B5%AC%EC%9D%98%EB%AA%A9%ED%91%9C.html" target="_blank" rel="noopener">B. 과학 연구의 목표</a></span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">P-2) 단위와 측정 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an"><a class="cand" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_A_%EB%8B%A8%EC%9C%84.html" target="_blank" rel="noopener">A. 단위</a></span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an"><a class="cand" href="퀴즈미리보기/00_%ED%94%84%EB%A1%A4%EB%A1%9C%EA%B7%B8_B_%EA%B3%BC%ED%95%99%EC%97%B0%EA%B5%AC%EC%9D%98%EC%B8%A1%EC%A0%95.html" target="_blank" rel="noopener">B. 과학 연구의 측정</a></span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">P-3) 수학 — 자연의 언어 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">수리물리</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu" open>
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">01 · 1. 빅뱅 — 우주의 시작</span>
+        <span class="bar-track"><span class="bar-scale" style="width:31.6%"><span class="bar-fill" style="width:8.3%"></span></span></span>
+        <span class="bar-val"><b>1</b> / 12</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/01_%EB%B9%85%EB%B1%85_%EC%9A%B0%EC%A3%BC%EC%9D%98_%EC%8B%9C%EC%9E%91.csv">CSV 열기</a> <a class="filelink alt" href="퀴즈미리보기/01_%EB%B9%85%EB%B1%85_B_%EC%9A%B0%EC%A3%BC%EB%A1%A0.html" target="_blank" rel="noopener">후보 A/B · B. 우주론 <span aria-hidden="true">↗</span></a></div>
+      <div class="mid">
+        <div class="mid-name">1-1) 시간과 공간의 본질 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 특수 상대성 이론</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 일반 상대성 이론</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">1-2) 우주의 탄생 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 표준 우주 모형</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li class="done"><span class="an"><a class="cand" href="퀴즈미리보기/01_%EB%B9%85%EB%B1%85_B_%EC%9A%B0%EC%A3%BC%EB%A1%A0.html" target="_blank" rel="noopener">B. 우주론</a></span><span class="dv">천문</span><span class="cnt">7/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">1-3) 우주의 구성과 구조 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 우주의 구성 성분</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 우주의 3차원 구조</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">1-4) 우주를 어떻게 보는가 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 구면 천문학</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 측광과 분광</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 관측기기</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">1-5) 은하의 세계 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 우리은하와 외부은하</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 은하의 다양한 모습과 특성</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 은하의 형성과 진화</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">02 · 2. 별 — 원소를 만드는 공장</span>
+        <span class="bar-track"><span class="bar-scale" style="width:18.4%"><span class="bar-fill" style="width:14.3%"></span></span></span>
+        <span class="bar-val"><b>1</b> / 7</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/02_%EB%B3%84_%EC%9B%90%EC%86%8C%EB%A5%BC_%EB%A7%8C%EB%93%9C%EB%8A%94_%EA%B3%B5%EC%9E%A5.csv">CSV 열기</a> <a class="filelink alt" href="퀴즈미리보기/02_%EB%B3%84_A_%EB%B3%84%EC%9D%98%EB%82%B4%EB%B6%80%EA%B5%AC%EC%A1%B0%EC%99%80%EB%AC%BC%EB%A6%AC.html" target="_blank" rel="noopener">후보 A/B · A. 별의 내부 구조와 물리 <span aria-hidden="true">↗</span></a></div>
+      <div class="mid">
+        <div class="mid-name">2-1) 별의 탄생 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">성간 물질과 별의 형성</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">2-2) 별의 구조와 에너지 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li class="done"><span class="an"><a class="cand" href="퀴즈미리보기/02_%EB%B3%84_A_%EB%B3%84%EC%9D%98%EB%82%B4%EB%B6%80%EA%B5%AC%EC%A1%B0%EC%99%80%EB%AC%BC%EB%A6%AC.html" target="_blank" rel="noopener">A. 별의 내부 구조와 물리</a></span><span class="dv">물리</span><span class="cnt">7/7</span></li>
+          <li><span class="an">B. 별의 관측</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">2-3) 별의 일생과 원소 합성 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 별의 진화</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 핵물리</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">2-4) 태양 — 가장 가까운 별 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">태양 — 가장 가까운 별</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">2-5) 극한의 별 — 입자의 세계 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">입자물리</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">03 · 3. 물질 — 원자가 만드는 세계</span>
+        <span class="bar-track"><span class="bar-scale" style="width:36.8%"><span class="bar-fill" style="width:7.1%"></span></span></span>
+        <span class="bar-val"><b>1</b> / 14</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/03_%EB%AC%BC%EC%A7%88_%EC%9B%90%EC%9E%90%EA%B0%80_%EB%A7%8C%EB%93%9C%EB%8A%94_%EC%84%B8%EA%B3%84.csv">CSV 열기</a> <a class="filelink alt" href="퀴즈미리보기/03_%EB%AC%BC%EC%A7%88_C_%EC%A0%84%EC%9D%B4%EA%B8%88%EC%86%8D.html" target="_blank" rel="noopener">후보 A/B · C. 전이 금속 <span aria-hidden="true">↗</span></a></div>
+      <div class="mid">
+        <div class="mid-name">3-1) 원자의 내부 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 원자</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 양자물리</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">3-2) 원소의 지도 — 주기율표 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 원소의 주기적 성질</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 비금속</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li class="done"><span class="an"><a class="cand" href="퀴즈미리보기/03_%EB%AC%BC%EC%A7%88_C_%EC%A0%84%EC%9D%B4%EA%B8%88%EC%86%8D.html" target="_blank" rel="noopener">C. 전이 금속</a></span><span class="dv">화학</span><span class="cnt">7/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">3-3) 원자의 결합 — 분자의 탄생 <span class="mid-n">4개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 분자</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 결합 법칙</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 결합의 극성</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">D. 결합 구조</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">3-4) 물질의 상태와 분류 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 물질의 분류</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 물질의 상태</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">3-5) 물질의 집합 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">응집 물질 물리</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">3-6) 화학식량과 측정 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 반응식</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 화학식량</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">04 · 4. 힘과 에너지 — 변화의 법칙</span>
+        <span class="bar-track"><span class="bar-scale" style="width:39.5%"><span class="bar-fill" style="width:0.0%"></span></span></span>
+        <span class="bar-val"><b>0</b> / 15</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/04_%ED%9E%98%EA%B3%BC_%EC%97%90%EB%84%88%EC%A7%80_%EB%B3%80%ED%99%94%EC%9D%98_%EB%B2%95%EC%B9%99.csv">CSV 열기</a></div>
+      <div class="mid">
+        <div class="mid-name">4-1) 운동과 힘 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 동역학</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 천체역학</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">4-2) 유체의 흐름 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">유체역학</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">4-3) 파동 — 에너지의 전달 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">파동과 진동</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">4-4) 열과 엔트로피 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 열평형과 에너지 보존</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 엔트로피</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 화학 반응과 에너지</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">4-5) 화학 반응의 법칙 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 반응 속도</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 반응 메커니즘</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 촉매</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">4-6) 반응의 방향성 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 화학 반응의 자발성</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 평형의 개념</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 평형 상수</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">4-7) 산·염기와 산화·환원 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 산-염기 반응</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 산화-환원 반응</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">05 · 5. 빛과 전자기 — 정보의 언어</span>
+        <span class="bar-track"><span class="bar-scale" style="width:23.7%"><span class="bar-fill" style="width:0.0%"></span></span></span>
+        <span class="bar-val"><b>0</b> / 9</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/05_%EB%B9%9B%EA%B3%BC_%EC%A0%84%EC%9E%90%EA%B8%B0_%EC%A0%95%EB%B3%B4%EC%9D%98_%EC%96%B8%EC%96%B4.csv">CSV 열기</a></div>
+      <div class="mid">
+        <div class="mid-name">5-1) 전기 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 쿨롱 법칙과 전기장</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 전류</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">5-2) 자기 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 자기력과 자기장</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 앙페르 법칙</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">5-3) 전자기 유도 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 전자기 유도</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 발전기와 변압기</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">5-4) 전자기파와 빛 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 맥스웰 방정식과 전자기파</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 빛의 파동성</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">5-5) 빛으로 우주를 읽다 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">측광과 분광</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">06 · 6. 지구 — 살아있는 행성</span>
+        <span class="bar-track"><span class="bar-scale" style="width:57.9%"><span class="bar-fill" style="width:4.5%"></span></span></span>
+        <span class="bar-val"><b>1</b> / 22</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/06_%EC%A7%80%EA%B5%AC_%EC%82%B4%EC%95%84%EC%9E%88%EB%8A%94_%ED%96%89%EC%84%B1.csv">CSV 열기</a> <a class="filelink alt" href="퀴즈미리보기/06_%EC%A7%80%EA%B5%AC_B_%EB%8C%80%EA%B8%B0%EC%9D%98%EC%88%9C%ED%99%98.html" target="_blank" rel="noopener">후보 A/B · B. 대기의 순환 <span aria-hidden="true">↗</span></a></div>
+      <div class="mid">
+        <div class="mid-name">6-1) 태양계와 지구의 탄생 -왜 이 행성인가 <span class="mid-n">4개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 외계행성</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 태양계 천체</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 행성지질학</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">D. 우주생명현상</span><span class="dv">천문</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">6-2) 지구시스템 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 지구시스템(개관)</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 권역간 상호작용</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">6-3) 지구 내부와 판구조 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 고체지구의 물성</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 화산: 지구 물질 순환의 통로</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 지진 및 지구물리</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">6-4) 대기와 날씨 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 지구와 대기</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li class="done"><span class="an"><a class="cand" href="퀴즈미리보기/06_%EC%A7%80%EA%B5%AC_B_%EB%8C%80%EA%B8%B0%EC%9D%98%EC%88%9C%ED%99%98.html" target="_blank" rel="noopener">B. 대기의 순환</a></span><span class="dv">지구환경</span><span class="cnt">7/7</span></li>
+          <li><span class="an">C. 일기 분석과 예측</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">6-5) 해양 <span class="mid-n">4개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 해저 지형과 자원</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 해양의 순환과 규칙적 리듬</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 해수의 성분과 탄소 및 산소 순환</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">D. 해양의 생명과 생태계</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">6-6) 지구의 진화 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 지구의 기록</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 고기후와 고환경</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">6-7) 용액의 화학 <span class="mid-n">4개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 용액의 성질</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 용액이 촉발하는 변화</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 콜로이드</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">D. 수용액 평형</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">07 · 7. 생명 — 진화하는 정보</span>
+        <span class="bar-track"><span class="bar-scale" style="width:100.0%"><span class="bar-fill" style="width:2.6%"></span></span></span>
+        <span class="bar-val"><b>1</b> / 38</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/07_%EC%83%9D%EB%AA%85_%EC%A7%84%ED%99%94%ED%95%98%EB%8A%94_%EC%A0%95%EB%B3%B4.csv">CSV 열기</a> <a class="filelink alt" href="퀴즈미리보기/07_%EC%83%9D%EB%AA%85_C_%EC%83%9D%EB%AA%85%EA%B3%BC%EB%AC%BC.html" target="_blank" rel="noopener">후보 A/B · C. 생명과 물 <span aria-hidden="true">↗</span></a></div>
+      <div class="mid">
+        <div class="mid-name">7-1) 생명의 화학 <span class="mid-n">6개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 생물 정의</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 생체 구성 원자</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li class="done"><span class="an"><a class="cand" href="퀴즈미리보기/07_%EC%83%9D%EB%AA%85_C_%EC%83%9D%EB%AA%85%EA%B3%BC%EB%AC%BC.html" target="_blank" rel="noopener">C. 생명과 물</a></span><span class="dv">생명</span><span class="cnt">7/7</span></li>
+          <li><span class="an">D. 생체 거대분자</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">E. 유기화학</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+          <li><span class="an">F. 생화학</span><span class="dv">화학</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-2) 세포 — 생명의 최소 단위 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 생체막</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 세포 구조</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-3) 에너지와 물질대사 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 에너지와 효소</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 광합성</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 세포 호흡과 발효</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-4) 유전 정보 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. DNA와 유전자</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 유전 발현과 조절</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. DNA 기술</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-5) 세포분열과 유전 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 체세포분열</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 감수분열</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 유전 패턴</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-6) 진화 — 생명의 변화 엔진 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 진화의 힘</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 종분화</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 생물 다양성</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-7) 생물의 다양성 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 바이러스</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 원핵 생물</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 진핵 생물</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-8) 식물 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 식물 구조</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 식물 생식</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 식물 신호</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-9) 동물의 생리 <span class="mid-n">9개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 소화</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 순환</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 호흡</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">D. 배설</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">E. 면역</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">F. 신경</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">G. 내분비</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">H. 발생과 성장</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">I. 노화와 죽음</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">7-10) 생태계 <span class="mid-n">3개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 개체군과 군집</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 행동 생태</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+          <li><span class="an">C. 에너지 흐름과 물질 순환</span><span class="dv">생명</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+    <details class="eu">
+      <summary>
+        <span class="chev" aria-hidden="true"></span>
+        <span class="eu-name">08 · 에필로그 우리의 미래 — 138억 년의 다음 장</span>
+        <span class="bar-track"><span class="bar-scale" style="width:15.8%"><span class="bar-fill" style="width:0.0%"></span></span></span>
+        <span class="bar-val"><b>0</b> / 6</span>
+      </summary>
+      <div class="eu-body">
+        <div class="filelinks"><a class="filelink" href="%EB%8C%80%EB%8B%A8%EC%9B%90%EB%B3%84/08_%EC%97%90%ED%95%84%EB%A1%9C%EA%B7%B8_%EC%9A%B0%EB%A6%AC%EC%9D%98_%EB%AF%B8%EB%9E%98.csv">CSV 열기</a></div>
+      <div class="mid">
+        <div class="mid-name">E-1) 지구 에너지 수지와 온실효과 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">지구 에너지 수지와 온실효과</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">E-2) IPCC 미래 시나리오 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">IPCC 미래 시나리오</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">E-3) 탄소 순환의 위기 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">탄소 순환의 위기</span><span class="dv">지구환경</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">E-4) 에너지 전환의 물리학 <span class="mid-n">2개</span></div>
+        <ul class="arts">
+          <li><span class="an">A. 재생에너지의 원리와 한계</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+          <li><span class="an">B. 핵융합 — 별의 불을 땅으로</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      <div class="mid">
+        <div class="mid-name">E-5) 과학기술의 미래와 인류의 선택 <span class="mid-n">1개</span></div>
+        <ul class="arts">
+          <li><span class="an">과학기술의 미래와 인류의 선택</span><span class="dv">물리</span><span class="cnt">0/7</span></li>
+        </ul>
+      </div>
+      </div>
+    </details>
+        </div>
+      </div>
+      <div class="panel span4">
+        <div class="panel-head"><div><div class="panel-label">Distribution</div><h3>분과별 아티클 분포</h3></div></div>
+        <div class="bars">
+      <div class="bar-row">
+        <span class="bar-name">생명</span>
+        <span class="bar-track"><span class="bar-scale neutral" style="width:100.0%"></span></span>
+        <span class="bar-val"><b>36</b> 28.1%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name">화학</span>
+        <span class="bar-track"><span class="bar-scale neutral" style="width:80.6%"></span></span>
+        <span class="bar-val"><b>29</b> 22.7%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name">물리</span>
+        <span class="bar-track"><span class="bar-scale neutral" style="width:72.2%"></span></span>
+        <span class="bar-val"><b>26</b> 20.3%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name">천문</span>
+        <span class="bar-track"><span class="bar-scale neutral" style="width:52.8%"></span></span>
+        <span class="bar-val"><b>19</b> 14.8%</span>
+      </div>
+      <div class="bar-row">
+        <span class="bar-name">지구환경</span>
+        <span class="bar-track"><span class="bar-scale neutral" style="width:50.0%"></span></span>
+        <span class="bar-val"><b>18</b> 14.1%</span>
+      </div>
+        </div>
+        <div class="callout">
+          가장 큰 대단원은 <b>07 7. 생명 — 진화하는 정보</b>(38개)로 전체의 29.7%를 차지합니다.
+          분과 기준으로도 <b>생명</b>이 36개로 가장 많습니다.
+        </div>
+      </div>
+    </section>
+
+    <footer class="note">
+      <b>데이터 기준</b> 2026-09-11. 집계 원본은 <code>산출물/대단원별/</code>의 대단원 CSV 9개 파일이며, 헤더를 포함한 905행을 모두 세어 17열 구조임을 확인했습니다. 같은 폴더의 <code>퀴즈샘플_260831.csv</code>는 대단원 파일이 아니므로 집계에서 제외했습니다.<br>
+      <b>집계 방법</b> 아티클 = 아티클명이 적힌 행부터 다음 아티클명 전까지 / <b>진행 중인 아티클</b> = 미리보기가 만들어졌거나 CSV에 한 행이라도 반영된 아티클 / <b>기획자 검수 완료 퀴즈</b> = <code>문제</code> 열이 채워진 행(검수를 마쳐야 반영하므로 반영 = 검수 완료) / <b>검토 대기 퀴즈</b> = 미리보기는 있으나 7행이 아직 다 반영되지 않은 아티클.<br>
+      <b>대단원·중단원·아티클명</b>은 <code>재료/Story전체 목차_0730.csv</code>와 대단원별 CSV의 표기를 그대로 사용했습니다(대단원명의 줄바꿈만 공백으로 정규화).<br>
+      <b>다시 만들기</b> <code>산출물/도구/대시보드_새로고침.bat</code> 더블클릭. CSV를 고치는 동안 계속 자동 갱신하려면 <code>대시보드_자동감시.bat</code>을 실행해 두세요.<br>
+      <b>CSV 열기</b>는 브라우저 설정에 따라 다운로드로 처리될 수 있습니다. 원본을 편집하려면 저장된 위치에서 직접 여세요.<br>
+      <b>디자인</b> Executive Kinetic (primary #904d00, Manrope). 근거가 된 <code>재료/design/</code>의 디자인 자료는 이 패키지에 넣지 않았으므로(<code>README_시작하기.md</code> 6장) 원본 폴더에서 확인해야 합니다. 외부 CDN 의존 없이 자체 CSS로 작성했고, 폰트만 Google Fonts에서 불러오며 실패 시 시스템 폰트로 대체됩니다.<br>
+      <b>이 파일은 자동 생성됩니다</b> — 직접 고치면 다음 새로고침에서 사라집니다. 내용을 바꾸려면 <code>산출물/도구/build-dashboard.js</code>(구조)와 <code>dashboard.css</code>(디자인)를 고치세요.
+    </footer>
+  </main>
+</div>
+
+</body>
+</html>

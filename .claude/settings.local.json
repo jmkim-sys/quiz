@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(taskkill //F //FI \"WINDOWTITLE eq *8731*\")",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //F //PID 41116)",
+      "Bash(awk '{print $5, $NF}')"
+    ]
+  }
+}

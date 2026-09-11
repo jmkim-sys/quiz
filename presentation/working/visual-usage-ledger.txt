@@ -1,0 +1,7 @@
+# 메인 비주얼 사용 원장 (여러 참여자 자료의 중복 방지용)
+# 형식: 발표자 / 프로젝트 / 선택 파일 / 선택 이유
+
+PWG 김민정 / 퀴즈 자동생성 검수 프로젝트 / 06-human-ai-bridge.jpg / 사람 판단 관문(Human-in-the-loop)이 설계 중심
+
+# 아직 쓰지 않은 것: 01-ribbon-flow · 04-process-stream · 05-architecture-grid
+# 기본 사용 금지: 02-data-orbit · 03-agent-network (AI 궤도·네트워크 클리셰)
