@@ -6,21 +6,5 @@
       "Bash(taskkill //F //PID 41116)",
       "Bash(awk '{print $5, $NF}')"
     ]
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "shell": "bash",
-            "command": "c=$(node -e \"let s=require('fs').readFileSync(0,'utf8'),c='';try{c=JSON.parse(s).tool_input.command||''}catch(e){};process.stdout.write(c)\"); case \"$c\" in *미리보기생성.js*) cd \"$CLAUDE_PROJECT_DIR\" || exit 0; export GIT_TERMINAL_PROMPT=0; node \"산출물/도구/build-dashboard.js\"; git add .; git diff --cached --quiet || { git commit -m \"Update dashboard\" && git push; };; esac; exit 0",
-            "timeout": 180,
-            "statusMessage": "대시보드 재생성 후 GitHub에 올리는 중..."
-          }
-        ]
-      }
-    ]
   }
 }
