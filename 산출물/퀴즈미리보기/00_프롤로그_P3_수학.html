@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>퀴즈 미리보기 — [확인 필요] 수리물리 — 목차 7행·CSV 스켈레톤의 소단원명은 `수리물리` 하나뿐인데 원고 머리말은 `소단원 수학`이고 같은 폴더에 `P_3)_수리물리_DF.docx.md`가 별도로 존재한다. (a) 두 원고를 `수리물리` 한 블록에 묶을지 (b) `수학` 블록 7행을 신설할지 사람 확정 필요 (14개 중 7개 선택, v3)</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Executive Kinetic — 재료/design/DESIGN.md 토큰 ===== */
+:root{
+  --surface:#f8f9ff; --surface-dim:#cbdbf5;
+  --surface-lowest:#ffffff; --surface-low:#eff4ff; --surface-c:#e5eeff;
+  --surface-high:#dce9ff; --surface-highest:#d3e4fe; --surface-variant:#d3e4fe;
+  --on-surface:#0b1c30; --on-surface-variant:#554335;
+  --inverse-surface:#213145; --inverse-on-surface:#eaf1ff;
+  --outline:#887363; --outline-variant:#dcc2af;
+  --primary:#904d00; --on-primary:#ffffff;
+  --primary-container:#f78d1e; --on-primary-container:#5f3100;
+  --primary-fixed:#ffdcc2; --primary-fixed-dim:#ffb77c;
+  --secondary:#5f5e5f; --secondary-container:#e2dfe0; --on-secondary-container:#636263;
+  --error:#ba1a1a; --error-c:#ffdad6; --on-error-c:#93000a;
+  --xs:4px; --base:8px; --sm:12px; --md:24px; --lg:48px; --xl:80px;
+  --gutter:24px; --margin-mobile:16px; --rail:280px;
+  --r-sm:2px; --r:4px; --r-md:6px; --r-lg:8px; --r-xl:12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--surface);color:var(--on-surface);
+  font-family:'Manrope','Pretendard','Malgun Gothic','맑은 고딕',system-ui,-apple-system,sans-serif;
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+
+/* ===== Rail ===== */
+.rail{position:fixed;left:0;top:0;height:100%;width:var(--rail);background:var(--surface-low);
+  display:flex;flex-direction:column;padding:var(--md) 0 var(--md);z-index:50;
+  box-shadow:0 1px 8px rgba(0,0,0,.04);}
+.brand{display:flex;align-items:center;gap:var(--base);padding:0 var(--md);}
+.brand-mark{width:34px;height:34px;background:var(--primary);color:var(--on-primary);border-radius:var(--r-lg);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex:none;}
+.brand-name{font-size:22px;font-weight:800;letter-spacing:-.01em;}
+.brand-rule{height:2px;width:48px;background:var(--primary);opacity:.2;margin:var(--sm) var(--md) var(--md);}
+.nav{flex:1;padding:0 var(--sm);display:flex;flex-direction:column;gap:2px;overflow-y:auto;}
+.nav .grp{padding:var(--sm) var(--sm) var(--xs);font-size:12px;font-weight:700;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--on-surface-variant);opacity:.6;}
+.nav a{display:flex;align-items:center;gap:var(--base);padding:9px var(--sm);border-radius:var(--r-xl);
+  font-size:14px;font-weight:600;color:var(--on-surface-variant);text-decoration:none;transition:.18s;}
+.nav a:hover{background:var(--surface-highest);color:var(--on-surface);}
+.nav a .qn{width:22px;height:22px;flex:none;border-radius:var(--r);background:var(--surface-c);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--on-surface);}
+.nav a.picked .qn{background:var(--primary);color:var(--on-primary);}
+/* 선택 표시는 A·B를 각각 네모 테두리로 감싼다 — 'AB'로 붙여 놓으면 한 개를 고른 것처럼 읽힌다 */
+.nav a .st{margin-left:auto;display:inline-flex;align-items:center;gap:3px;flex:none;}
+.nav a .st .k{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  border:1px solid var(--primary);border-radius:var(--r-sm);background:var(--primary);color:var(--on-primary);
+  font-size:11px;font-weight:800;}
+.nav a .st .none{font-size:12px;font-weight:800;color:var(--outline);}
+.rail-foot{padding:var(--sm) var(--md) 0;}
+.rail-card{background:var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);display:flex;flex-direction:column;gap:var(--xs);}
+.rail-card .k{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+.rail-card .v{font-size:13px;font-weight:600;word-break:break-all;}
+
+/* ===== Shell ===== */
+.shell{padding-left:var(--rail);}
+.topbar{position:sticky;top:0;height:72px;background:rgba(248,249,255,.85);backdrop-filter:blur(12px);
+  box-shadow:0 1px 8px rgba(0,0,0,.04);display:flex;align-items:center;justify-content:space-between;
+  gap:var(--sm);padding:0 var(--md);z-index:40;}
+.topbar .ttl{font-size:24px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;}
+.rev{display:flex;align-items:center;gap:var(--base);}
+.rev label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+.rev input{width:240px;max-width:42vw;padding:8px var(--sm);border:1px solid var(--outline-variant);
+  border-radius:999px;background:var(--surface-high);font-family:inherit;font-size:14px;color:var(--on-surface);}
+.rev input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+main{padding:var(--md) var(--md) 180px;display:flex;flex-direction:column;gap:var(--md);max-width:1440px;}
+
+/* ===== Hero ===== */
+.hero{background:var(--surface-c);border-radius:var(--r-xl);padding:var(--md);}
+.eyebrow{display:flex;align-items:center;gap:var(--base);margin-bottom:var(--base);}
+.eyebrow .sq{width:12px;height:12px;background:var(--primary-container);border-radius:var(--r-sm);}
+.eyebrow span{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--on-surface-variant);}
+h1{font-size:40px;font-weight:800;line-height:1.15;letter-spacing:-.02em;margin:0 0 var(--sm);}
+.chips{display:flex;gap:var(--base);flex-wrap:wrap;}
+.chip{padding:4px 12px;font-size:12px;font-weight:700;letter-spacing:.02em;border-radius:999px;
+  background:var(--surface-lowest);color:var(--on-surface-variant);border:1px solid var(--surface-highest);}
+.chip.k{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+
+.guide{border-left:4px solid var(--primary);background:var(--surface-low);padding:var(--sm) var(--md);
+  border-radius:0 var(--r-lg) var(--r-lg) 0;font-size:14px;line-height:1.85;}
+.guide b{font-weight:800;}
+.guide code{background:var(--surface-c);border:1px solid var(--surface-high);border-radius:var(--r);
+  padding:1px 6px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;}
+
+/* ===== Actions ===== */
+.actions{display:flex;gap:var(--base);flex-wrap:wrap;align-items:center;
+  background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-lg);padding:var(--sm);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;font-size:13px;font-weight:700;
+  letter-spacing:.02em;border-radius:var(--r);cursor:pointer;font-family:inherit;
+  background:var(--primary);color:var(--on-primary);border:1px solid var(--primary);transition:.18s;}
+.btn:hover{background:var(--on-primary-container);border-color:var(--on-primary-container);}
+.btn.sec{background:var(--surface-lowest);color:var(--primary);}
+.btn.sec:hover{background:var(--primary-fixed);color:var(--on-primary-container);border-color:var(--primary);}
+.btn.ghost{background:transparent;color:var(--on-surface-variant);border-color:var(--surface-highest);}
+.btn.ghost:hover{background:var(--surface-low);color:var(--on-surface);border-color:var(--outline);}
+.sw{display:inline-flex;align-items:center;gap:var(--base);cursor:pointer;font-size:13px;font-weight:700;
+  color:var(--on-surface-variant);margin-left:var(--xs);}
+.sw input{position:absolute;opacity:0;width:0;height:0;}
+.sw .tr{width:44px;height:24px;border-radius:999px;background:var(--surface-highest);position:relative;transition:.2s;flex:none;}
+.sw .tr::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+  background:var(--surface-lowest);box-shadow:0 1px 3px rgba(0,0,0,.2);transition:.2s;}
+.sw input:checked + .tr{background:var(--primary);}
+.sw input:checked + .tr::after{transform:translateX(20px);}
+.sw input:focus-visible + .tr{box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.spacer{flex:1;}
+
+/* ===== Slot ===== */
+.slot{background:var(--surface-lowest);border:1px solid var(--surface-c);border-radius:var(--r-xl);overflow:hidden;}
+.slot.chosen{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);}
+.slot-head{display:flex;align-items:center;gap:var(--base);padding:var(--sm) var(--md);flex-wrap:wrap;}
+.slot-no{width:30px;height:30px;background:var(--primary);color:var(--on-primary);border-radius:var(--r);
+  display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex:none;}
+.ab-tabs{margin-left:auto;display:flex;gap:var(--xs);}
+.ab-tab{padding:7px 16px;font-size:12px;font-weight:800;letter-spacing:.04em;cursor:pointer;font-family:inherit;
+  background:var(--surface-low);color:var(--on-surface-variant);border:1px solid var(--surface-highest);border-radius:var(--r);transition:.18s;}
+.ab-tab:hover{background:var(--surface-highest);color:var(--on-surface);}
+.ab-tab.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+.axis{background:var(--surface-low);border-top:1px solid var(--surface-c);border-bottom:1px solid var(--surface-c);
+  padding:var(--base) var(--md);font-size:12px;font-weight:700;line-height:1.7;color:var(--on-surface-variant);text-align:center;}
+
+.panes{display:block;}
+.pane{padding:var(--md);}
+.panes.side{display:grid;grid-template-columns:1fr 1fr;align-items:start;}
+.panes.side .pane + .pane{border-left:1px solid var(--surface-c);}
+.panes:not(.side) .pane + .pane{border-top:1px solid var(--surface-c);}
+.pane.picked{background:rgba(144,77,0,.04);}
+
+/* ===== 문항 상단 바 — 왼쪽 = 문항 선택 / 오른쪽 = 모범 문제 별표 ===== */
+.selbar{display:flex;align-items:stretch;gap:var(--base);margin-bottom:var(--sm);}
+.selbox{display:flex;align-items:center;gap:var(--sm);flex:1;min-width:0;padding:11px var(--sm);
+  border:1px solid var(--outline-variant);border-radius:var(--r-lg);background:var(--surface-lowest);
+  cursor:pointer;transition:.18s;}
+.selbox:hover{border-color:var(--primary);background:var(--primary-fixed);}
+.selbox input{width:20px;height:20px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.selbox .tag{padding:3px 11px;font-size:11px;font-weight:800;letter-spacing:.05em;border-radius:999px;
+  background:var(--secondary-container);color:var(--on-secondary-container);flex:none;}
+.selbox.on{border-color:var(--primary);background:rgba(144,77,0,.06);box-shadow:inset 0 0 0 1px var(--primary);}
+.selbox.on .tag{background:var(--primary);color:var(--on-primary);}
+.selbox.off{opacity:.5;cursor:not-allowed;background:var(--surface-low);}
+.selbox.off:hover{border-color:var(--outline-variant);background:var(--surface-low);}
+.selbox.off input{cursor:not-allowed;}
+.starbox{display:flex;align-items:center;gap:var(--base);flex:none;padding:11px var(--sm);
+  border:1px solid var(--outline-variant);border-radius:var(--r-lg);background:var(--surface-lowest);
+  cursor:pointer;transition:.18s;}
+.starbox:hover{border-color:var(--primary-container);background:var(--primary-fixed);}
+.starbox input{width:20px;height:20px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.starbox .ico{font-size:19px;line-height:1;color:var(--outline-variant);transition:.18s;}
+.starbox.on{border-color:var(--primary-container);background:var(--primary-fixed);
+  box-shadow:inset 0 0 0 1px var(--primary-container);}
+.starbox.on .ico{color:var(--primary);}
+
+.q-text{font-size:18px;font-weight:600;line-height:1.6;margin-bottom:var(--sm);}
+/* 직접 입력의 빈칸(밑줄 `_`) — 글자 수를 눈으로 세기 쉽게 자간을 벌린다.
+   띄어쓰기까지 보여주는 표기이므로 줄바꿈으로 끊기지 않게 nowrap을 준다 */
+.ex b.blank{letter-spacing:.18em;color:var(--primary);white-space:nowrap;}
+.ex{background:var(--surface-low);border-left:3px solid var(--outline-variant);border-radius:0 var(--r-lg) var(--r-lg) 0;
+  padding:var(--sm) var(--md);font-size:16px;line-height:1.75;margin-bottom:var(--sm);}
+.ex b{background:var(--primary-fixed);color:var(--on-primary-container);padding:1px 7px;border-radius:var(--r-sm);font-weight:800;}
+.blank-label{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);margin:var(--sm) 0 var(--base);}
+.opts{display:flex;flex-direction:column;gap:var(--base);}
+.opts.row{flex-direction:row;flex-wrap:wrap;}
+.opt{display:flex;align-items:flex-start;gap:var(--base);padding:12px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  font-size:15px;line-height:1.55;transition:.14s;}
+.opt:hover{border-color:var(--outline);background:var(--surface-low);}
+.opt input{margin:4px 0 0;accent-color:#904d00;flex:none;}
+.opt .n{font-weight:800;flex:none;min-width:16px;}
+.opt.sel{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.04);}
+.opts.row .opt{min-width:104px;justify-content:center;font-weight:800;font-size:18px;}
+input[type=text].ans{width:100%;padding:12px var(--sm);border:1px solid var(--outline-variant);border-radius:var(--r-lg);
+  background:var(--surface-lowest);font-family:inherit;font-size:16px;color:var(--on-surface);}
+input[type=text].ans:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.order{display:flex;flex-direction:column;gap:var(--base);}
+.ocard{display:flex;align-items:center;gap:var(--sm);padding:12px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  font-size:15px;line-height:1.55;transition:.14s;}
+.ocard:hover{border-color:var(--outline);background:var(--surface-low);}
+.ocard .seq{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--outline-variant);border-radius:var(--r);font-size:12px;font-weight:800;color:var(--on-surface-variant);}
+.ocard.picked{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.04);}
+.ocard.picked .seq{background:var(--primary);color:var(--on-primary);border-color:var(--primary);}
+.order-hint{font-size:12px;font-weight:600;color:var(--on-surface-variant);margin-bottom:var(--base);}
+.q-actions{display:flex;gap:var(--base);margin-top:var(--sm);flex-wrap:wrap;align-items:center;}
+.res{margin-top:var(--sm);padding:var(--sm) var(--md);border-left:4px solid var(--primary);
+  background:var(--surface-low);border-radius:0 var(--r-lg) var(--r-lg) 0;display:none;}
+.res.show{display:block;}
+.res .verdict{font-size:13px;font-weight:800;letter-spacing:.03em;margin-bottom:var(--base);}
+.res.ok .verdict::before{content:"● 정답";color:var(--primary);}
+.res.no{border-left-color:var(--error);background:var(--error-c);}
+.res.no .verdict{color:var(--on-error-c);}
+.res.no .verdict::before{content:"● 다시 생각해 보세요";}
+.res .sol{font-size:15px;line-height:1.75;}
+.res .key{margin-top:var(--base);font-size:13px;font-weight:600;color:var(--on-surface-variant);}
+
+/* ===== 검수 메모 (기본 닫힌 토글) ===== */
+details.memo-box{border-top:1px solid var(--surface-c);}
+details.memo-box > summary{cursor:pointer;display:flex;align-items:center;gap:var(--base);
+  padding:var(--sm) var(--md);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);list-style:none;}
+details.memo-box > summary::-webkit-details-marker{display:none;}
+details.memo-box > summary::before{content:"▸";font-size:14px;}
+details.memo-box[open] > summary::before{content:"▾";}
+details.memo-box > summary:hover{color:var(--on-surface);background:var(--surface-low);}
+.memo-badge{padding:2px 9px;font-size:11px;font-weight:800;letter-spacing:.03em;border-radius:999px;
+  background:var(--primary);color:var(--on-primary);text-transform:none;}
+.memo-box .saved{margin-left:auto;font-size:11px;font-weight:700;text-transform:none;opacity:0;transition:opacity .2s;}
+.memo-box .saved.on{opacity:1;}
+.memo-body{padding:0 var(--md) var(--md);}
+.memo-box textarea{width:100%;min-height:112px;padding:var(--sm);resize:vertical;border-radius:var(--r-lg);
+  border:1px solid var(--outline-variant);background:var(--surface-lowest);
+  font-family:inherit;font-size:15px;line-height:1.65;color:var(--on-surface);}
+.memo-box textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.memo-box textarea.has{border-color:var(--primary);background:var(--surface-low);}
+.memo-tools{display:flex;gap:var(--base);margin-top:var(--base);flex-wrap:wrap;}
+.icon-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;cursor:pointer;border-radius:var(--r);
+  background:transparent;border:1px solid var(--surface-highest);color:var(--on-surface-variant);
+  font-family:inherit;font-size:12px;font-weight:700;transition:.18s;}
+.icon-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--surface-low);}
+
+details.rv{border-top:1px solid var(--surface-c);margin-top:var(--sm);padding-top:var(--base);}
+details.rv summary{cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);list-style:none;}
+details.rv summary::-webkit-details-marker{display:none;}
+details.rv summary::before{content:"▸ ";}
+details.rv[open] summary::before{content:"▾ ";}
+.rv-body{margin-top:var(--base);font-size:13px;line-height:1.85;color:var(--on-surface-variant);}
+.rv-body code{background:var(--surface-c);border-radius:var(--r-sm);padding:1px 6px;color:var(--on-surface);
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;}
+
+/* ===== Bottom bar ===== */
+.bar{position:fixed;left:var(--rail);right:0;bottom:0;background:var(--surface-high);
+  border-top:1px solid var(--surface-highest);box-shadow:0 -2px 12px rgba(0,0,0,.06);
+  padding:var(--sm) var(--md);display:flex;align-items:center;gap:var(--sm);flex-wrap:wrap;z-index:60;}
+.bar .count{display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;
+  background:var(--primary);color:var(--on-primary);font-size:14px;font-weight:800;white-space:nowrap;}
+.bar .count.full{background:var(--on-primary-container);}
+.bar .picks{display:flex;gap:var(--xs);flex-wrap:wrap;}
+.bar .pk{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:var(--r);
+  font-size:12px;font-weight:800;background:var(--surface-lowest);border:1px solid var(--surface-highest);}
+.bar .pk.set{border-color:var(--primary-fixed-dim);background:var(--primary-fixed);}
+.bar .pk .no{color:var(--on-surface-variant);min-width:9px;text-align:center;}
+/* A·B를 각각 네모 테두리로 감싼다 — 붙여 놓으면 두 개가 아니라 한 개로 읽힌다 */
+.bar .pk .k{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  border:1px solid var(--primary);border-radius:var(--r-sm);background:var(--primary);color:var(--on-primary);
+  font-size:11px;font-weight:800;}
+.bar .pk .none{color:var(--outline);}
+.bar .star{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:999px;
+  background:var(--primary-fixed);color:var(--on-primary-container);font-size:12px;font-weight:800;white-space:nowrap;}
+.bar .star[hidden]{display:none;}
+/* 다시 만들 자리 배지 — 별표(채운 배경)와 구분되게 테두리형으로 둔다 */
+.bar .regen{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;
+  border:2px solid var(--primary);color:var(--primary);font-size:12px;font-weight:800;white-space:nowrap;}
+.bar .regen[hidden]{display:none;}
+.bar .warn{font-size:13px;font-weight:600;font-style:italic;color:var(--on-surface-variant);}
+.bar button:disabled{opacity:.45;cursor:not-allowed;}
+
+/* ===== 다시 만들 문항 고르기 (모달) ===== */
+.modal{position:fixed;inset:0;background:rgba(11,28,48,.55);z-index:90;
+  display:flex;align-items:center;justify-content:center;padding:var(--md);}
+.modal[hidden]{display:none;}
+.modal-card{background:var(--surface-lowest);border-radius:var(--r-xl);width:100%;max-width:760px;
+  max-height:86vh;overflow-y:auto;padding:var(--md);box-shadow:0 12px 48px rgba(0,0,0,.28);}
+.modal-card h2{margin:0 0 var(--base);font-size:26px;font-weight:800;letter-spacing:-.01em;}
+.modal-lead{font-size:14px;line-height:1.85;color:var(--on-surface-variant);margin-bottom:var(--sm);}
+.modal-lead b{color:var(--on-surface);font-weight:800;}
+.rg-row{display:flex;align-items:center;gap:var(--sm);padding:11px var(--sm);border-radius:var(--r-lg);
+  border:1px solid var(--surface-highest);background:var(--surface-lowest);cursor:pointer;
+  margin-bottom:var(--base);transition:.14s;}
+.rg-row:hover{border-color:var(--outline);background:var(--surface-low);}
+.rg-row.on{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:rgba(144,77,0,.05);}
+.rg-row input{width:18px;height:18px;flex:none;margin:0;accent-color:#904d00;cursor:pointer;}
+.rg-no{width:26px;height:26px;flex:none;border-radius:var(--r);background:var(--surface-c);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;}
+.rg-row.on .rg-no{background:var(--primary);color:var(--on-primary);}
+.rg-meta{font-size:14px;font-weight:700;}
+.rg-state{margin-left:auto;font-size:12px;font-weight:700;color:var(--on-surface-variant);white-space:nowrap;}
+.rg-state.empty{color:var(--error);}
+.modal-card textarea{width:100%;min-height:96px;padding:var(--sm);resize:vertical;border-radius:var(--r-lg);
+  border:1px solid var(--outline-variant);background:var(--surface-lowest);margin-top:var(--base);
+  font-family:inherit;font-size:15px;line-height:1.65;color:var(--on-surface);}
+.modal-card textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(144,77,0,.15);}
+.modal-sub{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--on-surface-variant);margin:var(--md) 0 var(--base);}
+.modal-foot{display:flex;gap:var(--base);justify-content:flex-end;margin-top:var(--md);flex-wrap:wrap;align-items:center;}
+.modal-foot .spacer{flex:1;}
+.regen-hint{font-size:13px;font-weight:700;color:var(--on-surface-variant);}
+.regen-hint.saved{color:var(--primary);}
+
+.confirm{border-left:4px solid var(--primary);background:var(--primary-fixed);color:var(--on-primary-container);
+  padding:var(--sm) var(--md);border-radius:0 var(--r-lg) var(--r-lg) 0;font-size:14px;font-weight:600;line-height:1.8;}
+@media (max-width:1100px){
+  .panes.side{grid-template-columns:1fr;}
+  .panes.side .pane + .pane{border-left:0;border-top:1px solid var(--surface-c);}
+}
+@media (max-width:860px){
+  .rail{display:none;} .shell{padding-left:0;} .bar{left:0;}
+  main{padding:var(--sm) var(--margin-mobile) 220px;}
+  h1{font-size:28px;} .topbar{height:auto;padding:var(--base) var(--sm);flex-wrap:wrap;}
+  .topbar .ttl{font-size:18px;} .rev input{width:100%;max-width:none;}
+  .ab-tabs{margin-left:0;width:100%;}
+}
+</style>
+</head>
+<body>
+
+<aside class="rail">
+  <div class="brand">
+    <div class="brand-mark">Q</div>
+    <div class="brand-name">QuizReview</div>
+  </div>
+  <div class="brand-rule"></div>
+  <nav class="nav" id="rail-nav">
+    <div class="grp">문항 7자리</div>
+    <!-- 문항 링크는 스크립트가 채웁니다 -->
+    <div class="grp">현황판</div>
+    <a href="../퀴즈제작현황_대시보드_v2.html"><span class="qn">▤</span>퀴즈 제작 현황</a>
+  </nav>
+  <div class="rail-foot">
+    <div class="rail-card">
+      <span class="k">반영 대상</span>
+      <span class="v">산출물/대단원별/00_프롤로그_과학이란_무엇인가.csv · 30~36행 (아티클명 확정 전 잠정)</span>
+    </div>
+  </div>
+</aside>
+
+<div class="shell">
+  <header class="topbar">
+    <span class="ttl">퀴즈 검수 — 14개 중 7개 선택</span>
+    <span class="rev">
+      <label for="reviewer">검수자</label>
+      <input type="text" id="reviewer" placeholder="이름을 입력하세요 — 선택 결과에 함께 기록됩니다" autocomplete="off">
+    </span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow"><span class="sq"></span><span>Quiz Preview · 후보 14개 중 7개 선택</span></div>
+      <h1>[확인 필요] 수리물리 — 목차 7행·CSV 스켈레톤의 소단원명은 `수리물리` 하나뿐인데 원고 머리말은 `소단원 수학`이고 같은 폴더에 `P_3)_수리물리_DF.docx.md`가 별도로 존재한다. (a) 두 원고를 `수리물리` 한 블록에 묶을지 (b) `수학` 블록 7행을 신설할지 사람 확정 필요</h1>
+      <div class="chips">
+        <span class="chip k">물리</span>
+        <span class="chip">0. 프롤로그 — 과학이란 무엇인가</span>
+        <span class="chip">P-3) 수학 — 자연의 언어</span>
+        <span class="chip">7자리 × 2안 = 후보 14문항</span>
+      </div>
+    </section>
+
+    <div class="actions">
+      <button class="btn sec" id="btn-allA">A안 7개 전부 선택</button>
+      <button class="btn sec" id="btn-allB">B안 7개 전부 선택</button>
+      <label class="sw"><input type="checkbox" id="sw-both" checked><span class="tr"></span>둘 다 보기 (좌우 비교)</label>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="btn-reveal">전체 정답 보기</button>
+      <button class="btn ghost" id="btn-reset">다시 풀기</button>
+    </div>
+
+    <div id="quiz" style="display:flex;flex-direction:column;gap:var(--md);"></div>
+
+    <div class="confirm">
+      ⚠️ 아래 항목은 반드시 사람이 최종 확인합니다: 과학적 사실 오류 여부 / 정답 타당성 / 최종 발행 승인<br>
+      ⚠️ 미발행 원고는 외부 도구에 원문 저장 금지(세션 내 사용만) 준수 여부
+    </div>
+  </main>
+</div>
+
+<div class="bar">
+  <span class="count" id="bar-count">0 / 7 선택</span>
+  <span class="picks" id="bar-picks"></span>
+  <span class="star" id="bar-star" hidden></span>
+  <span class="regen" id="bar-regen" hidden></span>
+  <span class="warn" id="bar-warn"></span>
+  <span class="spacer"></span>
+  <button class="btn ghost" id="btn-clearpick" disabled>선택 초기화</button>
+  <button class="btn sec" id="btn-regen">다시 만들 문항 고르기</button>
+  <button class="btn" id="btn-copy" disabled>선택 결과 복사</button>
+</div>
+
+<div class="modal" id="regen-modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="regen-title">
+    <h2 id="regen-title">다시 만들 문항 고르기</h2>
+    <div class="modal-lead" id="regen-lead"></div>
+    <div id="regen-list"></div>
+    <div class="modal-sub">어떻게 다시 만들면 좋을지 (선택)</div>
+    <textarea id="regen-note" placeholder="예) 4번은 연도를 외우게 하지 말고 실험 절차 순서로 바꿔주세요. 6번은 보기가 너무 길어요."></textarea>
+    <div class="modal-foot">
+      <span class="regen-hint" id="regen-hint"></span>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="regen-close">닫기</button>
+      <button class="btn" id="regen-save">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var ARTICLE_ID = "00_프롤로그_P3_수학";
+var META = {"분과":"물리","대단원":"0. 프롤로그 — 과학이란 무엇인가","중단원":"P-3) 수학 — 자연의 언어","아티클":"[확인 필요] 수리물리 — 목차 7행·CSV 스켈레톤의 소단원명은 `수리물리` 하나뿐인데 원고 머리말은 `소단원 수학`이고 같은 폴더에 `P_3)_수리물리_DF.docx.md`가 별도로 존재한다. (a) 두 원고를 `수리물리` 한 블록에 묶을지 (b) `수학` 블록 7행을 신설할지 사람 확정 필요","csv":"산출물/대단원별/00_프롤로그_과학이란_무엇인가.csv","행":"30~36행 (아티클명 확정 전 잠정)","원고":"재료/최종 원고_텍스트변환/0. 프롤로그_ 과학이란 무엇인가-자연을 읽는 언어/P-3) 수학-자연의 언어/P_3)_수학_최종_수정.docx.md"};
+
+/* 자리마다 후보 2안(A/B). 두 안은 서로 다른 내용을 묻거나 다른 방식으로 묻는다.
+   A·B는 대등한 후보이며, 14개 중 고른 7개만 CSV에 반영된다. */
+var SLOTS = [
+ {
+  "no": 1,
+  "lv": "하",
+  "type": "인라인",
+  "axis": "A = 미분방정식 → 다음 상태 예측(정의에서 예측 기능으로) · B = 대칭성 → 보존 법칙(성질에서 그 성질이 이어지는 법칙으로)",
+  "A": {
+   "q": "자연의 변화를 나타내는 방정식에 관한 설명입니다. 빈칸에 들어갈 말을 고르세요.",
+   "ex": "어떤 양이 지금 이 순간 어떻게 변하는지를 나타내는 방정식을 [1](이)라고 한다. 뉴턴의 운동 방정식과 슈뢰딩거 방정식도 같은 형태로 쓰여 있다. 이러한 방정식을 풀면 자연의 [2]을(를) 예측할 수 있다.",
+   "blanks": [
+    {
+     "opts": [
+      "미분방정식",
+      "적분방정식",
+      "벡터방정식"
+     ],
+     "ans": 1
+    },
+    {
+     "opts": [
+      "처음 상태",
+      "다음 상태",
+      "평균 상태"
+     ],
+     "ans": 2
+    }
+   ],
+   "sol": "미분방정식은 어떤 양이 순간마다 얼마나 변하는지를 담아내는 방정식이에요. 자연의 변화 법칙이 이 형태로 압축되어 있어서, 방정식을 풀면 다음 순간의 상태를 계산해 낼 수 있어요. 행성이 내일 어디에 있을지도 이렇게 알아내는 거예요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>1</code> · 정답 2 = <code>2</code> · 보기1 = <code>미분방정식/적분방정식/벡터방정식</code> · 보기2 = <code>처음 상태/다음 상태/평균 상태</code> · 근거 = 원고 11행 · 키워드 <b>미분방정식 → 다음 상태</b> · ☆ 지향 18번 달성 — [1] 개념의 정의 → [2] 그 개념이 주는 결과로 사슬을 이루고, [1]은 예문 첫 문장의 정의 서술만으로 풀린다 · ☆ 지향 20번 참고 — 보기1의 오답은 각각 적분과의 혼동·벡터와의 혼동을 겨냥한 같은 범주의 실재 용어다 · ※ <b>3B와 소재가 겹친다</b>(1A는 정의·예측 기능, 3B는 세 법칙의 공통 형식 해석)"
+  },
+  "B": {
+   "q": "물리 법칙과 이어지는 수학적 성질에 관한 설명입니다. 빈칸에 들어갈 말을 고르세요.",
+   "ex": "어떤 대상을 돌리거나 뒤집거나 옮겨도 겉모습이 그대로인 성질을 [1](이)라고 한다. 시간과 장소가 달라져도 같은 물리 법칙이 작동한다는 사실은 에너지가 [2]된다는 법칙과 깊이 이어진다.",
+   "blanks": [
+    {
+     "opts": [
+      "대칭성",
+      "주기성",
+      "연속성"
+     ],
+     "ans": 1
+    },
+    {
+     "opts": [
+      "보존",
+      "소멸",
+      "증폭"
+     ],
+     "ans": 1
+    }
+   ],
+   "sol": "돌리거나 뒤집거나 옮겨도 겉모습이 그대로인 성질을 대칭성이라고 해요. 물리학에서 이 개념은 아름다움에 그치지 않고 에너지 보존이나 운동량 보존과 깊이 이어져요. 대칭성은 자연이 지닌 질서를 수학으로 읽는 또 하나의 방식이에요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>1</code> · 정답 2 = <code>1</code> · 보기1 = <code>대칭성/주기성/연속성</code> · 보기2 = <code>보존/소멸/증폭</code> · 근거 = 원고 19행 · 키워드 <b>대칭성 → 보존</b> · ☆ 지향 18번 달성 — [1] 성질의 정의 → [2] 그 성질이 이어지는 법칙으로 사슬을 이루고, [1]은 예문 첫 문장만으로 풀린다 · ⚠️ <b>사람 확인 요청</b> — 원고 19행은 \"시간과 장소가 달라져도 같은 법칙이 작동한다는 사실은 에너지 보존이나 운동량 보존 같은 법칙과 깊이 이어집니다\"까지만 서술하고 <b>시간 대칭↔에너지 보존 / 공간 대칭↔운동량 보존의 대응은 밝히지 않는다.</b> 대응을 갈라 쓰면 원고 밖 내용이 되므로(규칙 3번) 원고 표현 그대로 두었다 · ※ <b>6A와 소재가 겹친다</b>(1B는 정의+보존 빈칸, 6A는 정의+법칙 연결 복수 선택)"
+  }
+ },
+ {
+  "no": 2,
+  "lv": "하",
+  "type": "OX",
+  "axis": "A = 오개념 반박형 / '불합리한 효용성'의 뜻은 수학이 자연 설명보다 먼저 만들어진다는 것 · B = 사실 확인형 / 같은 수학 구조가 서로 다른 현상에 반복해 나타난다",
+  "A": {
+   "q": "위그너가 말한 수학의 '불합리한 효용성'은 수학이 자연 현상을 관찰한 뒤에 그에 맞추어 만들어진다는 뜻이다.",
+   "ex": "-",
+   "ox": {
+    "opts": [
+     "O",
+     "X"
+    ],
+    "ans": 2
+   },
+   "sol": "위그너가 짚은 것은 그 반대예요. 수학이 자연을 설명할 목적 없이 먼저 만들어지고, 훗날 전혀 예상하지 못한 현상을 설명하는 데 쓰이는 일이 있어요. '불합리한'이라는 말이 붙은 이유가 여기에 있어요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>X</code> · 보기1 = <code>O</code>, 보기2 = <code>X</code> · 근거 = 원고 17행 · <b>오개념 반박형</b> — 틀린 지점은 선후 관계 한 곳 · 자기검수 11번 대응: 원고의 <code>1960년</code>을 발문에서 빼 연도 암기 요소를 제거했다 · ※ 2B와 정답이 X/O로 갈려 정답 편중이 없다 · ⚠️ <b>6B와 동시 선택 비권장</b> — 교차 겹침 여섯 쌍 중 가장 인접하다. 6B 보기1·2가 이 문항의 정답(X) 판단 근거를 그대로 알려준다"
+  },
+  "B": {
+   "q": "진동을 기술하는 방정식은 전자기파와 소리, 원자 내부의 세계에도 같은 형태로 나타난다.",
+   "ex": "-",
+   "ox": {
+    "opts": [
+     "O",
+     "X"
+    ],
+    "ans": 1
+   },
+   "sol": "진동을 기술하는 방정식은 전자기파에도, 소리에도, 원자 내부의 세계에도 나타나요. 중력을 기술하는 수식과 전기력을 기술하는 수식도 형태가 놀랍도록 닮았어요. 서로 달라 보이는 현상들이 같은 수학 구조 안에서 만나는 거예요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>O</code> · 보기1 = <code>O</code>, 보기2 = <code>X</code> · 근거 = 원고 17행 · <b>사실 확인형</b> — 판단 대상이 하나다 · 키워드 <b>같은 수학 구조의 반복 등장</b> · 이 키워드는 B세트에만 배정되어 A세트와 교차 겹침이 없다 · ※ 2A와 인접 주제이나 학습 포인트가 다르다(2A는 개념의 뜻, 2B는 구조 반복이라는 사실)"
+  }
+ },
+ {
+  "no": 3,
+  "lv": "중",
+  "type": "사지선다 (단수)",
+  "axis": "A = 벡터 / 서로 다른 두 현상을 같은 방식으로 기술할 수 있는 까닭(인과) · B = 미분방정식 / 세 법칙의 공통 형식이 뜻하는 바(해석)",
+  "A": {
+   "q": "떨어지는 공의 궤적과 지구를 둘러싼 자기장은 같은 방식으로 기술할 수 있습니다. 그 까닭은 무엇인가요?",
+   "ex": "-",
+   "single": {
+    "opts": [
+     "둘 다 크기와 방향을 함께 가진 양의 변화이기 때문이다",
+     "둘 다 시간이 지나도 크기가 변하지 않는 양이기 때문이다",
+     "둘 다 단순한 파동 여러 개의 합으로 분해되기 때문이다",
+     "둘 다 뒤집어도 겉모습이 변하지 않는 대칭성을 지니기 때문이다"
+    ],
+    "ans": 1
+   },
+   "sol": "힘과 속도, 전기장과 자기장처럼 자연의 많은 양은 크기만으로 설명되지 않아요. 크기와 방향을 동시에 가진 양을 다루는 것이 벡터예요. 벡터와 미적분을 결합하면 삼차원 공간에서 일어나는 방향을 가진 변화를 간결하게 기술할 수 있어요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>1</code> · 근거 = 원고 13행 · 키워드 <b>벡터</b> · 물리 분과 가이드 반영 — '까닭'을 묻는 인과 문항 · ☆ 지향 20번 달성 — 오답이 각각 변화 자체의 부정(2) · 푸리에 분석과의 혼동(3) · 대칭성과의 혼동(4)을 겨냥하고, 모두 원고 안에 실재하는 같은 범주의 개념이다 · 보기 길이 26~28자로 균일 · ※ <b>7B와 소재가 겹친다</b>(3A는 기술 가능한 까닭, 7B는 도구 도입 사슬)"
+  },
+  "B": {
+   "q": "뉴턴의 운동 방정식과 맥스웰 방정식, 슈뢰딩거 방정식은 모두 미분방정식입니다. 이 사실이 뜻하는 것은 무엇인가요?",
+   "ex": "-",
+   "single": {
+    "opts": [
+     "세 법칙 모두 어떤 양이 순간마다 어떻게 변하는지를 나타낸다",
+     "세 법칙 모두 크기와 방향을 가진 양만을 다루는 법칙이다",
+     "세 법칙 모두 복잡한 파동을 단순한 파동의 합으로 나눈다",
+     "세 법칙 모두 시간과 무관한 고정된 값을 계산해 낸다"
+    ],
+    "ans": 1
+   },
+   "sol": "미분방정식은 어떤 양이 지금 어떻게 변하는지를 나타내는 방정식이에요. 자연의 변화를 설명하는 법칙들이 이 형태로 쓰여 있다는 것은, 자연의 법칙이 곧 변화의 규칙이라는 뜻이에요. 그래서 방정식을 풀면 다음 상태를 예측할 수 있어요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>1</code> · 근거 = 원고 11행 · 키워드 <b>미분방정식의 공통 형식</b> · ☆ 지향 20번 달성 — 오답이 각각 벡터와의 혼동(2) · 푸리에 분석과의 혼동(3) · 미분방정식을 정적인 계산으로 보는 오해(4)를 겨냥 · 보기 네 개가 모두 <code>세 법칙 모두 ~</code> 형태로 평행하고 길이 24~27자로 균일 · ※ <b>1A와 소재가 겹친다</b>(1A는 정의·예측 기능, 3B는 공통 형식의 해석)"
+  }
+ },
+ {
+  "no": 4,
+  "lv": "중-상",
+  "type": "순서배열",
+  "axis": "A = 미적분학의 탄생(역사적 전개 축 / 필요 → 도구 → 적용, 17세기 후반 연도 포함) · B = 푸리에 분석(신호 처리 절차 축 / 분해 → 숫자화 → 저장 → 전송)",
+  "A": {
+   "q": "다음 문장은 미적분학이 등장하기까지의 과정을 나타냅니다. 설명의 흐름에 맞게 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "17세기 후반 뉴턴과 라이프니츠가 서로 독립적으로 미적분학을 발전시켰다.",
+     "자연의 모든 것은 끊임없이 움직이고 변하며 서로에게 영향을 준다.",
+     "과학자들은 행성의 운동과 떨어지는 물체의 속도를 계산으로 설명하게 되었다.",
+     "자연의 움직임을 설명하려면 순간의 변화와 전체의 흐름을 함께 다루는 언어가 필요했다."
+    ],
+    "ans": [
+     2,
+     4,
+     1,
+     3
+    ]
+   },
+   "sol": "미적분학은 우연히 등장한 도구가 아니에요. 자연이 끊임없이 변한다는 사실이 먼저 있었고, 그 변화를 다룰 언어가 필요했기 때문에 두 사람이 거의 같은 시기에 나란히 같은 도구를 만들어 냈어요. 필요가 도구를 부르고, 도구가 새로운 설명을 가능하게 한 셈이에요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>나-라-가-다</code> · 근거 = 원고 7·9행 · <b>자기검수 15번 통과 — 순서 근거 = 원고에 표시된 연도(17세기 후반) + 필연적 인과.</b> 인접 교환 검사: 나↔라는 필요의 근거가 뒤로 가 성립 불가, 라↔가는 도구가 만들어진 뒤에 필요가 생기게 되어 성립 불가, 가↔다는 도구 없이 계산이 앞서게 되어 성립 불가 · 자기검수 11번 대응 — 연도가 든 문장은 <code>가</code> 하나뿐이고 정답은 배열 순서다 · 규칙 3번 점검: 네 문장 모두 첫머리에 지시어·접속어가 없다. 초안의 <code>자연에서는</code>은 '에서는' 남용(구조 규칙 4번)이라 <code>자연의 모든 것은</code>으로 고쳤다 · ☆ 지향 19번 해당 없음 — 이 원고에는 정답·보기로 삼을 수치가 없다 · ※ B세트에 같은 키워드가 없어 교차 겹침 없음"
+  },
+  "B": {
+   "q": "다음 문장은 복잡한 파동이 디지털 신호로 저장되기까지의 과정을 나타냅니다. 과정이 진행되는 순서대로 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "복잡한 파동을 단순한 파동 여러 개의 합으로 나눈다.",
+     "저장된 소리를 전송하고 원래의 소리로 되살린다.",
+     "분해된 단순한 파동을 숫자 몇 개로 나타낸다.",
+     "숫자로 나타낸 소리를 디지털로 저장한다."
+    ],
+    "ans": [
+     1,
+     3,
+     4,
+     2
+    ]
+   },
+   "sol": "푸리에 분석은 아무리 뒤엉킨 파동도 단순한 파동 몇 개를 겹쳐 놓은 것으로 볼 수 있게 해 줘요. 단순한 파동으로 나누면 복잡한 신호도 숫자 몇 개로 다룰 수 있어요. 소리를 디지털로 저장하고 전송하는 기술이 바로 이 원리 위에 서 있어요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>가-다-라-나</code> · 근거 = 원고 15행 · <b>자기검수 15번 통과 — 순서 근거 = 필연적 인과(입력·출력 사슬).</b> 각 문장의 목적어가 직전 단계의 산출물이다. 인접 교환 검사: 가↔다는 분해되지 않은 파동을 숫자로 바꿀 수 없어 불가, 다↔라는 숫자가 없는데 저장할 수 없어 불가, 라↔나는 저장되지 않은 소리를 전송할 수 없어 불가 · 규칙 3번 점검: <code>분해된</code>·<code>숫자로 나타낸</code>·<code>저장된</code>은 첫머리 지시어가 아니라 대상을 한정하는 상태 관형어이며, 인과를 접속어가 아닌 내용으로 드러낸 형태다 · 물리 분과 가이드 반영 — 원리가 기술로 이어지는 인과 사슬 · ※ <b>5A와 소재가 겹친다</b>(5A는 방법의 이름, 4B는 처리 절차)"
+  }
+ },
+ {
+  "no": 5,
+  "lv": "상",
+  "type": "직접 입력",
+  "axis": "A = 파동을 분해하는 방법의 이름 / `푸리에 분석` · B = 미분과 적분의 역연산 관계의 이름 / `미적분의 기본정리`. 발문이 같으므로 정답 용어를 완전히 다르게 갈랐음",
+  "A": {
+   "q": "빈칸에 들어갈 알맞은 말을 쓰세요.",
+   "ex": "소리와 빛, 지진파처럼 겉모습이 다른 파동도 단순한 파동 몇 개를 겹쳐 놓은 것으로 볼 수 있다. 복잡한 파동을 이렇게 단순한 파동들의 합으로 나누어 보는 방법을 ___ __(이)라고 한다.",
+   "text": {
+    "ans": "푸리에 분석"
+   },
+   "sol": "푸리에 분석은 뒤엉킨 파동도 단순한 파동의 합으로 나누어 볼 수 있게 해 줘요. 그래서 복잡한 신호를 숫자 몇 개로 다루고 저장할 수 있게 되지요. 소리의 디지털 저장, MRI 영상, 지진파를 통한 지구 내부 연구가 모두 이 방법을 바탕으로 해요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>푸리에 분석</code> · 보기 1~6 모두 빈칸 · 근거 = 원고 15행 표기 그대로 · 표기 <code>___ __</code> = 3+2글자, <b>공백을 원고 표기대로 살렸다</b>(채점은 공백을 무시하므로 <code>푸리에분석</code>으로 붙여 써도 정답) · ☆ 지향 1(설명 → 이름) 달성 — 예문이 방법의 정의를 완결해 주고 학습자는 이름만 답한다 · 특정성 검토: <code>미적분</code>·<code>벡터</code>·<code>대칭성</code>·<code>미분방정식</code>은 \"복잡한 파동을 단순한 파동들의 합으로 나누어 보는 방법\"이라는 조건과 맞지 않아 배제되고 <code>푸리에 분석</code>만 성립 · ⚠️ 채점 확인 요청 — <code>푸리에 해석</code>·<code>퓨리에 분석</code> 같은 표기 변형은 오답 처리된다 · ※ <b>4B와 소재가 겹친다</b>"
+  },
+  "B": {
+   "q": "빈칸에 들어갈 알맞은 말을 쓰세요.",
+   "ex": "어떤 양이 시간에 따라 어떻게 바뀌는지를 구하는 것이 미분이고, 작은 변화들을 더해 전체의 흐름을 구하는 것이 적분이다. 두 연산이 서로 거꾸로 이어져 있다는 이 관계를 ____ ____(이)라고 한다.",
+   "text": {
+    "ans": "미적분의 기본정리"
+   },
+   "sol": "미분과 적분은 따로 떨어진 계산이 아니라 서로 되돌아가는 한 쌍이에요. 위치를 미분하면 속도가 나오고, 그 속도를 적분하면 다시 위치로 돌아와요. 이렇게 되돌아가는 관계를 미적분의 기본정리라고 불러요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>미적분의 기본정리</code> · 보기 1~6 모두 빈칸 · 근거 = 원고 9행 표기 그대로(\"이 관계가 바로 미적분의 기본정리입니다\") · 표기 <code>____ ____</code> = 4+4글자, <b>공백을 원고 표기대로 살렸다</b> · ☆ 지향 1(설명 → 이름) 달성 — 예문이 미분과 적분을 각각 정의한 뒤 두 연산의 관계만 이름으로 묻는다 · 특정성 검토: <code>대칭성</code>·<code>불합리한 효용성</code>·<code>푸리에 분석</code>은 \"두 연산이 서로 거꾸로 이어져 있다는 관계\"와 맞지 않아 배제되고 <code>미적분의 기본정리</code>만 성립 · ※ <b>7A와 소재가 겹친다</b>(7A는 계산 사슬 배열, 5B는 그 관계의 이름)"
+  }
+ },
+ {
+  "no": 6,
+  "lv": "중",
+  "type": "사지선다 (복수)",
+  "axis": "A = 대칭성 / 정의와 물리 법칙과의 연결 · B = 불합리한 효용성 / 해당 사례의 식별",
+  "A": {
+   "q": "수학에서 말하는 대칭성에 대한 설명으로 옳은 것을 모두 고르세요.",
+   "ex": "-",
+   "multi": {
+    "opts": [
+     "어떤 대상을 돌리거나 뒤집거나 옮겨도 겉모습이 그대로인 성질이다",
+     "시간과 장소가 달라져도 같은 물리 법칙이 작동한다는 점과 이어진다",
+     "물리학에서는 아름다움을 설명할 뿐 물리 법칙과는 이어지지 않는다",
+     "복잡한 파동을 단순한 파동들의 합으로 나눌 때 쓰는 계산 방법이다"
+    ],
+    "ans": [
+     1,
+     2
+    ]
+   },
+   "sol": "대칭성은 돌리거나 뒤집거나 옮겨도 겉모습이 그대로인 성질이에요. 물리학에서 이 개념은 아름다움에 그치지 않고 에너지 보존이나 운동량 보존 같은 법칙과 깊이 이어져요. 대칭성은 자연이 지닌 질서를 수학으로 읽는 또 하나의 방식이에요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>1</code>, 정답 2 = <code>2</code> · 근거 = 원고 19행 · 발문에 모두 고르세요 포함 · ☆ 지향 20번 달성 — 오답이 각각 대칭성을 미학적 개념으로만 보는 오해(3) · 푸리에 분석과의 혼동(4)을 겨냥 · 보기 길이 26~29자로 균일 · ⚠️ <b>1B와 동시 선택 비권장</b> — 보기1이 1B 빈칸[1]의 정답(대칭성) 근거를 그대로 알려준다 · ⚠️ 보기2는 원고 19행 표현을 그대로 따랐다. 시간 대칭↔에너지 보존 / 공간 대칭↔운동량 보존의 대응은 원고에 없어 갈라 쓰지 않았다"
+  },
+  "B": {
+   "q": "위그너가 말한 수학의 '불합리한 효용성'에 해당하는 설명을 모두 고르세요.",
+   "ex": "-",
+   "multi": {
+    "opts": [
+     "수학이 자연 현상을 설명하기 전에 먼저 만들어지는 경우가 있다",
+     "먼저 만들어진 수학이 훗날 예상하지 못한 현상을 설명하는 데 쓰인다",
+     "수학이 자연을 만들어 냈기 때문에 자연이 수학의 형태를 따른다",
+     "수학은 이미 관찰이 끝난 현상을 정리할 때만 쓸 수 있는 도구이다"
+    ],
+    "ans": [
+     1,
+     2
+    ]
+   },
+   "sol": "위그너는 수학이 자연보다 먼저 만들어져 있다가 훗날 뜻밖의 현상을 설명하는 일을 '불합리한 효용성'이라고 불렀어요. 수학이 자연을 만든 것은 아니지만, 자연은 이상할 만큼 자주 수학의 형태로 자신을 드러내요. 이 낯선 일치가 '불합리하다'는 표현을 붙인 이유예요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>1</code>, 정답 2 = <code>2</code> · 근거 = 원고 17행 · 발문에 모두 고르세요 포함 · ☆ 지향 20번 달성 — 오답이 각각 인과 전도(3, 원고 17행 \"수학이 자연을 만든 것은 아니지만\"이 명시적으로 부정) · 수학을 사후 정리 도구로만 보는 오해(4)를 겨냥 · 보기 길이 27~30자로 균일 · ⚠️ <b>2A와 동시 선택 비권장</b> — 교차 겹침 여섯 쌍 중 가장 인접하다. 보기1·2가 2A의 정답(X) 판단 근거를 그대로 알려준다"
+  }
+ },
+ {
+  "no": 7,
+  "lv": "중-상",
+  "type": "순서배열",
+  "axis": "A = 미분·적분의 역연산 사슬(위치 → 속도 → 가속도 → 속도 → 위치, 법칙의 적용 축) · B = 벡터(도구 도입 사슬, 개념 확장 축)",
+  "A": {
+   "q": "다음 문장은 공의 위치에서 출발해 미분과 적분을 차례로 적용하는 계산 과정을 나타냅니다. 바로 앞에서 구한 양을 다음 계산에 넣는 순서대로 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "속도를 시간에 대해 미분하면 가속도를 얻는다.",
+     "속도를 시간에 대해 적분하면 위치를 얻는다.",
+     "공의 위치를 시간에 대해 미분하면 속도를 얻는다.",
+     "가속도를 시간에 대해 적분하면 속도를 얻는다."
+    ],
+    "ans": [
+     3,
+     1,
+     4,
+     2
+    ]
+   },
+   "sol": "미분은 순간의 변화를 구하고, 적분은 작은 변화들을 더해 전체의 흐름을 구해요. 위치에서 속도로, 속도에서 가속도로 내려간 다음 적분으로 되짚어 오면 처음의 위치로 돌아와요. 미분과 적분이 서로 거꾸로 이어진 연산이라는 사실을 보여 주는 과정이에요.",
+   "raw": "<b>A안</b> · 정답 1 = <code>다-가-라-나</code> · 근거 = 원고 9행 · <b>자기검수 15번 통과 — 순서 근거 = 필연적 인과(계산의 입력·출력 사슬).</b> 발문이 <code>공의 위치에서 출발</code>과 <code>바로 앞에서 구한 양을 다음 계산에 넣는다</code>를 명시하므로 다(위치→속도) → 가(속도→가속도) → 라(가속도→속도) → 나(속도→위치)가 <b>유일해</b>가 된다. 다-가-<b>나</b>-라로 바꾸면 3번째가 직전 결과인 가속도를 쓰지 않아 사슬이 끊기고, 다-<b>나</b>-…는 위치를 입력으로 받는 문장이 남아 있지 않아 막힌다 · 물리 분과 가이드 반영 — 미분·적분 법칙의 실제 적용 · 규칙 7(선택지 수준 통일) 점검: 네 문장 모두 <code>A를 시간에 대해 ~하면 B를 얻는다</code> 형태, 22~26자 · ※ <b>5B와 소재가 겹친다</b>"
+  },
+  "B": {
+   "q": "다음 문장은 방향을 가진 양을 수학으로 기술하게 된 과정을 나타냅니다. 설명의 흐름에 맞게 배열하세요.",
+   "ex": "-",
+   "order": {
+    "opts": [
+     "떨어지는 공의 궤적과 흐르는 유체의 속도를 같은 방식으로 다룬다.",
+     "크기와 방향을 함께 가진 양을 벡터로 나타낸다.",
+     "벡터로 나타낸 양에 미적분을 적용해 삼차원 공간의 변화를 기술한다.",
+     "자연에서 다루는 많은 양은 크기만으로는 설명되지 않는다."
+    ],
+    "ans": [
+     4,
+     2,
+     3,
+     1
+    ]
+   },
+   "sol": "힘과 속도, 전기장과 자기장처럼 자연의 많은 양은 크기만으로 설명되지 않아요. 크기와 방향을 동시에 가진 양을 다루는 것이 벡터예요. 벡터에 미적분을 결합하면 방향을 가진 삼차원의 변화를 하나의 언어로 정리할 수 있어요.",
+   "raw": "<b>B안</b> · 정답 1 = <code>라-나-다-가</code> · 근거 = 원고 13행 · <b>자기검수 15번 통과 — 다만 연결 강도에 차이가 있어 그대로 보고한다.</b> 나→다는 벡터를 정의하지 않으면 <code>벡터로 나타낸 양에</code>가 성립하지 않아 교환 불가, 다→가는 기술 방법이 없으면 <code>같은 방식으로</code>가 성립하지 않아 교환 불가 — 이 두 연결은 강하다. <b>반면 라→나는 \"크기만으로 설명되지 않음(필요) → 벡터 도입(대응)\" 관계로, 교환하면 도구를 도입할 이유가 사라져 설명이 성립하지 않지만 다른 두 연결만큼 물리적으로 강한 전제는 아니다.</b> ⚠️ 기획자 판단 요청 — 이 정도를 규칙 4번의 '이론적으로 필연적인 순서'로 인정하지 않으신다면, 이 원고에는 7B에 쓸 다른 순서배열 근거가 남아 있지 않으므로(미적분 연산 사슬·푸리에·미적분 탄생사가 각각 7A·4B·4A에 이미 배정) <b>7번 자리는 7A만 쓰는 편이 맞다</b> · 규칙 16번 점검: 원고 13행의 비유 <code>하나의 그림으로 정리됩니다</code>를 쓰지 않고 <code>같은 방식으로 다룬다</code>로 대체했다 · ※ <b>3A와 소재가 겹친다</b>"
+  }
+ }
+];
+var TAG = { A:'A안', B:'B안' };
+var MAX = 7;
+</script>
+<script>
+/* ===== 상태 ===== */
+var sel = {};          /* '1A' -> true. 자리 하나에서 A·B를 둘 다 담을 수 있다 */
+var starred = {};      /* '1A' -> true. 모범 문제 표시. 선택 7개 제한과는 무관하다 */
+var view = {};
+var graded = {};
+var orderPick = {};
+var showBoth = true;   /* A·B를 나란히 놓아야 두 개를 함께 고를 수 있으므로 기본 켜짐 */
+var root = document.getElementById('quiz');
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+/* 순서배열 보기 라벨은 숫자가 아니라 `가`·`나`·`다`·`라`다 (2026-08-28 확정).
+   알파벳 A~D를 쓰지 않는 이유는 이 과제가 A안·B안으로 2안을 관리해 섞이기 때문이다.
+   JSON의 order.ans는 숫자 배열([2,4,1,3])로 두고 화면에서만 라벨로 바꿔 표시한다 —
+   표시 형식이 바뀌어도 데이터 구조는 그대로 두는 쪽이 싸다.
+   문장을 고르면 그 자리에 고른 순번(1~4)이 대신 표시되므로 라벨과 선택 순서가 눈으로 구분된다. */
+var ORD_LABEL = ['가', '나', '다', '라'];
+function ordLabel(n){ return ORD_LABEL[n - 1] || String(n); }
+function ordAnsText(ans){ return ans.map(ordLabel).join('-'); }
+/* 인라인(1번)의 [1]·[2]와, 직접 입력(5번)의 빈칸(밑줄 `_`)을 굵게 보여준다.
+   빈칸은 정답을 글자 단위로 `_`로 바꾸고 띄어쓰기는 그대로 살려 표기하므로(2026-08-31 확정),
+   밑줄 사이의 공백까지 한 묶음으로 잡아야 `__ ____ __`가 통째로 굵게 표시된다.
+   esc() 뒤에 치환하므로 예문 텍스트가 HTML로 해석될 위험은 없다. */
+function exHTML(t){
+  return esc(t)
+    .replace(/\[1\]/g, '<b>[1]</b>')
+    .replace(/\[2\]/g, '<b>[2]</b>')
+    .replace(/_+(?: _+)*/g, function(m){ return '<b class="blank">' + m + '</b>'; });
+}
+function slotOf(no){ return SLOTS.filter(function(s){ return s.no === no; })[0]; }
+function memoKey(no){ return 'qzmemo:' + ARTICLE_ID + ':q' + no; }
+function selKey(){ return 'qzsel:' + ARTICLE_ID; }
+function starKey(){ return 'qzstar:' + ARTICLE_ID; }
+function nameKey(){ return 'qzmemo:' + ARTICLE_ID + ':reviewer'; }
+/* 다시 만들 자리와 그 메모도 저장한다 — 예전에는 메모리에만 있어서 모달을 닫으면 사라졌다 */
+function regenKey(){ return 'qzregen:' + ARTICLE_ID; }
+function regenNoteKey(){ return 'qzregen:' + ARTICLE_ID + ':note'; }
+function lsGet(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
+function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function lsDel(k){ try { localStorage.removeItem(k); } catch(e){} }
+
+/* 선택 집계 */
+function selCount(){ return Object.keys(sel).length; }
+function slotKeys(no){
+  return ['A','B'].filter(function(k){ return !!sel[no + k]; });
+}
+function emptySlots(){
+  return SLOTS.filter(function(s){ return slotKeys(s.no).length === 0; }).map(function(s){ return s.no; });
+}
+/* 다시 만들기로 저장해 둔 자리 (번호 오름차순) */
+function regenSlots(){
+  return SLOTS.map(function(s){ return s.no; }).filter(function(no){ return !!regenPick[no]; });
+}
+function regenNote(){ return (lsGet(regenNoteKey()) || '').trim(); }
+
+function memoTemplate(no){
+  var s = slotOf(no), ks = slotKeys(no);
+  return META.대단원 + ' > ' + META.중단원 + ' > ' + META.아티클 + '\n'
+       + '문항 ' + no + ' · ' + s.lv + ' · ' + s.type + ' (' + (ks.length ? ks.join('·') + '안' : '미선택') + ')\n'
+       + '요청사항: ';
+}
+function extractRequest(t){
+  var i = String(t).indexOf('요청사항:');
+  return (i >= 0 ? String(t).slice(i+5) : String(t)).trim();
+}
+function hasRequest(t){ return extractRequest(t).length > 0; }
+
+/* 메모 토글 summary의 '작성됨' 배지를 현재 입력값과 맞춘다.
+   전체 재렌더를 하면 풀던 답이 지워지므로 배지만 즉시 갱신한다. */
+function syncMemoBadge(no){
+  var ta = document.querySelector('[data-memo="' + no + '"]');
+  if (!ta) return;
+  var det = ta.closest('details.memo-box'); if (!det) return;
+  var sum = det.querySelector('summary'); if (!sum) return;
+  var badge = sum.querySelector('.memo-badge'), on = hasRequest(ta.value);
+  if (on && !badge){
+    var sp = document.createElement('span');
+    sp.className = 'memo-badge'; sp.textContent = '작성됨';
+    sum.insertBefore(sp, sum.querySelector('.saved'));
+  } else if (!on && badge){
+    badge.parentNode.removeChild(badge);
+  }
+}
+
+/* ===== 렌더 ===== */
+function paneHTML(no, key){
+  var s = slotOf(no), item = s[key], id = 'q' + no + key;
+  var on = !!sel[no + key], st = !!starred[no + key];
+  var b = '<div class="pane' + (on ? ' picked' : '') + '" data-pane="' + id + '">';
+
+  /* 문항 상단 바 — 왼쪽 = 문항 선택 체크박스 / 오른쪽 = 모범 문제 별표 체크박스 */
+  b += '<div class="selbar">'
+     + '<label class="selbox' + (on ? ' on' : '') + '">'
+     + '<input type="checkbox" data-sel="' + no + '|' + key + '"' + (on ? ' checked' : '') + '>'
+     + '<span class="tag">' + TAG[key] + '</span></label>'
+     + '<label class="starbox' + (st ? ' on' : '') + '"'
+     + ' title="모범 문제 — 이 문항 유형은 학습할 만한 좋은 모델입니다">'
+     + '<input type="checkbox" data-star="' + no + '|' + key + '"' + (st ? ' checked' : '')
+     + ' aria-label="' + TAG[key] + '을 모범 문제로 표시">'
+     + '<span class="ico">' + (st ? '★' : '☆') + '</span></label>'
+     + '</div>';
+
+  /* 지문(예문)이 없으면 지문 박스를 아예 그리지 않는다 (2026-08-28 확정).
+     17열 데이터에서는 예문 없는 칸에 `-`를 넣기로 되어 있는데(SPEC 규칙, `X`는 OX 정답과 혼동됨),
+     예전에는 그 `-` 한 글자가 든 빈 박스가 화면에 그려졌다. 데이터는 그대로 두고 표시만 감춘다. */
+  var hasEx = item.ex && String(item.ex).trim() !== '' && String(item.ex).trim() !== '-';
+  if (item.exFirst && hasEx) b += '<div class="ex">' + exHTML(item.ex) + '</div>';
+  b += '<div class="q-text">' + esc(item.q) + '</div>';
+  if (!item.exFirst && hasEx) b += '<div class="ex">' + exHTML(item.ex) + '</div>';
+
+  if (item.blanks){
+    item.blanks.forEach(function(bl, bi){
+      b += '<div class="blank-label">빈칸 [' + (bi+1) + '] 선택</div><div class="opts">';
+      bl.opts.forEach(function(o, oi){
+        b += '<label class="opt"><input type="radio" name="' + id + 'b' + bi + '" value="' + (oi+1) + '">'
+          + '<span class="n">' + (oi+1) + '.</span><span>' + esc(o) + '</span></label>';
+      });
+      b += '</div>';
+    });
+  } else if (item.ox){
+    b += '<div class="opts row">';
+    item.ox.opts.forEach(function(o, oi){
+      b += '<label class="opt"><input type="radio" name="' + id + '" value="' + (oi+1) + '"><span>' + esc(o) + '</span></label>';
+    });
+    b += '</div>';
+  } else if (item.single || item.multi){
+    var conf = item.single || item.multi, tp = item.single ? 'radio' : 'checkbox';
+    b += '<div class="opts">';
+    conf.opts.forEach(function(o, oi){
+      b += '<label class="opt"><input type="' + tp + '" name="' + id + '" value="' + (oi+1) + '">'
+        + '<span class="n">' + (oi+1) + '.</span><span>' + esc(o) + '</span></label>';
+    });
+    b += '</div>';
+  } else if (item.order){
+    b += '<div class="order-hint">문장을 순서대로 클릭하세요. 다시 클릭하면 해제됩니다.</div>';
+    b += '<div class="order" data-order="' + id + '">';
+    item.order.opts.forEach(function(o, oi){
+      b += '<div class="ocard" data-n="' + (oi+1) + '"><span class="seq">' + ordLabel(oi+1) + '</span><span>' + esc(o) + '</span></div>';
+    });
+    b += '</div>';
+  } else if (item.text){
+    b += '<input type="text" class="ans" name="' + id + '" placeholder="정답을 입력하세요" autocomplete="off">';
+  }
+
+  b += '<div class="q-actions"><button class="btn" data-check="' + id + '">정답 확인</button>'
+     + '<button class="btn ghost" data-clear="' + id + '">지우기</button></div>';
+  b += '<div class="res" id="res' + id + '"><div class="verdict"></div><div class="sol"></div><div class="key"></div></div>';
+  b += '<details class="rv"><summary>검수 정보 (17열에 들어갈 값 · 글자 수는 공백·문장부호 포함 기준)</summary><div class="rv-body">' + item.raw + '</div></details>';
+  b += '</div>';
+  return b;
+}
+
+function render(){
+  root.innerHTML = '';
+  orderPick = {};
+  SLOTS.forEach(function(s){
+    var card = document.createElement('div');
+    card.className = 'slot' + (slotKeys(s.no).length ? ' chosen' : '');
+    card.id = 'slot' + s.no;
+    var b = '<div class="slot-head"><span class="slot-no">' + s.no + '</span>'
+          + '<span class="chip">' + esc(s.lv) + '</span><span class="chip">' + esc(s.type) + '</span>';
+    if (!showBoth){
+      b += '<span class="ab-tabs">'
+        + '<button class="ab-tab' + (view[s.no] === 'A' ? ' on' : '') + '" data-view="' + s.no + '|A">A안</button>'
+        + '<button class="ab-tab' + (view[s.no] === 'B' ? ' on' : '') + '" data-view="' + s.no + '|B">B안</button></span>';
+    }
+    b += '</div>';
+    b += '<div class="axis">두 문항의 차이 — ' + esc(s.axis) + '</div>';
+    b += '<div class="panes' + (showBoth ? ' side' : '') + '">';
+    if (showBoth){ b += paneHTML(s.no, 'A') + paneHTML(s.no, 'B'); }
+    else { b += paneHTML(s.no, view[s.no] || 'A'); }
+    b += '</div>';
+
+    var written = hasRequest(lsGet(memoKey(s.no)));
+    b += '<details class="memo-box"' + (written ? ' open' : '') + '>'
+      + '<summary>검수 메모 적기'
+      + (written ? '<span class="memo-badge">작성됨</span>' : '')
+      + '<span class="saved" id="sv' + s.no + '">저장됨</span></summary>'
+      + '<div class="memo-body"><textarea data-memo="' + s.no + '"></textarea>'
+      + '<div class="memo-tools">'
+      + '<button class="icon-btn" data-copymemo="' + s.no + '"><span aria-hidden="true">⧉</span> 이 메모 복사</button>'
+      + '<button class="icon-btn" data-resetmemo="' + s.no + '"><span aria-hidden="true">↺</span> 양식 초기화</button>'
+      + '</div></div></details>';
+    card.innerHTML = b;
+    root.appendChild(card);
+  });
+
+  document.querySelectorAll('[data-order]').forEach(function(box){
+    var id = box.getAttribute('data-order');
+    orderPick[id] = [];
+    box.querySelectorAll('.ocard').forEach(function(c){
+      c.addEventListener('click', function(){
+        var n = parseInt(c.getAttribute('data-n'), 10), arr = orderPick[id], i = arr.indexOf(n);
+        if (i >= 0) arr.splice(i, 1); else arr.push(n);
+        redrawOrder(id);
+      });
+    });
+  });
+
+  document.querySelectorAll('[data-memo]').forEach(function(ta){
+    var no = ta.getAttribute('data-memo'), k = memoKey(no);
+    ta.value = lsGet(k) || memoTemplate(parseInt(no, 10));
+    ta.classList.toggle('has', hasRequest(ta.value));
+    var timer = null;
+    ta.addEventListener('input', function(){
+      ta.classList.toggle('has', hasRequest(ta.value));
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+        if (hasRequest(ta.value)) lsSet(k, ta.value); else lsDel(k);
+        syncMemoBadge(no);
+        var sv = document.getElementById('sv' + no);
+        sv.classList.add('on'); setTimeout(function(){ sv.classList.remove('on'); }, 900);
+      }, 350);
+    });
+  });
+
+  applySelUI();
+}
+
+function redrawOrder(id){
+  var box = document.querySelector('[data-order="' + id + '"]'), arr = orderPick[id];
+  box.querySelectorAll('.ocard').forEach(function(c){
+    var n = parseInt(c.getAttribute('data-n'), 10), p = arr.indexOf(n), seq = c.querySelector('.seq');
+    if (p >= 0){ c.classList.add('picked'); seq.textContent = p + 1; }
+    else { c.classList.remove('picked'); seq.textContent = ordLabel(n); }
+  });
+}
+
+/* 선택 상태만 화면에 반영한다 — 전체 재렌더를 하면 풀던 답이 지워지므로 하지 않는다 */
+function applySelUI(){
+  var n = selCount();
+  document.querySelectorAll('[data-sel]').forEach(function(cb){
+    var p = cb.getAttribute('data-sel').split('|'), k = p[0] + p[1];
+    var on = !!sel[k], lock = !on && n >= MAX;
+    var box = cb.closest('.selbox'), pane = cb.closest('.pane');
+    cb.checked = on;
+    cb.disabled = lock;
+    box.classList.toggle('on', on);
+    box.classList.toggle('off', lock);
+    if (pane) pane.classList.toggle('picked', on);
+  });
+  document.querySelectorAll('[data-star]').forEach(function(cb){
+    var p = cb.getAttribute('data-star').split('|'), k = p[0] + p[1];
+    var st = !!starred[k], box = cb.closest('.starbox');
+    cb.checked = st;
+    box.classList.toggle('on', st);
+    box.querySelector('.ico').textContent = st ? '★' : '☆';
+  });
+  SLOTS.forEach(function(s){
+    var el = document.getElementById('slot' + s.no);
+    if (el) el.classList.toggle('chosen', slotKeys(s.no).length > 0);
+    syncMemoHeader(s.no);
+  });
+  updateBar();
+}
+
+/* 메모 기본 양식의 머리글에는 선택 상태가 들어간다. 아직 아무것도 쓰지 않은 메모만
+   현재 선택으로 다시 채운다 — 사람이 쓴 글은 건드리지 않는다 */
+function syncMemoHeader(no){
+  var ta = document.querySelector('[data-memo="' + no + '"]');
+  if (ta && !hasRequest(ta.value)) ta.value = memoTemplate(no);
+}
+
+/* ===== 채점 ===== */
+function grade(id, reveal){
+  var no = parseInt(id.replace('q','').slice(0, -1), 10), key = id.slice(-1);
+  var item = slotOf(no)[key], res = document.getElementById('res' + id);
+  if (!res) return;
+  var correct = null, keyText = '';
+
+  if (item.blanks){
+    var got = item.blanks.map(function(bl, bi){
+      var c = document.querySelector('input[name="' + id + 'b' + bi + '"]:checked');
+      return c ? parseInt(c.value, 10) : null;
+    });
+    if (got.some(function(v){ return v === null; }) && !reveal) return needPick(res);
+    correct = item.blanks.every(function(bl, bi){ return got[bi] === bl.ans; });
+    keyText = '정답 — 빈칸[1] = ' + item.blanks[0].ans + '번(' + item.blanks[0].opts[item.blanks[0].ans-1] + '), 빈칸[2] = '
+            + item.blanks[1].ans + '번(' + item.blanks[1].opts[item.blanks[1].ans-1] + ')';
+  } else if (item.ox){
+    var c1 = document.querySelector('input[name="' + id + '"]:checked');
+    if (!c1 && !reveal) return needPick(res);
+    correct = c1 ? parseInt(c1.value,10) === item.ox.ans : false;
+    keyText = '정답 — ' + item.ox.opts[item.ox.ans-1];
+  } else if (item.single){
+    var c2 = document.querySelector('input[name="' + id + '"]:checked');
+    if (!c2 && !reveal) return needPick(res);
+    correct = c2 ? parseInt(c2.value,10) === item.single.ans : false;
+    keyText = '정답 — ' + item.single.ans + '번';
+  } else if (item.multi){
+    var picked = Array.prototype.slice.call(document.querySelectorAll('input[name="' + id + '"]:checked'))
+      .map(function(x){ return parseInt(x.value,10); }).sort();
+    if (!picked.length && !reveal) return needPick(res);
+    var want = item.multi.ans.slice().sort();
+    correct = picked.length === want.length && picked.every(function(v,i){ return v === want[i]; });
+    keyText = '정답 — ' + item.multi.ans.join('번, ') + '번 (2개 모두)';
+  } else if (item.order){
+    var arr = orderPick[id] || [];
+    if (arr.length !== item.order.ans.length && !reveal) return needPick(res);
+    correct = arr.length === item.order.ans.length && arr.every(function(v,i){ return v === item.order.ans[i]; });
+    keyText = '정답 — ' + ordAnsText(item.order.ans);
+  } else if (item.text){
+    var el = document.querySelector('input[name="' + id + '"]');
+    /* 채점은 공백을 무시한다 (2026-08-28 확정). 입력값만 공백을 지우고 정답은 그대로 두어
+       `정역학적 평형`처럼 띄어 쓴 정답이 전부 오답 처리되던 버그를 고쳤다. */
+    var v = (el.value || '').replace(/\s/g,'');
+    if (!v && !reveal) return needPick(res);
+    correct = v === String(item.text.ans).replace(/\s/g,'');
+    keyText = '정답 — ' + item.text.ans;
+  }
+
+  graded[id] = { correct: correct };
+  res.className = 'res show ' + (correct ? 'ok' : 'no');
+  res.querySelector('.verdict').textContent = '';
+  res.querySelector('.sol').textContent = item.sol;
+  res.querySelector('.key').textContent = keyText;
+}
+function needPick(res){
+  res.className = 'res show';
+  res.querySelector('.verdict').textContent = '먼저 답을 선택하거나 입력해 주세요.';
+  res.querySelector('.sol').textContent = '';
+  res.querySelector('.key').textContent = '';
+}
+function clearOne(id){
+  var pane = document.querySelector('[data-pane="' + id + '"]');
+  if (!pane) return;
+  pane.querySelectorAll('input').forEach(function(i){
+    /* 문항 선택·모범 문제 체크박스는 '다시 풀기'로 지우지 않는다 */
+    if (i.hasAttribute('data-sel') || i.hasAttribute('data-star')) return;
+    if (i.type === 'text') i.value = ''; else i.checked = false;
+  });
+  pane.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); });
+  if (orderPick[id]){ orderPick[id] = []; redrawOrder(id); }
+  var res = document.getElementById('res' + id);
+  if (res) res.className = 'res';
+  delete graded[id];
+}
+
+/* ===== 선택 바 + 레일 ===== */
+function updateBar(){
+  var n = selCount(), picksEl = document.getElementById('bar-picks'), empty = emptySlots();
+  picksEl.innerHTML = '';
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no);
+    var sp = document.createElement('span');
+    sp.className = 'pk' + (ks.length ? ' set' : '');
+    /* A·B를 각각 네모 테두리로 감싼다 — 'AB'로 붙여 놓으면 한 개를 고른 것처럼 읽힌다 */
+    sp.innerHTML = '<span class="no">' + s.no + '</span>'
+      + (ks.length ? ks.map(function(k){ return '<span class="k">' + k + '</span>'; }).join('')
+                   : '<span class="none">–</span>');
+    picksEl.appendChild(sp);
+  });
+
+  var cnt = document.getElementById('bar-count');
+  cnt.textContent = n + ' / ' + MAX + ' 선택';
+  cnt.classList.toggle('full', n === MAX);
+
+  /* 다시 만들 자리는 사람이 고른 값이므로 '고른 문항이 없는 자리'와 따로 센다 */
+  var rg = regenSlots();
+  var rgEl = document.getElementById('bar-regen');
+  rgEl.hidden = (rg.length === 0);
+  rgEl.textContent = '↻ 다시 만들 자리 ' + rg.length + '개';
+
+  var warn, rest = empty.filter(function(no){ return rg.indexOf(no) < 0; });
+  if (n === 0 && rg.length === 0){
+    warn = '마음에 드는 문항을 고르세요. 다시 만들고 싶은 자리는 「다시 만들 문항 고르기」에 담아 두면 됩니다.';
+  } else if (rest.length){
+    /* 최소 개수는 없다. 고르지도, 다시 만들기로 담지도 않은 자리만 알려준다 */
+    warn = rest.join(', ') + '번 자리가 아직 비어 있습니다 — 문항을 고르거나 다시 만들 자리에 담아주세요.';
+  } else if (n === MAX){
+    warn = '7자리를 모두 채웠습니다 — 「선택 결과 복사」로 넘기세요.';
+  } else {
+    warn = '고른 ' + n + '개와 다시 만들 ' + rg.length + '개가 함께 복사됩니다 — 「선택 결과 복사」로 넘기세요.';
+  }
+  document.getElementById('bar-warn').textContent = warn;
+
+  /* 최대 7개 상한만 있고 최소 개수는 없다 — 고른 것이나 다시 만들 자리가 하나라도 있으면 복사할 수 있다.
+     (예전에는 n !== MAX 로 잠겨 있어 "4개는 확정, 3개는 다시 만들기"를 내보낼 방법이 없었다) */
+  document.getElementById('btn-copy').disabled = (n === 0 && rg.length === 0);
+  document.getElementById('btn-clearpick').disabled = (n === 0);
+
+  var sn = Object.keys(starred).length;
+  var starEl = document.getElementById('bar-star');
+  starEl.hidden = (sn === 0);
+  starEl.textContent = '★ 모범 ' + sn + '개';
+
+  if (n === 0) lsDel(selKey()); else lsSet(selKey(), JSON.stringify(Object.keys(sel)));
+  if (sn === 0) lsDel(starKey()); else lsSet(starKey(), JSON.stringify(Object.keys(starred)));
+  renderRail();
+}
+
+function renderRail(){
+  var nav = document.getElementById('rail-nav');
+  nav.querySelectorAll('a[data-slot]').forEach(function(a){ a.parentNode.removeChild(a); });
+  var anchor = nav.querySelectorAll('.grp')[1];
+  /* insertBefore(anchor)로 차례로 넣으면 넣은 순서대로 쌓인다 — 배열을 뒤집으면 7→1이 된다 */
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no);
+    var a = document.createElement('a');
+    a.href = '#slot' + s.no;
+    a.setAttribute('data-slot', s.no);
+    if (ks.length) a.className = 'picked';
+    a.innerHTML = '<span class="qn">' + s.no + '</span>' + esc(s.type)
+                + '<span class="st">'
+                + (ks.length ? ks.map(function(k){ return '<span class="k">' + k + '</span>'; }).join('')
+                             : '<span class="none">—</span>')
+                + '</span>';
+    nav.insertBefore(a, anchor);
+  });
+}
+
+function selectedIds(){
+  var out = [];
+  SLOTS.forEach(function(s){ slotKeys(s.no).forEach(function(k){ out.push({ no:s.no, key:k }); }); });
+  return out;
+}
+function starredIds(){
+  var out = [];
+  SLOTS.forEach(function(s){ ['A','B'].forEach(function(k){ if (starred[s.no + k]) out.push(s.no + k); }); });
+  return out;
+}
+function reviewerName(){
+  return (document.getElementById('reviewer').value || '').trim() || '(검수자 미입력)';
+}
+function memoLines(){
+  var out = [];
+  SLOTS.forEach(function(s){
+    var ta = document.querySelector('[data-memo="' + s.no + '"]');
+    if (ta && hasRequest(ta.value)) out.push('- ' + s.no + '번: ' + extractRequest(ta.value).replace(/\n/g, ' / '));
+  });
+  return out;
+}
+
+function buildResult(){
+  var ids = selectedIds(), empty = emptySlots(), rg = regenSlots(), L = [];
+  /* 고른 문항이 7개가 아니어도 복사할 수 있다. 이때는 "확정 + 다시 만들기" 두 가지 일이
+     한 텍스트에 담기므로, 맨 위 지시문도 상황에 맞게 바꾼다. */
+  L.push(rg.length
+    ? '아래에서 고른 문항은 CSV에 반영하고, 다시 만들 자리는 새로 만들어줘.'
+    : '아래 선택대로 CSV에 반영해줘.');
+  L.push('');
+  L.push('대상: ' + META.csv + ' ' + META.행);
+  L.push('아티클: ' + META.분과 + ' / ' + META.중단원 + ' / ' + META.아티클);
+  L.push('원고: ' + META.원고);
+  L.push('선택 (' + ids.length + '개): ' + (ids.length ? ids.map(function(x){ return x.no + x.key; }).join(' ') : '없음'));
+  if (rg.length) L.push('다시 만들 자리 (' + rg.length + '개): ' + rg.map(function(no){ return no + '번'; }).join(' '));
+  L.push('검수자: ' + reviewerName());
+  L.push('');
+  ids.forEach(function(x){
+    var s = slotOf(x.no), item = s[x.key];
+    var q = item.q.length > 40 ? item.q.slice(0, 40) + '…' : item.q;
+    L.push(x.no + x.key + ' · ' + s.lv + ' · ' + s.type + ' · ' + q);
+  });
+  if (rg.length){
+    L.push('');
+    L.push('■ 다시 만들 자리 (' + rg.length + '개) — 아래 조건대로 새로 만들어줘');
+    rg.forEach(function(no){
+      var s = slotOf(no), ks = slotKeys(no);
+      L.push('- ' + no + '번 · ' + s.lv + ' · ' + s.type
+           + ' — ' + (ks.length ? '현재 ' + ks.join('·') + '안 선택됨' : '고른 문항 없음'));
+    });
+    L.push('- 자리마다 후보 2안(A/B)을 새로 만들고, 두 안은 서로 다른 내용을 묻거나 다른 방식으로 묻게 할 것.');
+    L.push('- 그 자리의 난이도·퀴즈 유형은 위에 적힌 대로 유지할 것.');
+    L.push('- 위에서 고른 문항은 건드리지 말고, 소재·정답이 겹치지 않게 할 것.');
+    L.push('- 파일은 저장하지 말고 결과만 보여줄 것.');
+    var rnote = regenNote();
+    if (rnote){
+      L.push('- 어떻게 다시 만들면 좋을지:');
+      rnote.split('\n').forEach(function(t){ L.push('  ' + t); });
+    }
+  }
+  /* 고르지도, 다시 만들기로 담지도 않은 자리만 남은 문제로 알린다 */
+  var rest = empty.filter(function(no){ return rg.indexOf(no) < 0; });
+  if (rest.length){
+    L.push('');
+    L.push('※ 아직 비어 있는 자리: ' + rest.map(function(no){
+      var s = slotOf(no); return no + '번(' + s.lv + ' · ' + s.type + ')';
+    }).join(', '));
+  }
+  if (ids.length > SLOTS.length - empty.length){
+    L.push('※ 같은 자리에서 두 개를 고른 만큼 유형 배열이 달라집니다 — 이대로 반영할지 확인해줘.');
+  }
+  var stars = starredIds();
+  if (stars.length){
+    L.push('');
+    L.push('모범 문제로 표시한 문항 (' + stars.length + '개): ' + stars.join(' '));
+  }
+  var memos = memoLines();
+  if (memos.length){
+    L.push('');
+    L.push('추가 요청사항:');
+    memos.forEach(function(m){ L.push(m); });
+  }
+  return L.join('\n');
+}
+
+/* ===== 다시 만들 문항 고르기 (모달) ===== */
+/* 이 선택은 localStorage(qzregen:…)에 저장된다. 예전에는 메모리 변수뿐이라 모달을 닫거나
+   새로고침하면 고른 값이 통째로 사라졌다. */
+var regenPick = {};
+var regenSaved = false;   /* 이번에 연 뒤 저장을 눌렀는지 */
+var modal = document.getElementById('regen-modal');
+
+function openRegen(){
+  var n = selCount(), empty = emptySlots(), first = (lsGet(regenKey()) === '');
+  /* 저장해 둔 값이 있으면 그대로 복원한다. 한 번도 저장한 적이 없을 때만
+     '고른 문항이 없는 자리'를 미리 켜 준다 — 사람이 끈 자리가 되살아나면 안 되기 때문이다. */
+  if (first) empty.forEach(function(no){ regenPick[no] = true; });
+
+  document.getElementById('regen-note').value = lsGet(regenNoteKey());
+  regenSaved = false;
+  setRegenHint('');
+
+  document.getElementById('regen-lead').innerHTML =
+    '지금까지 <b>' + n + '개</b>를 고르셨습니다. 어느 자리를 다시 만들지 골라주세요.' +
+    (first ? ' 고른 문항이 없는 자리는 미리 켜 두었습니다.' : ' 지난번에 저장한 선택을 불러왔습니다.') +
+    ' <b>7개를 다 채우지 않아도 됩니다</b> — 저장한 뒤 「선택 결과 복사」를 누르면 고른 문항과 함께 나갑니다.' +
+    ' 새로 만드는 2안도 <b>서로 다른 내용이나 다른 방식으로</b> 묻도록 만듭니다.';
+
+  var box = document.getElementById('regen-list');
+  box.innerHTML = '';
+  SLOTS.forEach(function(s){
+    var ks = slotKeys(s.no), on = !!regenPick[s.no];
+    var row = document.createElement('label');
+    row.className = 'rg-row' + (on ? ' on' : '');
+    row.innerHTML = '<input type="checkbox" data-regen="' + s.no + '"' + (on ? ' checked' : '') + '>'
+      + '<span class="rg-no">' + s.no + '</span>'
+      + '<span class="rg-meta">' + esc(s.lv) + ' · ' + esc(s.type) + '</span>'
+      + '<span class="rg-state' + (ks.length ? '' : ' empty') + '">'
+      + (ks.length ? '현재 ' + ks.join('·') + '안 선택' : '고른 문항 없음') + '</span>';
+    box.appendChild(row);
+  });
+  modal.hidden = false;
+}
+function closeRegen(){ modal.hidden = true; }
+
+function setRegenHint(msg){
+  var el = document.getElementById('regen-hint');
+  el.textContent = msg;
+  el.className = 'regen-hint' + (msg ? ' saved' : '');
+}
+
+/* 저장 — 고른 자리와 메모를 localStorage에 넣고 하단 바를 갱신한다.
+   전체 재렌더(render)를 부르지 않는다. 사용자가 풀던 답이 지워지기 때문이다. */
+function saveRegen(){
+  var nos = regenSlots();
+  if (nos.length) lsSet(regenKey(), JSON.stringify(nos)); else lsDel(regenKey());
+  var note = (document.getElementById('regen-note').value || '').trim();
+  if (note) lsSet(regenNoteKey(), note); else lsDel(regenNoteKey());
+  regenSaved = true;
+  setRegenHint(nos.length ? '저장했습니다 — ' + nos.join(', ') + '번' : '저장했습니다 — 다시 만들 자리 없음');
+  updateBar();
+  SLOTS.forEach(function(s){ syncMemoHeader(s.no); });
+}
+
+
+/* ===== 복사 ===== */
+function copyText(text, btn){
+  var original = btn.innerHTML;
+  var done = function(){ btn.textContent = '복사됨 ✓'; setTimeout(function(){ btn.innerHTML = original; }, 1800); };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done){
+  var t = document.createElement('textarea');
+  t.value = text; t.style.position = 'fixed'; t.style.opacity = '0';
+  document.body.appendChild(t); t.select();
+  try { document.execCommand('copy'); done(); }
+  catch(e){ window.prompt('아래 내용을 복사하세요', text); }
+  document.body.removeChild(t);
+}
+
+/* ===== 이벤트 ===== */
+document.addEventListener('change', function(e){
+  var el = e.target;
+
+  /* 문항 선택 체크박스 */
+  if (el.hasAttribute && el.hasAttribute('data-sel')){
+    var p = el.getAttribute('data-sel').split('|'), k = p[0] + p[1];
+    if (el.checked){
+      if (selCount() >= MAX){ el.checked = false; return; }
+      sel[k] = true;
+    } else {
+      delete sel[k];
+    }
+    applySelUI();
+    return;
+  }
+
+  /* 모범 문제 별표 — 선택 7개 제한과 무관하며 개수 제한도 없다 */
+  if (el.hasAttribute && el.hasAttribute('data-star')){
+    var sp = el.getAttribute('data-star').split('|'), sk = sp[0] + sp[1];
+    if (el.checked) starred[sk] = true; else delete starred[sk];
+    applySelUI();
+    return;
+  }
+
+  /* 모달의 자리 선택 — 실제 저장은 「저장」 버튼에서 한다 */
+  if (el.hasAttribute && el.hasAttribute('data-regen')){
+    var no = parseInt(el.getAttribute('data-regen'), 10);
+    if (el.checked) regenPick[no] = true; else delete regenPick[no];
+    el.closest('.rg-row').classList.toggle('on', el.checked);
+    setRegenHint('');   /* 저장 뒤 다시 만졌으면 "저장했습니다" 표시를 지운다 */
+    regenSaved = false;
+    return;
+  }
+
+  /* 문항을 풀 때의 보기 강조 */
+  if (el.type === 'radio' || el.type === 'checkbox'){
+    var scope = el.closest('.opts'); if (!scope) return;
+    if (el.type === 'radio') scope.querySelectorAll('.opt').forEach(function(o){ o.classList.remove('sel'); });
+    var lab = el.closest('.opt');
+    if (el.type === 'checkbox') lab.classList.toggle('sel', el.checked); else lab.classList.add('sel');
+  }
+});
+
+document.addEventListener('click', function(e){
+  var v = e.target.closest('[data-view]');
+  if (v){ var p = v.getAttribute('data-view').split('|'); view[p[0]] = p[1]; render(); return; }
+  var ck = e.target.closest('[data-check]');
+  if (ck){ grade(ck.getAttribute('data-check'), false); return; }
+  var cl = e.target.closest('[data-clear]');
+  if (cl){ clearOne(cl.getAttribute('data-clear')); return; }
+  var cm = e.target.closest('[data-copymemo]');
+  if (cm){
+    var who = (document.getElementById('reviewer').value || '').trim();
+    var ta = document.querySelector('[data-memo="' + cm.getAttribute('data-copymemo') + '"]');
+    copyText(ta.value + (who ? '\n검수자: ' + who : ''), cm);
+    return;
+  }
+  var rm = e.target.closest('[data-resetmemo]');
+  if (rm){
+    var no = rm.getAttribute('data-resetmemo');
+    if (!window.confirm('문항 ' + no + ' 메모를 기본 양식으로 되돌립니다. 계속할까요?')) return;
+    var t2 = document.querySelector('[data-memo="' + no + '"]');
+    t2.value = memoTemplate(parseInt(no, 10)); t2.classList.remove('has');
+    lsDel(memoKey(no));
+    syncMemoBadge(no);
+    return;
+  }
+});
+
+function fillAll(key){
+  sel = {};
+  SLOTS.forEach(function(s){ sel[s.no + key] = true; });
+  /* 재렌더하지 않는다 — 탭 모드에서 눌러도 풀던 답이 지워지지 않도록 */
+  applySelUI();
+}
+document.getElementById('btn-allA').addEventListener('click', function(){ fillAll('A'); });
+document.getElementById('btn-allB').addEventListener('click', function(){ fillAll('B'); });
+
+document.getElementById('sw-both').addEventListener('change', function(){
+  showBoth = this.checked; render();
+});
+document.getElementById('btn-reveal').addEventListener('click', function(){
+  document.querySelectorAll('[data-check]').forEach(function(b){ grade(b.getAttribute('data-check'), true); });
+});
+document.getElementById('btn-reset').addEventListener('click', function(){
+  document.querySelectorAll('[data-clear]').forEach(function(b){ clearOne(b.getAttribute('data-clear')); });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-clearpick').addEventListener('click', function(){
+  if (!selCount()) return;
+  if (!window.confirm('선택한 문항을 모두 지우고 처음부터 다시 고릅니다.\n풀던 답과 별표, 검수 메모는 그대로 남습니다. 계속할까요?')) return;
+  sel = {};
+  lsDel(selKey());
+  applySelUI();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('btn-copy').addEventListener('click', function(){
+  copyText(buildResult(), this);
+});
+
+document.getElementById('btn-regen').addEventListener('click', openRegen);
+document.getElementById('regen-save').addEventListener('click', function(){
+  saveRegen();
+  closeRegen();
+});
+/* 저장하지 않고 닫으면 이번에 만진 체크는 버리고 저장돼 있던 값으로 되돌린다 —
+   "닫기"가 곧 취소가 되도록. */
+function cancelRegen(){
+  if (!regenSaved){
+    regenPick = {};
+    loadRegen();
+  }
+  closeRegen();
+}
+document.getElementById('regen-close').addEventListener('click', cancelRegen);
+modal.addEventListener('click', function(e){ if (e.target === modal) cancelRegen(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !modal.hidden) cancelRegen(); });
+
+var nameInput = document.getElementById('reviewer');
+nameInput.value = lsGet(nameKey());
+nameInput.addEventListener('input', function(){ lsSet(nameKey(), nameInput.value); });
+
+function loadIds(raw, limit, into){
+  try {
+    var saved = JSON.parse(raw || '[]');
+    if (Object.prototype.toString.call(saved) !== '[object Array]') return;
+    (limit ? saved.slice(0, limit) : saved).forEach(function(k){
+      var no = parseInt(k, 10), key = String(k).slice(-1);
+      if (slotOf(no) && (key === 'A' || key === 'B')) into[no + key] = true;
+    });
+  } catch(e){}
+}
+loadIds(lsGet(selKey()), MAX, sel);      /* 선택은 7개까지만 복원 */
+loadIds(lsGet(starKey()), 0, starred);   /* 별표는 개수 제한 없음 */
+
+/* 다시 만들 자리 복원 — 자리 번호 배열이라 loadIds(A/B 키)와 형식이 다르다 */
+function loadRegen(){
+  try {
+    var saved = JSON.parse(lsGet(regenKey()) || '[]');
+    if (Object.prototype.toString.call(saved) !== '[object Array]') return;
+    saved.forEach(function(v){
+      var no = parseInt(v, 10);
+      if (slotOf(no)) regenPick[no] = true;
+    });
+  } catch(e){}
+}
+loadRegen();
+
+render();
+</script>
+</body>
+</html>
