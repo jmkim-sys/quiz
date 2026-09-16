@@ -1,0 +1,136 @@
+/* quiz_update.json 생성기 (2026-09-15 신설)
+ *
+ *   node tools/build_quiz_update.js <아티클ID> [아티클ID ...]
+ *   예: node tools/build_quiz_update.js 03_물질_C_전이금속
+ *
+ * 무엇을 하나: `산출물/퀴즈CSV/<아티클ID>.csv`(기획자가 검수하는 바로 그 파일)를 읽어
+ * `tools/update_google_sheet.py`가 먹는 `quiz_update.json`으로 바꾼다.
+ *
+ * 왜 CSV를 읽나: 시트에 들어갈 값과 사람이 검수한 값이 **같은 파일에서 나와야** 어긋나지 않는다.
+ * JSON에서 다시 계산하면 표기 규칙(OX 라벨 · 순서배열 라벨 · 직접 입력 빈 보기)을 두 군데서
+ * 관리하게 된다. 행을 찾는 키(unit·middleUnit·item)만 `산출물/퀴즈데이터/<아티클ID>.json`의
+ * meta에서 가져온다.
+ *
+ * 열 대응 — CSV 17열 중 **G~Q열 11칸**이 그대로 전송된다:
+ *   G 문제=question · H 정답1=answer1 · I 정답2=answer2 · J~O 보기1~6=choice1~6 ·
+ *   P 예문=example · Q 정답해설=explanation
+ * A~F열(분과·중단원·아티클·문항 번호·난이도·퀴즈 유형)은 **보내지 않는다** — 시트에 이미 있는
+ * 스켈레톤 값이고, 그중 넷이 행을 찾는 키가 된다.
+ */
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.resolve(__dirname, '..');
+const OUT = path.join(ROOT, 'quiz_update.json');
+
+function die(msg) { console.error('[중단] ' + msg); process.exit(1); }
+
+/* 따옴표를 지키는 최소 CSV 파서 */
+function parseCsv(t) {
+  const rows = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(cur); cur = ''; }
+    else if (c === '\r') { /* CRLF */ }
+    else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
+    else cur += c;
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+
+/* ── 시트 행 키 대응표 (2026-09-16 신설) ─────────────────────────────────────────
+   시트의 `중단원`·`아티클` 칸 표기가 우리 표기와 다른 아티클이 있다. 그리고 웹앱은 이 두 칸을
+   **글자 그대로** 대조하는 것으로 보인다 — 2026-09-16에 코드만(`P-1`·`A`) 보냈더니 프롤로그 28건이
+   전부 `대상 행을 찾을 수 없습니다`로 돌아왔다. 하이픈은 양쪽 모두 ASCII(U+002D)로 같았으므로
+   글자 종류 문제가 아니라 **부분 문자열로는 안 찾는다**는 뜻이다.
+   그래서 대응표에 있는 아티클은 **시트에 적힌 문자열을 그대로** 보낸다.
+   값의 출처는 사용자가 2026-09-16에 붙여넣어 준 프롤로그 탭 2~36행이다 — 추측한 값이 아니다
+   (CLAUDE.md 규칙 3번). 여기 없는 아티클은 종전대로 코드를 보낸다 — 1·3단원은 그 방식으로 성공했고,
+   그 탭들의 칸에 무엇이 들어 있는지는 아직 확인하지 못했으므로 건드리지 않는다.
+   ⚠️ P-3는 시트 표기 자체가 우리와 다르다 — 시트 `P-3) 과학의 언어`/`수학` vs 우리
+   `P-3) 수학 — 자연의 언어`/`수리물리`. 사용자 확정: *"그냥 수학 자리에 넣어"*. */
+const SHEET_KEY = {
+  /* ── 0. 프롤로그 (2026-09-16 사용자 붙여넣기로 확정 · 35/35 전송 성공) ── */
+  '0|A. 자연과학 소개':      { 중단원: 'P-1) 과학적 사고란 무엇인가', 아티클: 'A. 자연과학 소개' },
+  '0|B. 과학 연구의 목표':    { 중단원: 'P-1) 과학적 사고란 무엇인가', 아티클: 'B. 과학 연구의 목표' },
+  '0|A. 단위':              { 중단원: 'P-2) 단위와 측정',          아티클: 'A. 단위' },
+  '0|B. 과학 연구의 측정':    { 중단원: 'P-2) 단위와 측정',          아티클: 'B. 과학 연구의 측정' },
+  /* 시트는 이 아티클을 `수학`이라 부른다. 사용자 확정: "수학=수리물리 동일한거야" */
+  '0|수리물리':             { 중단원: 'P-3) 과학의 언어',          아티클: '수학' },
+
+  /* ── 8. 에필로그 (2026-09-16 사용자 붙여넣기로 확정 · 아직 퀴즈 없음 — 전송 미검증) ──
+     블록 6개가 로컬 스켈레톤과 같은 순서·같은 행(2~43행)이라 짝은 분명하다.
+     ⚠️ 네 곳은 시트 표기가 우리와 다르다 — 아래 주석에 로컬 표기를 함께 적어 둔다. */
+  '8|지구 에너지 수지와 온실효과':
+      { 중단원: 'E-1) 지구 에너지 수지와 온실효과', 아티클: '지구 에너지 수지와 온실 효과' },  /* 시트만 `온실 효과`로 띄어 쓴다 */
+  '8|IPCC 미래 시나리오':
+      { 중단원: 'E-2) IPCC 평가 미래 기후 시나리오', 아티클: 'IPCC 평가 미래 기후 시나리오' },  /* 로컬은 `IPCC 미래 시나리오` */
+  '8|탄소 순환의 위기':
+      { 중단원: 'E-3) 탄소 순환의 위기', 아티클: '탄소 순환의 위기' },  /* 표기 동일 — 중단원 전체 문자열이 필요해 그래도 적는다 */
+  '8|A. 재생에너지의 원리와 한계':
+      { 중단원: 'E-4) 에너지 전환의 물리학', 아티클: 'A. 재생에너지의 원리와 한계' },  /* 표기 동일 */
+  '8|B. 핵융합 — 별의 불을 땅으로':
+      { 중단원: 'E-4) 에너지 전환의 물리학', 아티클: 'B. 핵융합' },  /* 시트는 부제 없이 `B. 핵융합` */
+  '8|과학기술의 미래와 인류의 선택':
+      { 중단원: 'E-5) 과학기술과 인류의 미래', 아티클: '과학기술의 미래와 인류의 선택' },  /* 로컬 중단원은 `E-5) 과학기술의 미래와 인류의 선택` */
+};
+
+const ids = process.argv.slice(2);
+if (!ids.length) die('아티클ID를 하나 이상 넘겨라.\n  예: node tools/build_quiz_update.js 03_물질_C_전이금속');
+
+const quizzes = [];
+for (const id of ids) {
+  const csvPath = path.join(ROOT, '산출물', '퀴즈CSV', id + '.csv');
+  const jsonPath = path.join(ROOT, '산출물', '퀴즈데이터', id + '.json');
+  if (!fs.existsSync(csvPath)) die('검수용 CSV가 없다: ' + csvPath);
+  if (!fs.existsSync(jsonPath)) die('퀴즈데이터 JSON이 없다: ' + jsonPath);
+
+  const meta = JSON.parse(fs.readFileSync(jsonPath, 'utf8').replace(/^\uFEFF/, '')).meta || die(id + ' — meta가 없다.');
+
+  /* 행을 찾는 키 — 지어내지 않고 meta에서 뽑는다 (CLAUDE.md 규칙 3번) */
+  const mUnit = String(meta.대단원 || '').match(/^(\d+)\./);
+  if (!mUnit) die(id + ' — 대단원에서 번호를 뽑지 못했다: "' + meta.대단원 + '"');
+  const mMid = String(meta.중단원 || '').match(/^([^)]+)\)/);
+  if (!mMid) die(id + ' — 중단원에서 코드를 뽑지 못했다: "' + meta.중단원 + '"');
+  /* 아티클명이 `A. …` 꼴이면 그 문자 하나가 시트 아티클 칸을 찾는 키다(`A. 특수 상대성 이론` → `A`).
+     문자 접두가 없는 아티클도 있다 — 프롤로그 P-3의 `수리물리`, 에필로그의
+     `지구 에너지 수지와 온실효과` 등으로, 목차 원본부터 그렇게 되어 있다.
+     2026-09-16 사용자 확인: "수리물리 그거 아티클명 괜찮으니까 그냥 수학 자리에 넣어"
+     → 그런 건 **아티클명을 통째로 키로 보낸다.** 지어낸 값이 아니라 목차·스켈레톤과 같은 표기다. */
+  const mItem = String(meta.아티클 || '').match(/^([A-Z])\.\s/);
+
+  const unit = Number(mUnit[1]);
+  /* 대응표 키는 `<대단원 번호>|<우리 아티클명>`이다 — 파일명(articleId)이 아니라 meta에서 바로
+     만들 수 있는 값이라, 아직 퀴즈 파일이 없는 대단원(에필로그)도 미리 적어 둘 수 있다. */
+  const key = unit + '|' + String(meta.아티클 || '').trim();
+  const sk = SHEET_KEY[key];
+  const middleUnit = (sk && sk.중단원) || mMid[1].trim();
+  const item = (sk && sk.아티클) || (mItem ? mItem[1] : String(meta.아티클 || '').trim());
+  if (!item) die(id + ' — meta.아티클이 비어 있어 시트의 어느 행인지 알 수 없다.');
+
+  const rows = parseCsv(fs.readFileSync(csvPath, 'utf8').replace(/^\uFEFF/, '')).slice(1);
+  if (rows.length !== 7) die(id + ' — CSV가 7행이 아니다: ' + rows.length + '행');
+
+  for (const r of rows) {
+    if (r.length !== 17) die(id + ' — 17열이 아닌 행이 있다: ' + r.length + '열');
+    quizzes.push({
+      unit, middleUnit, item,
+      questionNo: Number(r[3]),
+      question: r[6],
+      answer1: r[7],
+      answer2: r[8],
+      choice1: r[9], choice2: r[10], choice3: r[11],
+      choice4: r[12], choice5: r[13], choice6: r[14],
+      example: r[15],
+      explanation: r[16],
+    });
+  }
+  console.log('담음: ' + id.padEnd(28) + unit + '단원 / ' + middleUnit + ' / ' + item + ' / 1~7번');
+}
+
+fs.writeFileSync(OUT, JSON.stringify({ quizzes }, null, 2) + '\n', 'utf8');
+console.log('\n생성: quiz_update.json — 아티클 ' + ids.length + '건 · 문항 ' + quizzes.length + '개');
+console.log('다음: python tools/update_google_sheet.py quiz_update.json');
