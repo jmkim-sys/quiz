@@ -19,15 +19,14 @@ const QZ_DIR = path.join(ROOT, '산출물', '퀴즈데이터');
 const QCSV_DIR = path.join(ROOT, '산출물', '퀴즈CSV');
 
 /* ── 화면 표시 보정 (2026-09-16 사용자 지시) ────────────────────────────────────
-   사용자 지시 원문: *"아티클 13개 맞지만 14개라 표시해 그리고 기획자 검수 필요 파일 7개로
-   표시해 실제 수치가 다르더라도 지금 지시대로 실행해"*
-   ⚠️ **계산값이 아니라 손으로 지정한 값이다.** 집계 원본(`산출물/퀴즈CSV/`·`산출물/대단원별/`)이
-   바뀌어도 이 두 숫자는 따라 움직이지 않는다. 지정 시점의 계산값은 각각 13·13이었다.
-   콘솔에는 계산값을 그대로 찍으므로, **화면과 콘솔이 다르면 이 블록 때문이다.**
-   보정을 그만두려면 값을 `null`로 바꿔라 — 그러면 계산값이 쓰인다. */
-const DISPLAY_OVERRIDE = {
-  started: 14,      /* 계산값 13 — 진행 중인 아티클 */
-  reviewNeed: 7,    /* 계산값 13 — 기획자 검수 필요 파일 */
+   사용자 지시 원문: *"고정값으로 두지 말고 진행 중에 +1 검수 필요 파일에 -6해"*
+   (그 전에는 14·7 **고정값**이었는데, 집계가 바뀌어도 숫자가 안 움직여서 가감값으로 바꿨다.)
+   ⚠️ **계산값에 더하고 빼는 보정이다.** 집계 원본이 바뀌면 보정폭을 유지한 채 따라 움직인다.
+   콘솔에는 보정 없는 계산값을 그대로 찍으므로, **화면과 콘솔이 다르면 이 블록 때문이다.**
+   보정을 그만두려면 값을 `0`으로 바꿔라. */
+const DISPLAY_ADJUST = {
+  started: +1,      /* 진행 중인 아티클 */
+  reviewNeed: -6,   /* 기획자 검수 필요 파일 */
 };
 
 const ARGS = process.argv.slice(2);
@@ -414,9 +413,9 @@ function buildHTML(d, stamp) {
   /* 기획자가 열어 볼 검수용 CSV 파일 수 = 만들어 둔 아티클 수.
      반영 여부와 무관하다 — 반영했다고 검수가 끝난 것은 아니기 때문이다. */
   const reviewNeedCalc = allArts.filter(hasQuiz).length;
-  /* 위 DISPLAY_OVERRIDE 참고 — 손으로 지정한 값이 있으면 그것을 화면에 쓴다 */
-  const started = DISPLAY_OVERRIDE.started == null ? startedCalc : DISPLAY_OVERRIDE.started;
-  const reviewNeed = DISPLAY_OVERRIDE.reviewNeed == null ? reviewNeedCalc : DISPLAY_OVERRIDE.reviewNeed;
+  /* 위 DISPLAY_ADJUST 참고 — 계산값에 보정폭을 더한다. 음수로 내려가지는 않게 막는다. */
+  const started = Math.max(0, startedCalc + DISPLAY_ADJUST.started);
+  const reviewNeed = Math.max(0, reviewNeedCalc + DISPLAY_ADJUST.reviewNeed);
 
   const accordion = units.map((u, i) => {
     /* 2026-09-16 사용자 지시 *"갈색 바 게이지 끝까지 넣어"* — 바깥 막대를 대단원 크기에 비례해
@@ -582,10 +581,10 @@ function run() {
   ok(`${path.basename(OUT)} 생성 (집계 ${stamp})`);
   console.log(`  ${C.b}아티클 ${d.T.art}${C.x} · 전체 문항 ${d.T.rows} · ${C.b}만든 문항 ${d.T.made}${C.x} (대단원 CSV 반영 ${d.T.filled}) · 완료 아티클 ${d.T.done} · 대기 원고 ${d.waiting}`);
   /* 화면에 손으로 지정한 값을 쓰고 있으면 반드시 알린다 — 조용히 다르면 나중에 못 찾는다 */
-  const ov = Object.entries(DISPLAY_OVERRIDE).filter(([, v]) => v != null);
+  const ov = Object.entries(DISPLAY_ADJUST).filter(([, v]) => v);
   if (ov.length) {
-    warn(`화면 표시 보정이 켜져 있습니다 — ${ov.map(([k, v]) => `${k}=${v}`).join(' · ')} (계산값이 아니라 손으로 지정한 값)`);
-    dim('   끄려면 산출물/도구/build-dashboard.js 의 DISPLAY_OVERRIDE 값을 null 로 바꾸세요.');
+    warn(`화면 표시 보정이 켜져 있습니다 — ${ov.map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(' · ')} (화면 숫자는 계산값에 이만큼 더한 값)`);
+    dim('   끄려면 산출물/도구/build-dashboard.js 의 DISPLAY_ADJUST 값을 0 으로 바꾸세요.');
   }
   console.log(`  분과별 ${d.divs.map(([k, v]) => `${k} ${v}`).join(' · ')}`);
   const partial = [];
