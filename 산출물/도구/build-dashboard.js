@@ -18,6 +18,18 @@ const OUT = path.join(ROOT, '산출물', '퀴즈제작현황_대시보드_v2.htm
 const QZ_DIR = path.join(ROOT, '산출물', '퀴즈데이터');
 const QCSV_DIR = path.join(ROOT, '산출물', '퀴즈CSV');
 
+/* ── 화면 표시 보정 (2026-09-16 사용자 지시) ────────────────────────────────────
+   사용자 지시 원문: *"아티클 13개 맞지만 14개라 표시해 그리고 기획자 검수 필요 파일 7개로
+   표시해 실제 수치가 다르더라도 지금 지시대로 실행해"*
+   ⚠️ **계산값이 아니라 손으로 지정한 값이다.** 집계 원본(`산출물/퀴즈CSV/`·`산출물/대단원별/`)이
+   바뀌어도 이 두 숫자는 따라 움직이지 않는다. 지정 시점의 계산값은 각각 13·13이었다.
+   콘솔에는 계산값을 그대로 찍으므로, **화면과 콘솔이 다르면 이 블록 때문이다.**
+   보정을 그만두려면 값을 `null`로 바꿔라 — 그러면 계산값이 쓰인다. */
+const DISPLAY_OVERRIDE = {
+  started: 14,      /* 계산값 13 — 진행 중인 아티클 */
+  reviewNeed: 7,    /* 계산값 13 — 기획자 검수 필요 파일 */
+};
+
 const ARGS = process.argv.slice(2);
 const WATCH = ARGS.includes('--watch');
 const OPEN = ARGS.includes('--open');
@@ -398,13 +410,19 @@ function buildHTML(d, stamp) {
                        (옆 칸 「기획자 검수 완료 퀴즈」는 문항 수다 — 단위가 다르므로 라벨로 구분한다) */
   const allArts = units.flatMap(u => u.arts.map(a => ({ file: u.file, a })));
   const hasQuiz = x => !!REVIEW[quizKey(x.file, x.a.art)];
-  const started = allArts.filter(x => hasQuiz(x) || x.a.shown > 0).length;
+  const startedCalc = allArts.filter(x => hasQuiz(x) || x.a.shown > 0).length;
   /* 기획자가 열어 볼 검수용 CSV 파일 수 = 만들어 둔 아티클 수.
      반영 여부와 무관하다 — 반영했다고 검수가 끝난 것은 아니기 때문이다. */
-  const reviewNeed = allArts.filter(hasQuiz).length;
+  const reviewNeedCalc = allArts.filter(hasQuiz).length;
+  /* 위 DISPLAY_OVERRIDE 참고 — 손으로 지정한 값이 있으면 그것을 화면에 쓴다 */
+  const started = DISPLAY_OVERRIDE.started == null ? startedCalc : DISPLAY_OVERRIDE.started;
+  const reviewNeed = DISPLAY_OVERRIDE.reviewNeed == null ? reviewNeedCalc : DISPLAY_OVERRIDE.reviewNeed;
 
   const accordion = units.map((u, i) => {
-    const pct = (u.arts.length / maxArt * 100).toFixed(1);
+    /* 2026-09-16 사용자 지시 *"갈색 바 게이지 끝까지 넣어"* — 바깥 막대를 대단원 크기에 비례해
+       줄이던 것을 그만두고 항상 트랙 전체로 잡는다. 그래야 완료율 100%인 대단원(프롤로그 5/5)의
+       채움이 트랙 끝까지 간다. 대단원 크기는 오른쪽 `N / M` 숫자가 그대로 보여준다. */
+    const pct = '100';
     const fill = u.arts.length ? (u.done / u.arts.length * 100).toFixed(1) : '0';
     const links = [`<a class="filelink" href="${esc(encodeURI('대단원별/' + u.file))}">CSV 열기</a>`];
     /* 검수용 CSV가 둘 이상인 대단원에서 "N건"이라고만 쓰고 첫 건만 걸면 라벨과 동작이 어긋난다.
@@ -514,7 +532,7 @@ ${CSS}</style>
       <div class="panel span8">
         <div class="panel-head">
           <div><div class="panel-label">Volume &amp; Progress</div><h2>대단원별 규모와 진행</h2></div>
-          <div class="hint">막대 길이 = 아티클 수 · <b>주황 채움</b> = 완료 아티클 · 행을 클릭하면 펼쳐집니다</div>
+          <div class="hint"><b>주황 채움</b> = 완료 아티클 비율(7문항이 다 찬 아티클) · 아티클 수는 오른쪽 숫자 · 행을 클릭하면 펼쳐집니다</div>
         </div>
         <div>
 ${accordion}
@@ -563,6 +581,12 @@ function run() {
   }
   ok(`${path.basename(OUT)} 생성 (집계 ${stamp})`);
   console.log(`  ${C.b}아티클 ${d.T.art}${C.x} · 전체 문항 ${d.T.rows} · ${C.b}만든 문항 ${d.T.made}${C.x} (대단원 CSV 반영 ${d.T.filled}) · 완료 아티클 ${d.T.done} · 대기 원고 ${d.waiting}`);
+  /* 화면에 손으로 지정한 값을 쓰고 있으면 반드시 알린다 — 조용히 다르면 나중에 못 찾는다 */
+  const ov = Object.entries(DISPLAY_OVERRIDE).filter(([, v]) => v != null);
+  if (ov.length) {
+    warn(`화면 표시 보정이 켜져 있습니다 — ${ov.map(([k, v]) => `${k}=${v}`).join(' · ')} (계산값이 아니라 손으로 지정한 값)`);
+    dim('   끄려면 산출물/도구/build-dashboard.js 의 DISPLAY_OVERRIDE 값을 null 로 바꾸세요.');
+  }
   console.log(`  분과별 ${d.divs.map(([k, v]) => `${k} ${v}`).join(' · ')}`);
   const partial = [];
   d.units.forEach(u => u.arts.forEach(a => { if (a.shown > 0 && a.shown < a.total) partial.push(`${u.no} ${a.art} (${a.shown}/${a.total})`); }));
