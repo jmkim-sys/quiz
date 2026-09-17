@@ -445,7 +445,7 @@ ${m.arts.map(a => {
     }).join('\n')}
         </ul>
       </div>`).join('\n');
-    return `    <details class="eu"${i === 1 ? ' open' : ''}>
+    return `    <details class="eu">
       <summary>
         <span class="chev" aria-hidden="true"></span>
         <span class="eu-name">${u.no} · ${esc(u.label)}</span>

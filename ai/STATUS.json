@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "3-1_B",
+  "lastCompleted": "3-3_A",
   "totalCount": 128,
-  "completedCount": 30,
-  "remainingCount": 98,
+  "completedCount": 33,
+  "remainingCount": 95,
   "nextArticle": {
     "sourceFile": "03_물질_원자가_만드는_세계.csv",
     "subject": "화학",
-    "middleUnit": "3-2) 원소의 지도 — 주기율표",
-    "article": "A. 원소의 주기적 성질",
-    "matchKey": "32원소의지도주기율표a원소의주기적성질"
+    "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+    "article": "B. 결합 법칙",
+    "matchKey": "33원자의결합분자의탄생b결합법칙"
   },
   "completedArticles": [
     {
@@ -198,8 +198,29 @@
       "sourceFile": "03_물질_원자가_만드는_세계.csv",
       "subject": "화학",
       "middleUnit": "3-2) 원소의 지도 — 주기율표",
+      "article": "A. 원소의 주기적 성질",
+      "matchKey": "32원소의지도주기율표a원소의주기적성질"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-2) 원소의 지도 — 주기율표",
+      "article": "B. 비금속",
+      "matchKey": "32원소의지도주기율표b비금속"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-2) 원소의 지도 — 주기율표",
       "article": "C. 전이 금속",
       "matchKey": "32원소의지도주기율표c전이금속"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+      "article": "A. 분자",
+      "matchKey": "33원자의결합분자의탄생a분자"
     },
     {
       "sourceFile": "03_물질_원자가_만드는_세계.csv",
@@ -224,27 +245,6 @@
     }
   ],
   "pendingArticles": [
-    {
-      "sourceFile": "03_물질_원자가_만드는_세계.csv",
-      "subject": "화학",
-      "middleUnit": "3-2) 원소의 지도 — 주기율표",
-      "article": "A. 원소의 주기적 성질",
-      "matchKey": "32원소의지도주기율표a원소의주기적성질"
-    },
-    {
-      "sourceFile": "03_물질_원자가_만드는_세계.csv",
-      "subject": "화학",
-      "middleUnit": "3-2) 원소의 지도 — 주기율표",
-      "article": "B. 비금속",
-      "matchKey": "32원소의지도주기율표b비금속"
-    },
-    {
-      "sourceFile": "03_물질_원자가_만드는_세계.csv",
-      "subject": "화학",
-      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
-      "article": "A. 분자",
-      "matchKey": "33원자의결합분자의탄생a분자"
-    },
     {
       "sourceFile": "03_물질_원자가_만드는_세계.csv",
       "subject": "화학",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-17T15:43:38"
+  "updatedAt": "2026-09-17T16:34:51"
 }
