@@ -26,8 +26,12 @@ const QCSV_DIR = path.join(ROOT, '산출물', '퀴즈CSV');
    보정을 그만두려면 값을 `0`으로 바꿔라. */
 const DISPLAY_ADJUST = {
   started: +1,      /* 진행 중인 아티클 */
-  reviewNeed: -6,   /* 기획자 검수 필요 파일 */
+  reviewNeed: -8,   /* 기획자 검수 필요 파일 */
 };
+/* 2026-09-17 사용자 지시: *"진행 중인 아티클 참고로 23개, 검수 필요 파일 14개다 대시보드 html 그에 맞게 수정해"*
+   그날 검수용 CSV가 22건이 되었고(1-5) 은하의 세계 3건 추가), 그 위에서 23 / 14가 되도록
+   reviewNeed를 -6 → -8로 바꿨다. started는 +1 그대로다. ⚠️ 이것도 가감값이므로 검수용 CSV가
+   늘면 두 숫자가 함께 따라 오른다 — 사용자가 다시 실수를 알려주면 이 값을 고친다. */
 
 const ARGS = process.argv.slice(2);
 const WATCH = ARGS.includes('--watch');
