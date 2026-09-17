@@ -1,0 +1,916 @@
+{
+  "current": "3-1) 원자의 내부 / A. 원자",
+  "lastCompleted": "3-1_B",
+  "totalCount": 128,
+  "completedCount": 30,
+  "remainingCount": 98,
+  "nextArticle": {
+    "sourceFile": "03_물질_원자가_만드는_세계.csv",
+    "subject": "화학",
+    "middleUnit": "3-2) 원소의 지도 — 주기율표",
+    "article": "A. 원소의 주기적 성질",
+    "matchKey": "32원소의지도주기율표a원소의주기적성질"
+  },
+  "completedArticles": [
+    {
+      "sourceFile": "00_프롤로그_과학이란_무엇인가.csv",
+      "subject": "물리",
+      "middleUnit": "P-1) 과학적 사고란 무엇인가",
+      "article": "A. 자연과학 소개",
+      "matchKey": "p1과학적사고란무엇인가a자연과학소개"
+    },
+    {
+      "sourceFile": "00_프롤로그_과학이란_무엇인가.csv",
+      "subject": "화학",
+      "middleUnit": "P-1) 과학적 사고란 무엇인가",
+      "article": "B. 과학 연구의 목표",
+      "matchKey": "p1과학적사고란무엇인가b과학연구의목표"
+    },
+    {
+      "sourceFile": "00_프롤로그_과학이란_무엇인가.csv",
+      "subject": "물리",
+      "middleUnit": "P-2) 단위와 측정",
+      "article": "A. 단위",
+      "matchKey": "p2단위와측정a단위"
+    },
+    {
+      "sourceFile": "00_프롤로그_과학이란_무엇인가.csv",
+      "subject": "화학",
+      "middleUnit": "P-2) 단위와 측정",
+      "article": "B. 과학 연구의 측정",
+      "matchKey": "p2단위와측정b과학연구의측정"
+    },
+    {
+      "sourceFile": "00_프롤로그_과학이란_무엇인가.csv",
+      "subject": "물리",
+      "middleUnit": "P-3) 수학 — 자연의 언어",
+      "article": "수리물리",
+      "matchKey": "p3수학자연의언어수리물리"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "물리",
+      "middleUnit": "1-1) 시간과 공간의 본질",
+      "article": "A. 특수 상대성 이론",
+      "matchKey": "11시간과공간의본질a특수상대성이론"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "물리",
+      "middleUnit": "1-1) 시간과 공간의 본질",
+      "article": "B. 일반 상대성 이론",
+      "matchKey": "11시간과공간의본질b일반상대성이론"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-2) 우주의 탄생",
+      "article": "A. 표준 우주 모형",
+      "matchKey": "12우주의탄생a표준우주모형"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-2) 우주의 탄생",
+      "article": "B. 우주론",
+      "matchKey": "12우주의탄생b우주론"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-3) 우주의 구성과 구조",
+      "article": "A. 우주의 구성 성분",
+      "matchKey": "13우주의구성과구조a우주의구성성분"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-3) 우주의 구성과 구조",
+      "article": "B. 우주의 3차원 구조",
+      "matchKey": "13우주의구성과구조b우주의3차원구조"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-4) 우주를 어떻게 보는가",
+      "article": "A. 구면 천문학",
+      "matchKey": "14우주를어떻게보는가a구면천문학"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-4) 우주를 어떻게 보는가",
+      "article": "B. 측광과 분광",
+      "matchKey": "14우주를어떻게보는가b측광과분광"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-4) 우주를 어떻게 보는가",
+      "article": "C. 관측기기",
+      "matchKey": "14우주를어떻게보는가c관측기기"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-5) 은하의 세계",
+      "article": "A. 우리은하와 외부은하",
+      "matchKey": "15은하의세계a우리은하와외부은하"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-5) 은하의 세계",
+      "article": "B. 은하의 다양한 모습과 특성",
+      "matchKey": "15은하의세계b은하의다양한모습과특성"
+    },
+    {
+      "sourceFile": "01_빅뱅_우주의_시작.csv",
+      "subject": "천문",
+      "middleUnit": "1-5) 은하의 세계",
+      "article": "C. 은하의 형성과 진화",
+      "matchKey": "15은하의세계c은하의형성과진화"
+    },
+    {
+      "sourceFile": "02_별_원소를_만드는_공장.csv",
+      "subject": "천문",
+      "middleUnit": "2-1) 별의 탄생",
+      "article": "성간 물질과 별의 형성",
+      "matchKey": "21별의탄생성간물질과별의형성"
+    },
+    {
+      "sourceFile": "02_별_원소를_만드는_공장.csv",
+      "subject": "물리",
+      "middleUnit": "2-2) 별의 구조와 에너지",
+      "article": "A. 별의 내부 구조와 물리",
+      "matchKey": "22별의구조와에너지a별의내부구조와물리"
+    },
+    {
+      "sourceFile": "02_별_원소를_만드는_공장.csv",
+      "subject": "천문",
+      "middleUnit": "2-2) 별의 구조와 에너지",
+      "article": "B. 별의 관측",
+      "matchKey": "22별의구조와에너지b별의관측"
+    },
+    {
+      "sourceFile": "02_별_원소를_만드는_공장.csv",
+      "subject": "천문",
+      "middleUnit": "2-3) 별의 일생과 원소 합성",
+      "article": "A. 별의 진화",
+      "matchKey": "23별의일생과원소합성a별의진화"
+    },
+    {
+      "sourceFile": "02_별_원소를_만드는_공장.csv",
+      "subject": "물리",
+      "middleUnit": "2-3) 별의 일생과 원소 합성",
+      "article": "B. 핵물리",
+      "matchKey": "23별의일생과원소합성b핵물리"
+    },
+    {
+      "sourceFile": "02_별_원소를_만드는_공장.csv",
+      "subject": "천문",
+      "middleUnit": "2-4) 태양 — 가장 가까운 별",
+      "article": "태양 — 가장 가까운 별",
+      "matchKey": "24태양가장가까운별태양가장가까운별"
+    },
+    {
+      "sourceFile": "02_별_원소를_만드는_공장.csv",
+      "subject": "물리",
+      "middleUnit": "2-5) 극한의 별 — 입자의 세계",
+      "article": "입자물리",
+      "matchKey": "25극한의별입자의세계입자물리"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-1) 원자의 내부",
+      "article": "A. 원자",
+      "matchKey": "31원자의내부a원자"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "물리",
+      "middleUnit": "3-1) 원자의 내부",
+      "article": "B. 양자물리",
+      "matchKey": "31원자의내부b양자물리"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-2) 원소의 지도 — 주기율표",
+      "article": "C. 전이 금속",
+      "matchKey": "32원소의지도주기율표c전이금속"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "물리",
+      "middleUnit": "3-5) 물질의 집합",
+      "article": "응집 물질 물리",
+      "matchKey": "35물질의집합응집물질물리"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "B. 대기의 순환",
+      "matchKey": "64대기와날씨b대기의순환"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "C. 생명과 물",
+      "matchKey": "71생명의화학c생명과물"
+    }
+  ],
+  "pendingArticles": [
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-2) 원소의 지도 — 주기율표",
+      "article": "A. 원소의 주기적 성질",
+      "matchKey": "32원소의지도주기율표a원소의주기적성질"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-2) 원소의 지도 — 주기율표",
+      "article": "B. 비금속",
+      "matchKey": "32원소의지도주기율표b비금속"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+      "article": "A. 분자",
+      "matchKey": "33원자의결합분자의탄생a분자"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+      "article": "B. 결합 법칙",
+      "matchKey": "33원자의결합분자의탄생b결합법칙"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+      "article": "C. 결합의 극성",
+      "matchKey": "33원자의결합분자의탄생c결합의극성"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+      "article": "D. 결합 구조",
+      "matchKey": "33원자의결합분자의탄생d결합구조"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-4) 물질의 상태와 분류",
+      "article": "A. 물질의 분류",
+      "matchKey": "34물질의상태와분류a물질의분류"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-4) 물질의 상태와 분류",
+      "article": "B. 물질의 상태",
+      "matchKey": "34물질의상태와분류b물질의상태"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-6) 화학식량과 측정",
+      "article": "A. 반응식",
+      "matchKey": "36화학식량과측정a반응식"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-6) 화학식량과 측정",
+      "article": "B. 화학식량",
+      "matchKey": "36화학식량과측정b화학식량"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "물리",
+      "middleUnit": "4-1) 운동과 힘",
+      "article": "A. 동역학",
+      "matchKey": "41운동과힘a동역학"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "천문",
+      "middleUnit": "4-1) 운동과 힘",
+      "article": "B. 천체역학",
+      "matchKey": "41운동과힘b천체역학"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "물리",
+      "middleUnit": "4-2) 유체의 흐름",
+      "article": "유체역학",
+      "matchKey": "42유체의흐름유체역학"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "물리",
+      "middleUnit": "4-3) 파동 — 에너지의 전달",
+      "article": "파동과 진동",
+      "matchKey": "43파동에너지의전달파동과진동"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "물리",
+      "middleUnit": "4-4) 열과 엔트로피",
+      "article": "A. 열평형과 에너지 보존",
+      "matchKey": "44열과엔트로피a열평형과에너지보존"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "물리",
+      "middleUnit": "4-4) 열과 엔트로피",
+      "article": "B. 엔트로피",
+      "matchKey": "44열과엔트로피b엔트로피"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-4) 열과 엔트로피",
+      "article": "C. 화학 반응과 에너지",
+      "matchKey": "44열과엔트로피c화학반응과에너지"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-5) 화학 반응의 법칙",
+      "article": "A. 반응 속도",
+      "matchKey": "45화학반응의법칙a반응속도"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-5) 화학 반응의 법칙",
+      "article": "B. 반응 메커니즘",
+      "matchKey": "45화학반응의법칙b반응메커니즘"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-5) 화학 반응의 법칙",
+      "article": "C. 촉매",
+      "matchKey": "45화학반응의법칙c촉매"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-6) 반응의 방향성",
+      "article": "A. 화학 반응의 자발성",
+      "matchKey": "46반응의방향성a화학반응의자발성"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-6) 반응의 방향성",
+      "article": "B. 평형의 개념",
+      "matchKey": "46반응의방향성b평형의개념"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-6) 반응의 방향성",
+      "article": "C. 평형 상수",
+      "matchKey": "46반응의방향성c평형상수"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-7) 산·염기와 산화·환원",
+      "article": "A. 산-염기 반응",
+      "matchKey": "47산염기와산화환원a산염기반응"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-7) 산·염기와 산화·환원",
+      "article": "B. 산화-환원 반응",
+      "matchKey": "47산염기와산화환원b산화환원반응"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-1) 전기",
+      "article": "A. 쿨롱 법칙과 전기장",
+      "matchKey": "51전기a쿨롱법칙과전기장"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-1) 전기",
+      "article": "B. 전류",
+      "matchKey": "51전기b전류"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-2) 자기",
+      "article": "A. 자기력과 자기장",
+      "matchKey": "52자기a자기력과자기장"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-2) 자기",
+      "article": "B. 앙페르 법칙",
+      "matchKey": "52자기b앙페르법칙"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-3) 전자기 유도",
+      "article": "A. 전자기 유도",
+      "matchKey": "53전자기유도a전자기유도"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-3) 전자기 유도",
+      "article": "B. 발전기와 변압기",
+      "matchKey": "53전자기유도b발전기와변압기"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-4) 전자기파와 빛",
+      "article": "A. 맥스웰 방정식과 전자기파",
+      "matchKey": "54전자기파와빛a맥스웰방정식과전자기파"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-4) 전자기파와 빛",
+      "article": "B. 빛의 파동성",
+      "matchKey": "54전자기파와빛b빛의파동성"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "천문",
+      "middleUnit": "5-5) 빛으로 우주를 읽다",
+      "article": "측광과 분광",
+      "matchKey": "55빛으로우주를읽다측광과분광"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "천문",
+      "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
+      "article": "A. 외계행성",
+      "matchKey": "61태양계와지구의탄생왜이행성인가a외계행성"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "천문",
+      "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
+      "article": "B. 태양계 천체",
+      "matchKey": "61태양계와지구의탄생왜이행성인가b태양계천체"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
+      "article": "C. 행성지질학",
+      "matchKey": "61태양계와지구의탄생왜이행성인가c행성지질학"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "천문",
+      "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
+      "article": "D. 우주생명현상",
+      "matchKey": "61태양계와지구의탄생왜이행성인가d우주생명현상"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-2) 지구시스템",
+      "article": "A. 지구시스템(개관)",
+      "matchKey": "62지구시스템a지구시스템개관"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-2) 지구시스템",
+      "article": "B. 권역간 상호작용",
+      "matchKey": "62지구시스템b권역간상호작용"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-3) 지구 내부와 판구조",
+      "article": "A. 고체지구의 물성",
+      "matchKey": "63지구내부와판구조a고체지구의물성"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-3) 지구 내부와 판구조",
+      "article": "B. 화산: 지구 물질 순환의 통로",
+      "matchKey": "63지구내부와판구조b화산지구물질순환의통로"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-3) 지구 내부와 판구조",
+      "article": "C. 지진 및 지구물리",
+      "matchKey": "63지구내부와판구조c지진및지구물리"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "A. 지구와 대기",
+      "matchKey": "64대기와날씨a지구와대기"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "C. 일기 분석과 예측",
+      "matchKey": "64대기와날씨c일기분석과예측"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-5) 해양",
+      "article": "A. 해저 지형과 자원",
+      "matchKey": "65해양a해저지형과자원"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-5) 해양",
+      "article": "B. 해양의 순환과 규칙적 리듬",
+      "matchKey": "65해양b해양의순환과규칙적리듬"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-5) 해양",
+      "article": "C. 해수의 성분과 탄소 및 산소 순환",
+      "matchKey": "65해양c해수의성분과탄소및산소순환"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-5) 해양",
+      "article": "D. 해양의 생명과 생태계",
+      "matchKey": "65해양d해양의생명과생태계"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-6) 지구의 진화",
+      "article": "A. 지구의 기록",
+      "matchKey": "66지구의진화a지구의기록"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-6) 지구의 진화",
+      "article": "B. 고기후와 고환경",
+      "matchKey": "66지구의진화b고기후와고환경"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "화학",
+      "middleUnit": "6-7) 용액의 화학",
+      "article": "A. 용액의 성질",
+      "matchKey": "67용액의화학a용액의성질"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "화학",
+      "middleUnit": "6-7) 용액의 화학",
+      "article": "B. 용액이 촉발하는 변화",
+      "matchKey": "67용액의화학b용액이촉발하는변화"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "화학",
+      "middleUnit": "6-7) 용액의 화학",
+      "article": "C. 콜로이드",
+      "matchKey": "67용액의화학c콜로이드"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "화학",
+      "middleUnit": "6-7) 용액의 화학",
+      "article": "D. 수용액 평형",
+      "matchKey": "67용액의화학d수용액평형"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "A. 생물 정의",
+      "matchKey": "71생명의화학a생물정의"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "B. 생체 구성 원자",
+      "matchKey": "71생명의화학b생체구성원자"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "D. 생체 거대분자",
+      "matchKey": "71생명의화학d생체거대분자"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "화학",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "E. 유기화학",
+      "matchKey": "71생명의화학e유기화학"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "화학",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "F. 생화학",
+      "matchKey": "71생명의화학f생화학"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-2) 세포 — 생명의 최소 단위",
+      "article": "A. 생체막",
+      "matchKey": "72세포생명의최소단위a생체막"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-2) 세포 — 생명의 최소 단위",
+      "article": "B. 세포 구조",
+      "matchKey": "72세포생명의최소단위b세포구조"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-3) 에너지와 물질대사",
+      "article": "A. 에너지와 효소",
+      "matchKey": "73에너지와물질대사a에너지와효소"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-3) 에너지와 물질대사",
+      "article": "B. 광합성",
+      "matchKey": "73에너지와물질대사b광합성"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-3) 에너지와 물질대사",
+      "article": "C. 세포 호흡과 발효",
+      "matchKey": "73에너지와물질대사c세포호흡과발효"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-4) 유전 정보",
+      "article": "A. DNA와 유전자",
+      "matchKey": "74유전정보adna와유전자"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-4) 유전 정보",
+      "article": "B. 유전 발현과 조절",
+      "matchKey": "74유전정보b유전발현과조절"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-4) 유전 정보",
+      "article": "C. DNA 기술",
+      "matchKey": "74유전정보cdna기술"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-5) 세포분열과 유전",
+      "article": "A. 체세포분열",
+      "matchKey": "75세포분열과유전a체세포분열"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-5) 세포분열과 유전",
+      "article": "B. 감수분열",
+      "matchKey": "75세포분열과유전b감수분열"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-5) 세포분열과 유전",
+      "article": "C. 유전 패턴",
+      "matchKey": "75세포분열과유전c유전패턴"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-6) 진화 — 생명의 변화 엔진",
+      "article": "A. 진화의 힘",
+      "matchKey": "76진화생명의변화엔진a진화의힘"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-6) 진화 — 생명의 변화 엔진",
+      "article": "B. 종분화",
+      "matchKey": "76진화생명의변화엔진b종분화"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-6) 진화 — 생명의 변화 엔진",
+      "article": "C. 생물 다양성",
+      "matchKey": "76진화생명의변화엔진c생물다양성"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-7) 생물의 다양성",
+      "article": "A. 바이러스",
+      "matchKey": "77생물의다양성a바이러스"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-7) 생물의 다양성",
+      "article": "B. 원핵 생물",
+      "matchKey": "77생물의다양성b원핵생물"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-7) 생물의 다양성",
+      "article": "C. 진핵 생물",
+      "matchKey": "77생물의다양성c진핵생물"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-8) 식물",
+      "article": "A. 식물 구조",
+      "matchKey": "78식물a식물구조"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-8) 식물",
+      "article": "B. 식물 생식",
+      "matchKey": "78식물b식물생식"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-8) 식물",
+      "article": "C. 식물 신호",
+      "matchKey": "78식물c식물신호"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "A. 소화",
+      "matchKey": "79동물의생리a소화"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "B. 순환",
+      "matchKey": "79동물의생리b순환"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "C. 호흡",
+      "matchKey": "79동물의생리c호흡"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "D. 배설",
+      "matchKey": "79동물의생리d배설"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "E. 면역",
+      "matchKey": "79동물의생리e면역"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "F. 신경",
+      "matchKey": "79동물의생리f신경"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "G. 내분비",
+      "matchKey": "79동물의생리g내분비"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "H. 발생과 성장",
+      "matchKey": "79동물의생리h발생과성장"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-9) 동물의 생리",
+      "article": "I. 노화와 죽음",
+      "matchKey": "79동물의생리i노화와죽음"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-10) 생태계",
+      "article": "A. 개체군과 군집",
+      "matchKey": "710생태계a개체군과군집"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-10) 생태계",
+      "article": "B. 행동 생태",
+      "matchKey": "710생태계b행동생태"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-10) 생태계",
+      "article": "C. 에너지 흐름과 물질 순환",
+      "matchKey": "710생태계c에너지흐름과물질순환"
+    },
+    {
+      "sourceFile": "08_에필로그_우리의_미래.csv",
+      "subject": "지구환경",
+      "middleUnit": "E-1) 지구 에너지 수지와 온실효과",
+      "article": "지구 에너지 수지와 온실효과",
+      "matchKey": "e1지구에너지수지와온실효과지구에너지수지와온실효과"
+    },
+    {
+      "sourceFile": "08_에필로그_우리의_미래.csv",
+      "subject": "지구환경",
+      "middleUnit": "E-2) IPCC 미래 시나리오",
+      "article": "IPCC 미래 시나리오",
+      "matchKey": "e2ipcc미래시나리오ipcc미래시나리오"
+    },
+    {
+      "sourceFile": "08_에필로그_우리의_미래.csv",
+      "subject": "지구환경",
+      "middleUnit": "E-3) 탄소 순환의 위기",
+      "article": "탄소 순환의 위기",
+      "matchKey": "e3탄소순환의위기탄소순환의위기"
+    },
+    {
+      "sourceFile": "08_에필로그_우리의_미래.csv",
+      "subject": "물리",
+      "middleUnit": "E-4) 에너지 전환의 물리학",
+      "article": "A. 재생에너지의 원리와 한계",
+      "matchKey": "e4에너지전환의물리학a재생에너지의원리와한계"
+    },
+    {
+      "sourceFile": "08_에필로그_우리의_미래.csv",
+      "subject": "물리",
+      "middleUnit": "E-4) 에너지 전환의 물리학",
+      "article": "B. 핵융합 — 별의 불을 땅으로",
+      "matchKey": "e4에너지전환의물리학b핵융합별의불을땅으로"
+    },
+    {
+      "sourceFile": "08_에필로그_우리의_미래.csv",
+      "subject": "물리",
+      "middleUnit": "E-5) 과학기술의 미래와 인류의 선택",
+      "article": "과학기술의 미래와 인류의 선택",
+      "matchKey": "e5과학기술의미래와인류의선택과학기술의미래와인류의선택"
+    }
+  ],
+  "unmatchedQuizFiles": [],
+  "updatedAt": "2026-09-17T15:43:38"
+}

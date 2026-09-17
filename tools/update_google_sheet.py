@@ -5,6 +5,15 @@ import requests
 from pathlib import Path
 from dotenv import load_dotenv
 
+# 2026-09-17 추가 — Windows 콘솔 기본 코드페이지(cp949)로는 아티클명의 `—`(em dash)를 찍지 못해
+# 전송이 끝난 뒤 결과를 출력하는 줄에서 UnicodeEncodeError로 죽었다. 요청은 이미 나간 뒤라
+# 성공/실패를 알 수 없는 채로 끝나 재전송 판단이 어려워진다. stdout을 UTF-8로 고정한다.
+try:
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception:
+    pass
+
 
 # STORY퀴즈_이관패키지 루트 찾기
 ROOT_DIR = Path(__file__).resolve().parent.parent

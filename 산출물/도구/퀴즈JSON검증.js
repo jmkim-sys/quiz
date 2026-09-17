@@ -52,6 +52,84 @@ const KIND_OF = {
   '순서배열': 'order', '직접 입력': 'text', '사지선다 (복수)': 'multi',
 };
 
+/* ── 2026-09-17 신설 상수 ─────────────────────────────────────────────── */
+
+/* 순서배열 보기에 쓸 수 없는 시점 표기. `1676년`·`1610`·`20세기`·`1960년대` 를 잡는다.
+   (2026-09-17 사용자 지시: "너 순서배열 만들 때 숫자 년도 넣지 마")
+   → 순서 근거는 **필연적 인과**만 남는다. [문제]·[정답해설]의 연도는 그대로 허용한다. */
+const YEAR_IN_OPT = /(?:1[0-9]{3}|20[0-9]{2})\s*년?(?:대|경|쯤|무렵)?|[0-9]{1,2}\s*세기/;
+
+/* 연도 금지 규칙(2026-09-17) 이전에 만들어 **이미 확정된** 아티클 15건.
+   사용자가 "보기 칸만 금지 · 앞으로만"으로 정했으므로 기존 산출물은 고치지 않는다.
+   → 이 목록의 파일은 연도 검사에서만 빠진다. 다른 검사는 그대로 받는다.
+   ⚠️ 이 목록에 새 파일을 더하지 않는다. 늘어난다면 새 문항이 옛 규칙으로 나온 것이다. */
+const YEAR_OK = new Set([
+  '00_프롤로그_A_단위',
+  '00_프롤로그_A_자연과학소개',
+  '00_프롤로그_B_과학연구의목표',
+  '00_프롤로그_B_과학연구의측정',
+  '01_빅뱅_A_구면천문학',
+  '01_빅뱅_A_우리은하와외부은하',
+  '01_빅뱅_A_우주의구성성분',
+  '01_빅뱅_A_특수상대성이론',
+  '01_빅뱅_A_표준우주모형',
+  '01_빅뱅_B_우주의3차원구조',
+  '01_빅뱅_B_은하의다양한모습과특성',
+  '01_빅뱅_B_일반상대성이론',
+  '01_빅뱅_B_측광과분광',
+  '01_빅뱅_C_관측기기',
+  '02_별_B_별의관측',
+]);
+
+/* 규칙 10번(과학자 표기)도 2026-09-17 신설이라, 그 전에 확정된 아티클 4건은 보기 칸에 풀네임이 있다.
+   연도와 같은 이유로 면제한다 — 사용자가 "앞으로만"으로 정했다. 새 파일을 여기 더하지 않는다. */
+const NAME_OK = new Set([
+  '00_프롤로그_A_자연과학소개',
+  '00_프롤로그_B_과학연구의측정',
+  '01_빅뱅_A_우주의구성성분',
+  '01_빅뱅_C_관측기기',
+]);
+
+/* 순서배열 문장 첫머리 금지어 — 다른 문장을 가리키거나 순서를 드러내 정답을 흘린다 (규칙 3번) */
+const ORDER_LEAD = ['그 결과', '그 뒤', '그 후', '그 충돌로', '그래서', '그러나', '그러자', '그리고',
+  '결국', '마침내', '뒤이어', '이렇게', '이로써', '이에', '이후', '따라서', '그리하여', '이때', '먼저',
+  '다음으로', '끝으로', '처음에', '한편'];
+
+/* 보기·정답 칸에 쓰면 안 되는 과학자 **풀네임** (규칙 10번 · 2026-09-17).
+   ⚠️ **사전 방식이다 — 여기 없는 인물은 검사되지 않는다.** 새 인물이 나오면 `이름 성` 형태로 더한다.
+   패턴(`[가-힣]{2,6} 성`)으로 잡으려 했으나 `궤도를 케플러`처럼 앞말을 이름으로 오인해 사전으로 바꿨다. */
+const FULLNAMES = ['에드윈 허블', '요하네스 케플러', '갈릴레오 갈릴레이', '베라 루빈', '라인하르트 겐첼',
+  '앤드리아 게즈', '치아차오 린', '프랭크 슈', '할로 섀플리', '히버 커티스', '윌리엄 허셜', '에드먼드 핼리',
+  '올레 뢰머', '프리츠 츠비키', '아이작 뉴턴', '알베르트 아인슈타인', '아르노 펜지어스', '로버트 윌슨',
+  '조르주 르메트르', '알렉산드르 프리드만', '조지 가모프', '아서 에딩턴', '한스 베테', '막스 플랑크',
+  '니콜라우스 코페르니쿠스', '티코 브라헤', '수브라마니안 찬드라세카르', '크리스티안 도플러',
+  '루트비히 볼츠만', '에르빈 슈뢰딩거', '베르너 하이젠베르크', '닐스 보어', '어니스트 러더퍼드',
+  '마이클 패러데이', '제임스 맥스웰', '앨버트 마이컬슨', '에드워드 몰리', '볼프강 파울리', '엔리코 페르미',
+  '마리 퀴리', '드미트리 멘델레예프', '앙투안 라부아지에', '존 돌턴', '아메데오 아보가드로',
+  '헨리에타 리비트', '하인리히 슈바베', '아노 앨런', '헨리 러셀', '에이나르 헤르츠스프룽', '조지프 프라운호퍼',
+  '세실리아 페인', '프리드리히 베셀', '하인리히 헤르츠', '아서 콤프턴', '폴 디랙', '리처드 파인만',
+  '머리 겔만', '피터 힉스', '볼프강 파노프스키', '아서 홈스', '알프레트 베게너'];
+
+/* 한 칸(문자열) 안에서 같은 인물을 풀네임과 성 단독으로 섞어 적었는지 (규칙 10번).
+   실제로 `00_프롤로그_A_자연과학소개`가 `요하네스 케플러`와 `케플러는`을 한 문항에 함께 썼다. */
+function 표기혼용(txt) {
+  const s = String(txt || '');
+  const mixed = [];
+  FULLNAMES.forEach(fn => {
+    if (s.indexOf(fn) < 0) return;
+    const sn = fn.split(' ').pop();
+    const rest = s.split(fn).join('\u0000');
+    if (new RegExp('(?:^|[^가-힣])' + sn).test(rest)) mixed.push(fn + ' ↔ ' + sn);
+  });
+  return mixed;
+}
+
+/* 풀네임이 들어 있으면 그 이름을 돌려준다 (보기·정답 칸 판정용) */
+function 풀네임(txt) {
+  const s = String(txt || '');
+  return FULLNAMES.filter(fn => s.indexOf(fn) >= 0);
+}
+
 const C = { r: '\x1b[31m', g: '\x1b[32m', y: '\x1b[33m', b: '\x1b[1m', x: '\x1b[0m' };
 
 function checkFile(file) {
@@ -139,6 +217,18 @@ function checkFile(file) {
       const mRaw = String(sl.raw || '').match(new RegExp('정답 1 = <code>([^<]*)</code>'));
       if (mRaw && mRaw[1] !== labAns)
         bad.push([tag, loc, '검수 정보의 정답 1 표기 "' + mRaw[1] + '" — 라벨 형식 "' + labAns + '" 이어야 함']);
+      /* 2026-09-17 — 보기 문장에 연도·세기 숫자를 쓰지 않는다 (문항 규칙 4번 개정).
+         근거가 시점 표기로만 서는 소재는 순서배열로 쓰지 않고 다른 소재로 바꾼다. */
+      (v.opts || []).forEach((o, oi) => {
+        const my = YEAR_OK.has(tag) ? null : String(o).match(YEAR_IN_OPT);
+        if (my) bad.push([tag, loc, '보기' + (oi + 1) + '에 시점 표기 "' + my[0]
+          + '" — 순서배열 보기에는 연도·세기를 쓰지 않는다 (규칙 4번, 2026-09-17)']);
+        const lead = ORDER_LEAD.find(w => String(o).trim().indexOf(w) === 0);
+        if (lead) bad.push([tag, loc, '보기' + (oi + 1) + ' 첫머리 "' + lead
+          + '" — 순서를 흘린다 (규칙 3번)']);
+      });
+      if (String(sl.q).indexOf('카드') >= 0)
+        bad.push([tag, loc, "발문에 '카드' — 학습자에게는 '문장'이라고 부른다 (규칙 8번)"]);
     } else if (kind === 'text') {
       if (sl.q !== FIXED_Q) bad.push([tag, loc, '발문이 고정 문구가 아님: "' + String(sl.q).slice(0, 24) + '"']);
       if ('exFirst' in sl) bad.push([tag, loc, 'exFirst 있음 — 직접 입력은 발문이 먼저여야 함']);
@@ -167,7 +257,49 @@ function checkFile(file) {
     /* 예문을 쓰지 않는 유형은 `-` 로 자리를 지킨다 (X 금지 — OX 정답과 혼동) */
     if (kind !== 'blanks' && kind !== 'text' && String(sl.ex).trim() !== '-')
       bad.push([tag, loc, "예문이 '-' 가 아님: \"" + String(sl.ex).slice(0, 20) + '"']);
+
+    /* ── 규칙 10번 — 보기·정답 칸은 성 한 단어, 한 칸 안에서 표기를 섞지 않는다 (2026-09-17) ── */
+    const optCells = [];
+    if (kind === 'blanks') (Array.isArray(v) ? v : []).forEach(bl => optCells.push(...(bl.opts || [])));
+    else if (kind === 'text') { if (v && v.ans) optCells.push(v.ans); }
+    else optCells.push(...(v.opts || []));
+    optCells.forEach(o => {
+      (NAME_OK.has(tag) ? [] : 풀네임(o)).forEach(fn => bad.push([tag, loc, '보기/정답 "' + fn
+        + '" — 보기·정답 칸은 성 한 단어만 쓴다 (규칙 10번)']));
+      표기혼용(o).forEach(m => bad.push([tag, loc, '보기 칸 표기 혼용 ' + m + ' (규칙 10번)']));
+    });
+    ['q', 'ex', 'sol'].forEach(f => 표기혼용(sl[f]).forEach(m =>
+      bad.push([tag, loc, f + ' 칸 표기 혼용 ' + m + ' — 한 칸 안에서 섞지 않는다 (규칙 10번)'])));
+
+    /* ── 규칙 11번(경고) — 3·6번 정답 문구가 [문제]·[예문]에 글자 그대로 드러나는가 ──
+       5번(직접 입력)은 예문이 정답을 유추하게 하는 것이 설계이므로 대상이 아니다. */
+    if (kind === 'single' || kind === 'multi') {
+      const idx = kind === 'single' ? [v.ans] : (v.ans || []);
+      const stem = String(sl.q || '') + ' ' + String(sl.ex || '');
+      idx.forEach(n => {
+        const t = String((v.opts || [])[n - 1] || '').trim();
+        if (t.length >= 3 && stem.indexOf(t) >= 0)
+          bad.push([tag, loc, '정답 보기 "' + t
+            + '" 가 [문제]/[예문]에 그대로 있음 (규칙 11번) — 사람이 판단', 'W']);
+      });
+    }
   });
+
+  /* ── 규칙 12번(경고) — 1번 두 빈칸 · 3번 단수 · 6번 복수의 정답 번호가 몰리지 않는가 (2026-09-17) ──
+     자연스러운 배열(크기순·시간순)을 지키느라 몰린 것이면 자기검수 23번에 사유를 적으면 통과다.
+     그래서 오류가 아니라 경고다. */
+  const nums = [];
+  if (d.slots[0] && Array.isArray(d.slots[0].blanks)) d.slots[0].blanks.forEach(bl => nums.push(bl.ans));
+  if (d.slots[2] && d.slots[2].single) nums.push(d.slots[2].single.ans);
+  if (d.slots[5] && d.slots[5].multi) nums.push(...(d.slots[5].multi.ans || []));
+  if (nums.length >= 4) {
+    const cnt = {};
+    nums.forEach(n => { cnt[n] = (cnt[n] || 0) + 1; });
+    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
+    if (top[1] >= nums.length - 1)
+      bad.push([tag, '1·3·6', '정답 번호 [' + nums.join(' ') + '] — ' + top[0] + '번이 '
+        + top[1] + '/' + nums.length + ' (규칙 12번) — 사유가 있으면 통과', 'W']);
+  }
 
   return bad;
 }
@@ -183,11 +315,17 @@ if (!files.length) { console.log('검사할 JSON이 없습니다.'); process.exi
 
 let all = [];
 files.forEach(f => { all = all.concat(checkFile(f)); });
+const errs = all.filter(r => r[3] !== 'W');
+const warns = all.filter(r => r[3] === 'W');
 
 console.log(C.b + '퀴즈 JSON 검증' + C.x + ' — 파일 ' + files.length + '건 · 문항 ' + (files.length * 7) + '개');
-if (all.length) {
-  console.log('\n' + C.r + '[불일치 ' + all.length + '건]' + C.x);
-  all.forEach(([t, l, msg]) => console.log('  ' + t.padEnd(30) + String(l).padEnd(6) + msg));
+if (warns.length) {
+  console.log(C.y + '[경고 ' + warns.length + '건 — 사람이 판단, 실패로 세지 않음]' + C.x);
+  warns.forEach(([t, l, msg]) => console.log('  ' + t.padEnd(30) + String(l).padEnd(6) + msg));
+}
+if (errs.length) {
+  console.log('\n' + C.r + '[불일치 ' + errs.length + '건]' + C.x);
+  errs.forEach(([t, l, msg]) => console.log('  ' + t.padEnd(30) + String(l).padEnd(6) + msg));
   console.log('\n' + C.y + '※ 구조 검사입니다. 정답이 원고 내용에 맞는지는 검수용 CSV에서 사람이 확인해야 합니다.' + C.x);
   process.exit(1);
 }
