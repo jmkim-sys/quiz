@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "3-3_A",
+  "lastCompleted": "3-3_B",
   "totalCount": 128,
-  "completedCount": 33,
-  "remainingCount": 95,
+  "completedCount": 35,
+  "remainingCount": 93,
   "nextArticle": {
     "sourceFile": "03_물질_원자가_만드는_세계.csv",
     "subject": "화학",
     "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
-    "article": "B. 결합 법칙",
-    "matchKey": "33원자의결합분자의탄생b결합법칙"
+    "article": "D. 결합 구조",
+    "matchKey": "33원자의결합분자의탄생d결합구조"
   },
   "completedArticles": [
     {
@@ -224,6 +224,20 @@
     },
     {
       "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+      "article": "B. 결합 법칙",
+      "matchKey": "33원자의결합분자의탄생b결합법칙"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "화학",
+      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
+      "article": "C. 결합의 극성",
+      "matchKey": "33원자의결합분자의탄생c결합의극성"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
       "subject": "물리",
       "middleUnit": "3-5) 물질의 집합",
       "article": "응집 물질 물리",
@@ -245,20 +259,6 @@
     }
   ],
   "pendingArticles": [
-    {
-      "sourceFile": "03_물질_원자가_만드는_세계.csv",
-      "subject": "화학",
-      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
-      "article": "B. 결합 법칙",
-      "matchKey": "33원자의결합분자의탄생b결합법칙"
-    },
-    {
-      "sourceFile": "03_물질_원자가_만드는_세계.csv",
-      "subject": "화학",
-      "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
-      "article": "C. 결합의 극성",
-      "matchKey": "33원자의결합분자의탄생c결합의극성"
-    },
     {
       "sourceFile": "03_물질_원자가_만드는_세계.csv",
       "subject": "화학",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-17T16:34:51"
+  "updatedAt": "2026-09-17T17:11:49"
 }
