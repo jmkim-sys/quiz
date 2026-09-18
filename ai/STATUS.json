@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "3-3_B",
+  "lastCompleted": "4-6_B",
   "totalCount": 128,
-  "completedCount": 35,
-  "remainingCount": 93,
+  "completedCount": 49,
+  "remainingCount": 79,
   "nextArticle": {
-    "sourceFile": "03_물질_원자가_만드는_세계.csv",
+    "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
     "subject": "화학",
-    "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
-    "article": "D. 결합 구조",
-    "matchKey": "33원자의결합분자의탄생d결합구조"
+    "middleUnit": "4-5) 화학 반응의 법칙",
+    "article": "A. 반응 속도",
+    "matchKey": "45화학반응의법칙a반응속도"
   },
   "completedArticles": [
     {
@@ -238,29 +238,6 @@
     },
     {
       "sourceFile": "03_물질_원자가_만드는_세계.csv",
-      "subject": "물리",
-      "middleUnit": "3-5) 물질의 집합",
-      "article": "응집 물질 물리",
-      "matchKey": "35물질의집합응집물질물리"
-    },
-    {
-      "sourceFile": "06_지구_살아있는_행성.csv",
-      "subject": "지구환경",
-      "middleUnit": "6-4) 대기와 날씨",
-      "article": "B. 대기의 순환",
-      "matchKey": "64대기와날씨b대기의순환"
-    },
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
-      "article": "C. 생명과 물",
-      "matchKey": "71생명의화학c생명과물"
-    }
-  ],
-  "pendingArticles": [
-    {
-      "sourceFile": "03_물질_원자가_만드는_세계.csv",
       "subject": "화학",
       "middleUnit": "3-3) 원자의 결합 — 분자의 탄생",
       "article": "D. 결합 구조",
@@ -279,6 +256,13 @@
       "middleUnit": "3-4) 물질의 상태와 분류",
       "article": "B. 물질의 상태",
       "matchKey": "34물질의상태와분류b물질의상태"
+    },
+    {
+      "sourceFile": "03_물질_원자가_만드는_세계.csv",
+      "subject": "물리",
+      "middleUnit": "3-5) 물질의 집합",
+      "article": "응집 물질 물리",
+      "matchKey": "35물질의집합응집물질물리"
     },
     {
       "sourceFile": "03_물질_원자가_만드는_세계.csv",
@@ -346,6 +330,36 @@
     {
       "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
       "subject": "화학",
+      "middleUnit": "4-6) 반응의 방향성",
+      "article": "A. 화학 반응의 자발성",
+      "matchKey": "46반응의방향성a화학반응의자발성"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-6) 반응의 방향성",
+      "article": "B. 평형의 개념",
+      "matchKey": "46반응의방향성b평형의개념"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "B. 대기의 순환",
+      "matchKey": "64대기와날씨b대기의순환"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "C. 생명과 물",
+      "matchKey": "71생명의화학c생명과물"
+    }
+  ],
+  "pendingArticles": [
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
       "middleUnit": "4-5) 화학 반응의 법칙",
       "article": "A. 반응 속도",
       "matchKey": "45화학반응의법칙a반응속도"
@@ -363,20 +377,6 @@
       "middleUnit": "4-5) 화학 반응의 법칙",
       "article": "C. 촉매",
       "matchKey": "45화학반응의법칙c촉매"
-    },
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-6) 반응의 방향성",
-      "article": "A. 화학 반응의 자발성",
-      "matchKey": "46반응의방향성a화학반응의자발성"
-    },
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-6) 반응의 방향성",
-      "article": "B. 평형의 개념",
-      "matchKey": "46반응의방향성b평형의개념"
     },
     {
       "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-17T17:11:49"
+  "updatedAt": "2026-09-18T13:27:53"
 }
