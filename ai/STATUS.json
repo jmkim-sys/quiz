@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "4-6_C",
+  "lastCompleted": "4-7_B",
   "totalCount": 128,
-  "completedCount": 51,
-  "remainingCount": 77,
+  "completedCount": 55,
+  "remainingCount": 73,
   "nextArticle": {
-    "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-    "subject": "화학",
-    "middleUnit": "4-5) 화학 반응의 법칙",
-    "article": "A. 반응 속도",
-    "matchKey": "45화학반응의법칙a반응속도"
+    "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+    "subject": "물리",
+    "middleUnit": "5-1) 전기",
+    "article": "A. 쿨롱 법칙과 전기장",
+    "matchKey": "51전기a쿨롱법칙과전기장"
   },
   "completedArticles": [
     {
@@ -330,6 +330,27 @@
     {
       "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
       "subject": "화학",
+      "middleUnit": "4-5) 화학 반응의 법칙",
+      "article": "A. 반응 속도",
+      "matchKey": "45화학반응의법칙a반응속도"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-5) 화학 반응의 법칙",
+      "article": "B. 반응 메커니즘",
+      "matchKey": "45화학반응의법칙b반응메커니즘"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-5) 화학 반응의 법칙",
+      "article": "C. 촉매",
+      "matchKey": "45화학반응의법칙c촉매"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
       "middleUnit": "4-6) 반응의 방향성",
       "article": "A. 화학 반응의 자발성",
       "matchKey": "46반응의방향성a화학반응의자발성"
@@ -356,6 +377,13 @@
       "matchKey": "47산염기와산화환원a산염기반응"
     },
     {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-7) 산·염기와 산화·환원",
+      "article": "B. 산화-환원 반응",
+      "matchKey": "47산염기와산화환원b산화환원반응"
+    },
+    {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
       "middleUnit": "6-4) 대기와 날씨",
@@ -371,34 +399,6 @@
     }
   ],
   "pendingArticles": [
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-5) 화학 반응의 법칙",
-      "article": "A. 반응 속도",
-      "matchKey": "45화학반응의법칙a반응속도"
-    },
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-5) 화학 반응의 법칙",
-      "article": "B. 반응 메커니즘",
-      "matchKey": "45화학반응의법칙b반응메커니즘"
-    },
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-5) 화학 반응의 법칙",
-      "article": "C. 촉매",
-      "matchKey": "45화학반응의법칙c촉매"
-    },
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-7) 산·염기와 산화·환원",
-      "article": "B. 산화-환원 반응",
-      "matchKey": "47산염기와산화환원b산화환원반응"
-    },
     {
       "sourceFile": "05_빛과_전자기_정보의_언어.csv",
       "subject": "물리",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-18T14:03:20"
+  "updatedAt": "2026-09-18T14:42:07"
 }
