@@ -1,9 +1,9 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "4-6_B",
+  "lastCompleted": "4-6_C",
   "totalCount": 128,
-  "completedCount": 49,
-  "remainingCount": 79,
+  "completedCount": 51,
+  "remainingCount": 77,
   "nextArticle": {
     "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
     "subject": "화학",
@@ -342,6 +342,20 @@
       "matchKey": "46반응의방향성b평형의개념"
     },
     {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-6) 반응의 방향성",
+      "article": "C. 평형 상수",
+      "matchKey": "46반응의방향성c평형상수"
+    },
+    {
+      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
+      "subject": "화학",
+      "middleUnit": "4-7) 산·염기와 산화·환원",
+      "article": "A. 산-염기 반응",
+      "matchKey": "47산염기와산화환원a산염기반응"
+    },
+    {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
       "middleUnit": "6-4) 대기와 날씨",
@@ -377,20 +391,6 @@
       "middleUnit": "4-5) 화학 반응의 법칙",
       "article": "C. 촉매",
       "matchKey": "45화학반응의법칙c촉매"
-    },
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-6) 반응의 방향성",
-      "article": "C. 평형 상수",
-      "matchKey": "46반응의방향성c평형상수"
-    },
-    {
-      "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
-      "subject": "화학",
-      "middleUnit": "4-7) 산·염기와 산화·환원",
-      "article": "A. 산-염기 반응",
-      "matchKey": "47산염기와산화환원a산염기반응"
     },
     {
       "sourceFile": "04_힘과_에너지_변화의_법칙.csv",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-18T13:27:53"
+  "updatedAt": "2026-09-18T14:03:20"
 }
