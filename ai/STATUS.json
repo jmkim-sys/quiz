@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "5-2_A",
+  "lastCompleted": "5-3_A",
   "totalCount": 128,
-  "completedCount": 58,
-  "remainingCount": 70,
+  "completedCount": 60,
+  "remainingCount": 68,
   "nextArticle": {
     "sourceFile": "05_빛과_전자기_정보의_언어.csv",
     "subject": "물리",
-    "middleUnit": "5-2) 자기",
-    "article": "B. 앙페르 법칙",
-    "matchKey": "52자기b앙페르법칙"
+    "middleUnit": "5-3) 전자기 유도",
+    "article": "B. 발전기와 변압기",
+    "matchKey": "53전자기유도b발전기와변압기"
   },
   "completedArticles": [
     {
@@ -405,6 +405,20 @@
       "matchKey": "52자기a자기력과자기장"
     },
     {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-2) 자기",
+      "article": "B. 앙페르 법칙",
+      "matchKey": "52자기b앙페르법칙"
+    },
+    {
+      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
+      "subject": "물리",
+      "middleUnit": "5-3) 전자기 유도",
+      "article": "A. 전자기 유도",
+      "matchKey": "53전자기유도a전자기유도"
+    },
+    {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
       "middleUnit": "6-4) 대기와 날씨",
@@ -420,20 +434,6 @@
     }
   ],
   "pendingArticles": [
-    {
-      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
-      "subject": "물리",
-      "middleUnit": "5-2) 자기",
-      "article": "B. 앙페르 법칙",
-      "matchKey": "52자기b앙페르법칙"
-    },
-    {
-      "sourceFile": "05_빛과_전자기_정보의_언어.csv",
-      "subject": "물리",
-      "middleUnit": "5-3) 전자기 유도",
-      "article": "A. 전자기 유도",
-      "matchKey": "53전자기유도a전자기유도"
-    },
     {
       "sourceFile": "05_빛과_전자기_정보의_언어.csv",
       "subject": "물리",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-21T08:30:34"
+  "updatedAt": "2026-09-21T08:42:49"
 }
