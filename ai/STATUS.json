@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "4-7_B",
+  "lastCompleted": "5-2_A",
   "totalCount": 128,
-  "completedCount": 55,
-  "remainingCount": 73,
+  "completedCount": 58,
+  "remainingCount": 70,
   "nextArticle": {
     "sourceFile": "05_빛과_전자기_정보의_언어.csv",
     "subject": "물리",
-    "middleUnit": "5-1) 전기",
-    "article": "A. 쿨롱 법칙과 전기장",
-    "matchKey": "51전기a쿨롱법칙과전기장"
+    "middleUnit": "5-2) 자기",
+    "article": "B. 앙페르 법칙",
+    "matchKey": "52자기b앙페르법칙"
   },
   "completedArticles": [
     {
@@ -384,22 +384,6 @@
       "matchKey": "47산염기와산화환원b산화환원반응"
     },
     {
-      "sourceFile": "06_지구_살아있는_행성.csv",
-      "subject": "지구환경",
-      "middleUnit": "6-4) 대기와 날씨",
-      "article": "B. 대기의 순환",
-      "matchKey": "64대기와날씨b대기의순환"
-    },
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
-      "article": "C. 생명과 물",
-      "matchKey": "71생명의화학c생명과물"
-    }
-  ],
-  "pendingArticles": [
-    {
       "sourceFile": "05_빛과_전자기_정보의_언어.csv",
       "subject": "물리",
       "middleUnit": "5-1) 전기",
@@ -420,6 +404,22 @@
       "article": "A. 자기력과 자기장",
       "matchKey": "52자기a자기력과자기장"
     },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "B. 대기의 순환",
+      "matchKey": "64대기와날씨b대기의순환"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "C. 생명과 물",
+      "matchKey": "71생명의화학c생명과물"
+    }
+  ],
+  "pendingArticles": [
     {
       "sourceFile": "05_빛과_전자기_정보의_언어.csv",
       "subject": "물리",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-18T14:42:07"
+  "updatedAt": "2026-09-21T08:30:34"
 }
