@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "5-3_B",
+  "lastCompleted": "6-1_A",
   "totalCount": 128,
-  "completedCount": 64,
-  "remainingCount": 64,
+  "completedCount": 65,
+  "remainingCount": 63,
   "nextArticle": {
     "sourceFile": "06_지구_살아있는_행성.csv",
     "subject": "천문",
     "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
-    "article": "A. 외계행성",
-    "matchKey": "61태양계와지구의탄생왜이행성인가a외계행성"
+    "article": "B. 태양계 천체",
+    "matchKey": "61태양계와지구의탄생왜이행성인가b태양계천체"
   },
   "completedArticles": [
     {
@@ -448,6 +448,13 @@
     },
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "천문",
+      "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
+      "article": "A. 외계행성",
+      "matchKey": "61태양계와지구의탄생왜이행성인가a외계행성"
+    },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
       "middleUnit": "6-4) 대기와 날씨",
       "article": "B. 대기의 순환",
@@ -462,13 +469,6 @@
     }
   ],
   "pendingArticles": [
-    {
-      "sourceFile": "06_지구_살아있는_행성.csv",
-      "subject": "천문",
-      "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
-      "article": "A. 외계행성",
-      "matchKey": "61태양계와지구의탄생왜이행성인가a외계행성"
-    },
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "천문",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-21T13:31:21"
+  "updatedAt": "2026-09-21T13:41:40"
 }
