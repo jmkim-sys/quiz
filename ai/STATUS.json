@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "5-3_A",
+  "lastCompleted": "5-3_B",
   "totalCount": 128,
-  "completedCount": 60,
-  "remainingCount": 68,
+  "completedCount": 64,
+  "remainingCount": 64,
   "nextArticle": {
-    "sourceFile": "05_빛과_전자기_정보의_언어.csv",
-    "subject": "물리",
-    "middleUnit": "5-3) 전자기 유도",
-    "article": "B. 발전기와 변압기",
-    "matchKey": "53전자기유도b발전기와변압기"
+    "sourceFile": "06_지구_살아있는_행성.csv",
+    "subject": "천문",
+    "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
+    "article": "A. 외계행성",
+    "matchKey": "61태양계와지구의탄생왜이행성인가a외계행성"
   },
   "completedArticles": [
     {
@@ -419,22 +419,6 @@
       "matchKey": "53전자기유도a전자기유도"
     },
     {
-      "sourceFile": "06_지구_살아있는_행성.csv",
-      "subject": "지구환경",
-      "middleUnit": "6-4) 대기와 날씨",
-      "article": "B. 대기의 순환",
-      "matchKey": "64대기와날씨b대기의순환"
-    },
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
-      "article": "C. 생명과 물",
-      "matchKey": "71생명의화학c생명과물"
-    }
-  ],
-  "pendingArticles": [
-    {
       "sourceFile": "05_빛과_전자기_정보의_언어.csv",
       "subject": "물리",
       "middleUnit": "5-3) 전자기 유도",
@@ -459,9 +443,25 @@
       "sourceFile": "05_빛과_전자기_정보의_언어.csv",
       "subject": "천문",
       "middleUnit": "5-5) 빛으로 우주를 읽다",
-      "article": "측광과 분광",
-      "matchKey": "55빛으로우주를읽다측광과분광"
+      "article": "빛으로 읽는 우주",
+      "matchKey": "55빛으로우주를읽다빛으로읽는우주"
     },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "B. 대기의 순환",
+      "matchKey": "64대기와날씨b대기의순환"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "C. 생명과 물",
+      "matchKey": "71생명의화학c생명과물"
+    }
+  ],
+  "pendingArticles": [
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "천문",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-21T08:42:49"
+  "updatedAt": "2026-09-21T13:31:21"
 }
