@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "6-1_A",
+  "lastCompleted": "6-2_A",
   "totalCount": 128,
-  "completedCount": 65,
-  "remainingCount": 63,
+  "completedCount": 69,
+  "remainingCount": 59,
   "nextArticle": {
     "sourceFile": "06_지구_살아있는_행성.csv",
-    "subject": "천문",
-    "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
-    "article": "B. 태양계 천체",
-    "matchKey": "61태양계와지구의탄생왜이행성인가b태양계천체"
+    "subject": "지구환경",
+    "middleUnit": "6-2) 지구시스템",
+    "article": "B. 권역간 상호작용",
+    "matchKey": "62지구시스템b권역간상호작용"
   },
   "completedArticles": [
     {
@@ -455,22 +455,6 @@
     },
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
-      "subject": "지구환경",
-      "middleUnit": "6-4) 대기와 날씨",
-      "article": "B. 대기의 순환",
-      "matchKey": "64대기와날씨b대기의순환"
-    },
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
-      "article": "C. 생명과 물",
-      "matchKey": "71생명의화학c생명과물"
-    }
-  ],
-  "pendingArticles": [
-    {
-      "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "천문",
       "middleUnit": "6-1) 태양계와 지구의 탄생 -왜 이 행성인가",
       "article": "B. 태양계 천체",
@@ -497,6 +481,22 @@
       "article": "A. 지구시스템(개관)",
       "matchKey": "62지구시스템a지구시스템개관"
     },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "B. 대기의 순환",
+      "matchKey": "64대기와날씨b대기의순환"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-1) 생명의 화학",
+      "article": "C. 생명과 물",
+      "matchKey": "71생명의화학c생명과물"
+    }
+  ],
+  "pendingArticles": [
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-21T13:41:40"
+  "updatedAt": "2026-09-22T08:15:08"
 }
