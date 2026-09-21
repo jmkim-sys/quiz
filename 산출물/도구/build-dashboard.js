@@ -31,11 +31,20 @@ const QCSV_DIR = path.join(ROOT, '산출물', '퀴즈CSV');
    검수용 CSV가 없으므로 「검수 필요 파일」 수에는 영향을 주지 않는다.
    되돌리려면 배열을 비우면 된다. 키는 `<대단원 CSV 파일명>|<아티클명>`이다. */
 const FORCE_DONE = [
-  '06_지구_살아있는_행성.csv|C. 콜로이드',
+  /* 2026-09-22 — `C. 콜로이드`가 `6-7) 용액의 화학`과 함께 7단원 `7-1)`로 옮겨 가면서
+     파일명이 바뀌었다. 옛 키(`06_지구_살아있는_행성.csv|C. 콜로이드`)는 아무 것도 맞히지 못한 채
+     조용히 무시되어 완료 아티클이 74 → 73으로 떨어졌다. 그래서 아래 «맞힌 것이 없으면 경고» 를 붙였다. */
+  '07_생명_진화하는_정보.csv|C. 콜로이드',
 ];
 
+/* FORCE_DONE 중 실제로 맞힌 키 — 집계가 끝난 뒤 하나도 못 맞힌 키가 있으면 경고한다.
+   목차 개편으로 아티클이 다른 대단원 CSV로 옮겨 가면 키가 조용히 헛돌기 때문이다(2026-09-22 사례). */
+const FORCE_DONE_HIT = new Set();
+
 const DISPLAY_ADJUST = {
-  started: +1,      /* 진행 중인 아티클 */
+  /* 2026-09-22 사용자 지시 *"7-1/C 콜로이드가 이미 있는데 너가 인식을 못하니까 내가 임의로 +1한거니까
+     그거 인식되면 +1한거 돌려도 돼"* — FORCE_DONE 키를 새 자리로 고쳐 콜로이드가 다시 잡히므로 0으로 되돌린다. */
+  started: 0,       /* 진행 중인 아티클 */
   reviewNeed: -18,  /* 기획자 검수 필요 파일 — 2026-09-21 사용자 지시 "검수 필요 파일 46개로" (계산값 64 → 화면 46) */
 };
 /* 2026-09-17 사용자 지시: *"진행 중인 아티클 참고로 23개, 검수 필요 파일 14개다 대시보드 html 그에 맞게 수정해"*
@@ -97,6 +106,14 @@ const TOC_RENAMED = [
   /* 2026-08-28 팀 통보: D 삭제에 따라 E가 D로 승격 */
   { mid: '6-7) 용액의 화학', from: 'E. 수용액 평형', to: 'D. 수용액 평형' },
 ];
+const TOC_MOVED = [
+  /* 2026-09-22 목차 0901 반영 — 사용자 지시 "6-7 용액의 화학을 7-1로 옮기고 7단원 정렬해줘".
+     `6-7) 용액의 화학` 4개 아티클이 7단원의 첫 중단원 `7-1)`로 옮겨 갔고, 7단원 중단원 번호는
+     전부 하나씩 밀렸다. 대단원별 CSV는 이미 옮겼으나 이 스크립트가 읽는 0730 목차는 아직
+     6단원에 두고 있어 아티클 수가 어긋난다 — 여기서 옮겨 집계를 맞춘다.
+     `toEu`는 목차에 나오는 대단원의 0부터 센 순서다(7 = 「생명 — 진화하는 정보」). */
+  { mid: '6-7) 용액의 화학', toEu: 7, toMid: '7-1) 용액의 화학' },
+];
 
 const today = () => { const d = new Date(); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; };
 
@@ -129,6 +146,16 @@ function collect() {
     if (!hit.length)
       warn('목차 개편 목록의 «' + rn.mid + ' ' + rn.from + '»을 목차 CSV에서 찾지 못했습니다 — 목차가 갱신되었다면 build-dashboard.js의 TOC_RENAMED에서 그 줄을 지우세요.');
     hit.forEach(r => { r.art = rn.to; });
+  }
+  for (const mv of TOC_MOVED) {
+    const hit = tocRows.filter(r => r.mid === mv.mid);
+    if (!hit.length) {
+      warn('목차 이동 목록의 «' + mv.mid + '»을 목차 CSV에서 찾지 못했습니다 — 목차가 갱신되었다면 build-dashboard.js의 TOC_MOVED에서 그 줄을 지우세요.');
+      continue;
+    }
+    const toLabel = euLabels[mv.toEu];
+    if (!toLabel) throw new Error('TOC_MOVED의 toEu가 목차 대단원 범위를 벗어납니다: ' + mv.toEu);
+    hit.forEach(r => { r.eu = toLabel; r.mid = mv.toMid; });
   }
 
   /* 대단원 CSV는 `00_` ~ `08_` 처럼 두 자리 번호로 시작한다.
@@ -177,7 +204,7 @@ function collect() {
       if (a.made > a.total) overRows.push(`${a.art} (검수용 CSV ${a.made}행 > ${a.total}행)`);
       a.shown = Math.min(a.total, Math.max(a.made, a.filled));
       /* 위 FORCE_DONE 참고 — 표시만 완료로 올린다(실제 CSV는 그대로 비어 있다). */
-      if (FORCE_DONE.includes(f + '|' + a.art)) a.shown = a.total;
+      if (FORCE_DONE.includes(f + '|' + a.art)) { a.shown = a.total; FORCE_DONE_HIT.add(f + '|' + a.art); }
     }
     /* 17열 검사는 헤더 1줄이 아니라 내용이 있는 모든 행을 본다.
        데이터 행 하나가 16열·18열이 되어도 헤더만 보면 알 수 없다. */
@@ -202,6 +229,11 @@ function collect() {
     const n = tocRows.filter(r => r.eu === lbl).length;
     if (n !== units[i].arts.length) throw new Error(`${lbl}: 목차 ${n}개 vs CSV ${units[i].arts.length}개 — 아티클 수가 맞지 않습니다.`);
   });
+  for (const k of FORCE_DONE) {
+    if (!FORCE_DONE_HIT.has(k))
+      warn('완료 강제 목록의 «' + k + '»가 어느 아티클과도 맞지 않습니다 — 아티클이 다른 대단원 CSV로 옮겨 갔다면 build-dashboard.js의 FORCE_DONE에서 그 키를 고치세요.');
+  }
+
   const badCols = units.filter(u => u.offCols.length);
   if (badCols.length) warn(`17열이 아닌 행: ${badCols.map(u => `${u.file} ${u.offCols.join('·')}`).join(' / ')}`);
   const linesChecked = units.reduce((n, u) => n + u.rowCount + 1, 0);   /* 헤더 포함 */

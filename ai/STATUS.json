@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "6-2_A",
+  "lastCompleted": "6-3_C",
   "totalCount": 128,
-  "completedCount": 69,
-  "remainingCount": 59,
+  "completedCount": 73,
+  "remainingCount": 55,
   "nextArticle": {
     "sourceFile": "06_지구_살아있는_행성.csv",
     "subject": "지구환경",
-    "middleUnit": "6-2) 지구시스템",
-    "article": "B. 권역간 상호작용",
-    "matchKey": "62지구시스템b권역간상호작용"
+    "middleUnit": "6-4) 대기와 날씨",
+    "article": "A. 지구와 대기",
+    "matchKey": "64대기와날씨a지구와대기"
   },
   "completedArticles": [
     {
@@ -484,22 +484,6 @@
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
-      "middleUnit": "6-4) 대기와 날씨",
-      "article": "B. 대기의 순환",
-      "matchKey": "64대기와날씨b대기의순환"
-    },
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
-      "article": "C. 생명과 물",
-      "matchKey": "71생명의화학c생명과물"
-    }
-  ],
-  "pendingArticles": [
-    {
-      "sourceFile": "06_지구_살아있는_행성.csv",
-      "subject": "지구환경",
       "middleUnit": "6-2) 지구시스템",
       "article": "B. 권역간 상호작용",
       "matchKey": "62지구시스템b권역간상호작용"
@@ -525,6 +509,22 @@
       "article": "C. 지진 및 지구물리",
       "matchKey": "63지구내부와판구조c지진및지구물리"
     },
+    {
+      "sourceFile": "06_지구_살아있는_행성.csv",
+      "subject": "지구환경",
+      "middleUnit": "6-4) 대기와 날씨",
+      "article": "B. 대기의 순환",
+      "matchKey": "64대기와날씨b대기의순환"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-2) 생명의 화학",
+      "article": "C. 생명과 물",
+      "matchKey": "72생명의화학c생명과물"
+    }
+  ],
+  "pendingArticles": [
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
@@ -582,291 +582,291 @@
       "matchKey": "66지구의진화b고기후와고환경"
     },
     {
-      "sourceFile": "06_지구_살아있는_행성.csv",
+      "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "화학",
-      "middleUnit": "6-7) 용액의 화학",
+      "middleUnit": "7-1) 용액의 화학",
       "article": "A. 용액의 성질",
-      "matchKey": "67용액의화학a용액의성질"
+      "matchKey": "71용액의화학a용액의성질"
     },
     {
-      "sourceFile": "06_지구_살아있는_행성.csv",
+      "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "화학",
-      "middleUnit": "6-7) 용액의 화학",
+      "middleUnit": "7-1) 용액의 화학",
       "article": "B. 용액이 촉발하는 변화",
-      "matchKey": "67용액의화학b용액이촉발하는변화"
+      "matchKey": "71용액의화학b용액이촉발하는변화"
     },
     {
-      "sourceFile": "06_지구_살아있는_행성.csv",
+      "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "화학",
-      "middleUnit": "6-7) 용액의 화학",
+      "middleUnit": "7-1) 용액의 화학",
       "article": "C. 콜로이드",
-      "matchKey": "67용액의화학c콜로이드"
+      "matchKey": "71용액의화학c콜로이드"
     },
     {
-      "sourceFile": "06_지구_살아있는_행성.csv",
+      "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "화학",
-      "middleUnit": "6-7) 용액의 화학",
+      "middleUnit": "7-1) 용액의 화학",
       "article": "D. 수용액 평형",
-      "matchKey": "67용액의화학d수용액평형"
+      "matchKey": "71용액의화학d수용액평형"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
+      "middleUnit": "7-2) 생명의 화학",
       "article": "A. 생물 정의",
-      "matchKey": "71생명의화학a생물정의"
+      "matchKey": "72생명의화학a생물정의"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
+      "middleUnit": "7-2) 생명의 화학",
       "article": "B. 생체 구성 원자",
-      "matchKey": "71생명의화학b생체구성원자"
+      "matchKey": "72생명의화학b생체구성원자"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-1) 생명의 화학",
-      "article": "D. 생체 거대분자",
-      "matchKey": "71생명의화학d생체거대분자"
+      "middleUnit": "7-2) 생명의 화학",
+      "article": "D. 생체 거대 분자",
+      "matchKey": "72생명의화학d생체거대분자"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "화학",
-      "middleUnit": "7-1) 생명의 화학",
-      "article": "E. 유기화학",
-      "matchKey": "71생명의화학e유기화학"
+      "middleUnit": "7-2) 생명의 화학",
+      "article": "E. 유기 화학",
+      "matchKey": "72생명의화학e유기화학"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "화학",
-      "middleUnit": "7-1) 생명의 화학",
+      "middleUnit": "7-2) 생명의 화학",
       "article": "F. 생화학",
-      "matchKey": "71생명의화학f생화학"
+      "matchKey": "72생명의화학f생화학"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-2) 세포 — 생명의 최소 단위",
+      "middleUnit": "7-3) 세포",
       "article": "A. 생체막",
-      "matchKey": "72세포생명의최소단위a생체막"
+      "matchKey": "73세포a생체막"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-2) 세포 — 생명의 최소 단위",
+      "middleUnit": "7-3) 세포",
       "article": "B. 세포 구조",
-      "matchKey": "72세포생명의최소단위b세포구조"
+      "matchKey": "73세포b세포구조"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-3) 에너지와 물질대사",
-      "article": "A. 에너지와 효소",
-      "matchKey": "73에너지와물질대사a에너지와효소"
+      "middleUnit": "7-4) 에너지와 물질대사",
+      "article": "A. ATP와 효소",
+      "matchKey": "74에너지와물질대사aatp와효소"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-3) 에너지와 물질대사",
+      "middleUnit": "7-4) 에너지와 물질대사",
       "article": "B. 광합성",
-      "matchKey": "73에너지와물질대사b광합성"
+      "matchKey": "74에너지와물질대사b광합성"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-3) 에너지와 물질대사",
-      "article": "C. 세포 호흡과 발효",
-      "matchKey": "73에너지와물질대사c세포호흡과발효"
+      "middleUnit": "7-4) 에너지와 물질대사",
+      "article": "C. 세포호흡과 발효",
+      "matchKey": "74에너지와물질대사c세포호흡과발효"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-4) 유전 정보",
+      "middleUnit": "7-5) 유전정보",
       "article": "A. DNA와 유전자",
-      "matchKey": "74유전정보adna와유전자"
+      "matchKey": "75유전정보adna와유전자"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-4) 유전 정보",
-      "article": "B. 유전 발현과 조절",
-      "matchKey": "74유전정보b유전발현과조절"
+      "middleUnit": "7-5) 유전정보",
+      "article": "B. 유전발현과 조절",
+      "matchKey": "75유전정보b유전발현과조절"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-4) 유전 정보",
+      "middleUnit": "7-5) 유전정보",
       "article": "C. DNA 기술",
-      "matchKey": "74유전정보cdna기술"
+      "matchKey": "75유전정보cdna기술"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-5) 세포분열과 유전",
+      "middleUnit": "7-6) 세포분열과 유전",
       "article": "A. 체세포분열",
-      "matchKey": "75세포분열과유전a체세포분열"
+      "matchKey": "76세포분열과유전a체세포분열"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-5) 세포분열과 유전",
+      "middleUnit": "7-6) 세포분열과 유전",
       "article": "B. 감수분열",
-      "matchKey": "75세포분열과유전b감수분열"
+      "matchKey": "76세포분열과유전b감수분열"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-5) 세포분열과 유전",
+      "middleUnit": "7-6) 세포분열과 유전",
       "article": "C. 유전 패턴",
-      "matchKey": "75세포분열과유전c유전패턴"
+      "matchKey": "76세포분열과유전c유전패턴"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-6) 진화 — 생명의 변화 엔진",
+      "middleUnit": "7-7) 진화",
       "article": "A. 진화의 힘",
-      "matchKey": "76진화생명의변화엔진a진화의힘"
+      "matchKey": "77진화a진화의힘"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-6) 진화 — 생명의 변화 엔진",
+      "middleUnit": "7-7) 진화",
       "article": "B. 종분화",
-      "matchKey": "76진화생명의변화엔진b종분화"
+      "matchKey": "77진화b종분화"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-6) 진화 — 생명의 변화 엔진",
+      "middleUnit": "7-7) 진화",
       "article": "C. 생물 다양성",
-      "matchKey": "76진화생명의변화엔진c생물다양성"
+      "matchKey": "77진화c생물다양성"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-7) 생물의 다양성",
+      "middleUnit": "7-8) 생물의 다양성",
       "article": "A. 바이러스",
-      "matchKey": "77생물의다양성a바이러스"
+      "matchKey": "78생물의다양성a바이러스"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-7) 생물의 다양성",
+      "middleUnit": "7-8) 생물의 다양성",
       "article": "B. 원핵 생물",
-      "matchKey": "77생물의다양성b원핵생물"
+      "matchKey": "78생물의다양성b원핵생물"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-7) 생물의 다양성",
+      "middleUnit": "7-8) 생물의 다양성",
       "article": "C. 진핵 생물",
-      "matchKey": "77생물의다양성c진핵생물"
+      "matchKey": "78생물의다양성c진핵생물"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-8) 식물",
+      "middleUnit": "7-9) 식물",
       "article": "A. 식물 구조",
-      "matchKey": "78식물a식물구조"
+      "matchKey": "79식물a식물구조"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-8) 식물",
+      "middleUnit": "7-9) 식물",
       "article": "B. 식물 생식",
-      "matchKey": "78식물b식물생식"
+      "matchKey": "79식물b식물생식"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-8) 식물",
+      "middleUnit": "7-9) 식물",
       "article": "C. 식물 신호",
-      "matchKey": "78식물c식물신호"
+      "matchKey": "79식물c식물신호"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "A. 소화",
-      "matchKey": "79동물의생리a소화"
+      "matchKey": "710인체a소화"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "B. 순환",
-      "matchKey": "79동물의생리b순환"
+      "matchKey": "710인체b순환"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "C. 호흡",
-      "matchKey": "79동물의생리c호흡"
+      "matchKey": "710인체c호흡"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "D. 배설",
-      "matchKey": "79동물의생리d배설"
+      "matchKey": "710인체d배설"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "E. 면역",
-      "matchKey": "79동물의생리e면역"
+      "matchKey": "710인체e면역"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "F. 신경",
-      "matchKey": "79동물의생리f신경"
+      "matchKey": "710인체f신경"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "G. 내분비",
-      "matchKey": "79동물의생리g내분비"
+      "matchKey": "710인체g내분비"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "H. 발생과 성장",
-      "matchKey": "79동물의생리h발생과성장"
+      "matchKey": "710인체h발생과성장"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-9) 동물의 생리",
+      "middleUnit": "7-10) 인체",
       "article": "I. 노화와 죽음",
-      "matchKey": "79동물의생리i노화와죽음"
+      "matchKey": "710인체i노화와죽음"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-10) 생태계",
+      "middleUnit": "7-11) 생태계",
       "article": "A. 개체군과 군집",
-      "matchKey": "710생태계a개체군과군집"
+      "matchKey": "711생태계a개체군과군집"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-10) 생태계",
+      "middleUnit": "7-11) 생태계",
       "article": "B. 행동 생태",
-      "matchKey": "710생태계b행동생태"
+      "matchKey": "711생태계b행동생태"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "생명",
-      "middleUnit": "7-10) 생태계",
+      "middleUnit": "7-11) 생태계",
       "article": "C. 에너지 흐름과 물질 순환",
-      "matchKey": "710생태계c에너지흐름과물질순환"
+      "matchKey": "711생태계c에너지흐름과물질순환"
     },
     {
       "sourceFile": "08_에필로그_우리의_미래.csv",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-22T08:15:08"
+  "updatedAt": "2026-09-22T08:41:57"
 }
