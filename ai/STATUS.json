@@ -1,15 +1,15 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "6-3_C",
+  "lastCompleted": "7-4_C",
   "totalCount": 128,
-  "completedCount": 73,
-  "remainingCount": 55,
+  "completedCount": 94,
+  "remainingCount": 34,
   "nextArticle": {
-    "sourceFile": "06_지구_살아있는_행성.csv",
-    "subject": "지구환경",
-    "middleUnit": "6-4) 대기와 날씨",
-    "article": "A. 지구와 대기",
-    "matchKey": "64대기와날씨a지구와대기"
+    "sourceFile": "07_생명_진화하는_정보.csv",
+    "subject": "화학",
+    "middleUnit": "7-1) 용액의 화학",
+    "article": "C. 콜로이드",
+    "matchKey": "71용액의화학c콜로이드"
   },
   "completedArticles": [
     {
@@ -513,24 +513,15 @@
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
       "middleUnit": "6-4) 대기와 날씨",
-      "article": "B. 대기의 순환",
-      "matchKey": "64대기와날씨b대기의순환"
+      "article": "A. 지구와 대기",
+      "matchKey": "64대기와날씨a지구와대기"
     },
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "생명",
-      "middleUnit": "7-2) 생명의 화학",
-      "article": "C. 생명과 물",
-      "matchKey": "72생명의화학c생명과물"
-    }
-  ],
-  "pendingArticles": [
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
       "subject": "지구환경",
       "middleUnit": "6-4) 대기와 날씨",
-      "article": "A. 지구와 대기",
-      "matchKey": "64대기와날씨a지구와대기"
+      "article": "B. 대기의 순환",
+      "matchKey": "64대기와날씨b대기의순환"
     },
     {
       "sourceFile": "06_지구_살아있는_행성.csv",
@@ -599,13 +590,6 @@
       "sourceFile": "07_생명_진화하는_정보.csv",
       "subject": "화학",
       "middleUnit": "7-1) 용액의 화학",
-      "article": "C. 콜로이드",
-      "matchKey": "71용액의화학c콜로이드"
-    },
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "화학",
-      "middleUnit": "7-1) 용액의 화학",
       "article": "D. 수용액 평형",
       "matchKey": "71용액의화학d수용액평형"
     },
@@ -622,6 +606,13 @@
       "middleUnit": "7-2) 생명의 화학",
       "article": "B. 생체 구성 원자",
       "matchKey": "72생명의화학b생체구성원자"
+    },
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "생명",
+      "middleUnit": "7-2) 생명의 화학",
+      "article": "C. 생명과 물",
+      "matchKey": "72생명의화학c생명과물"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
@@ -678,6 +669,15 @@
       "middleUnit": "7-4) 에너지와 물질대사",
       "article": "C. 세포호흡과 발효",
       "matchKey": "74에너지와물질대사c세포호흡과발효"
+    }
+  ],
+  "pendingArticles": [
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "화학",
+      "middleUnit": "7-1) 용액의 화학",
+      "article": "C. 콜로이드",
+      "matchKey": "71용액의화학c콜로이드"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-22T08:41:57"
+  "updatedAt": "2026-09-22T14:23:48"
 }
