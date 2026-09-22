@@ -1,9 +1,9 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "7-4_C",
+  "lastCompleted": "7-5_B",
   "totalCount": 128,
-  "completedCount": 94,
-  "remainingCount": 34,
+  "completedCount": 96,
+  "remainingCount": 32,
   "nextArticle": {
     "sourceFile": "07_생명_진화하는_정보.csv",
     "subject": "화학",
@@ -669,15 +669,6 @@
       "middleUnit": "7-4) 에너지와 물질대사",
       "article": "C. 세포호흡과 발효",
       "matchKey": "74에너지와물질대사c세포호흡과발효"
-    }
-  ],
-  "pendingArticles": [
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "화학",
-      "middleUnit": "7-1) 용액의 화학",
-      "article": "C. 콜로이드",
-      "matchKey": "71용액의화학c콜로이드"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
@@ -692,6 +683,15 @@
       "middleUnit": "7-5) 유전정보",
       "article": "B. 유전발현과 조절",
       "matchKey": "75유전정보b유전발현과조절"
+    }
+  ],
+  "pendingArticles": [
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "화학",
+      "middleUnit": "7-1) 용액의 화학",
+      "article": "C. 콜로이드",
+      "matchKey": "71용액의화학c콜로이드"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-22T14:23:48"
+  "updatedAt": "2026-09-22T14:54:30"
 }
