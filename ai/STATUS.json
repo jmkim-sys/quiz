@@ -1,9 +1,9 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "7-5_B",
+  "lastCompleted": "7-8_C",
   "totalCount": 128,
-  "completedCount": 96,
-  "remainingCount": 32,
+  "completedCount": 106,
+  "remainingCount": 22,
   "nextArticle": {
     "sourceFile": "07_생명_진화하는_정보.csv",
     "subject": "화학",
@@ -683,15 +683,6 @@
       "middleUnit": "7-5) 유전정보",
       "article": "B. 유전발현과 조절",
       "matchKey": "75유전정보b유전발현과조절"
-    }
-  ],
-  "pendingArticles": [
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "화학",
-      "middleUnit": "7-1) 용액의 화학",
-      "article": "C. 콜로이드",
-      "matchKey": "71용액의화학c콜로이드"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
@@ -762,6 +753,15 @@
       "middleUnit": "7-8) 생물의 다양성",
       "article": "C. 진핵 생물",
       "matchKey": "78생물의다양성c진핵생물"
+    }
+  ],
+  "pendingArticles": [
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "화학",
+      "middleUnit": "7-1) 용액의 화학",
+      "article": "C. 콜로이드",
+      "matchKey": "71용액의화학c콜로이드"
     },
     {
       "sourceFile": "07_생명_진화하는_정보.csv",
@@ -912,5 +912,5 @@
     }
   ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-22T14:54:30"
+  "updatedAt": "2026-09-23T08:57:04"
 }
