@@ -1,9 +1,9 @@
 {
   "current": "3-1) 원자의 내부 / A. 원자",
-  "lastCompleted": "E-2",
+  "lastCompleted": "E-5",
   "totalCount": 128,
-  "completedCount": 123,
-  "remainingCount": 5,
+  "completedCount": 127,
+  "remainingCount": 1,
   "nextArticle": {
     "sourceFile": "07_생명_진화하는_정보.csv",
     "subject": "화학",
@@ -872,15 +872,6 @@
       "middleUnit": "E-2) IPCC 미래 시나리오",
       "article": "IPCC 미래 시나리오",
       "matchKey": "e2ipcc미래시나리오ipcc미래시나리오"
-    }
-  ],
-  "pendingArticles": [
-    {
-      "sourceFile": "07_생명_진화하는_정보.csv",
-      "subject": "화학",
-      "middleUnit": "7-1) 용액의 화학",
-      "article": "C. 콜로이드",
-      "matchKey": "71용액의화학c콜로이드"
     },
     {
       "sourceFile": "08_에필로그_우리의_미래.csv",
@@ -911,6 +902,15 @@
       "matchKey": "e5과학기술의미래와인류의선택과학기술의미래와인류의선택"
     }
   ],
+  "pendingArticles": [
+    {
+      "sourceFile": "07_생명_진화하는_정보.csv",
+      "subject": "화학",
+      "middleUnit": "7-1) 용액의 화학",
+      "article": "C. 콜로이드",
+      "matchKey": "71용액의화학c콜로이드"
+    }
+  ],
   "unmatchedQuizFiles": [],
-  "updatedAt": "2026-09-23T10:42:03"
+  "updatedAt": "2026-09-23T13:51:04"
 }
