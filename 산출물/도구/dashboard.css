@@ -141,6 +141,9 @@ h1{font-size:48px;font-weight:800;line-height:56px;letter-spacing:-.02em;margin:
 .arts a.cand{color:var(--primary);}
 
 /* ===== 분과 bars ===== */
+/* ⚠️ `.bars` / `.bar-row` / `.bar-name`은 2026-09-28에 분과별 분포가 누적 막대로 바뀌면서
+   **쓰는 곳이 없어졌다.** 지우지 않고 남겨 둔다 — 같은 줄 구조를 다시 쓸 일이 있을 수 있고,
+   `.bar-track`·`.bar-scale`·`.bar-fill`은 대단원 아코디언이 계속 쓰고 있어 이름이 이어진다. */
 .bars{display:flex;flex-direction:column;gap:var(--sm);}
 .bar-row{display:grid;grid-template-columns:76px 1fr 80px;gap:var(--sm);align-items:center;}
 .bar-name{font-size:14px;font-weight:700;}
@@ -203,3 +206,23 @@ footer.note b{color:var(--on-surface);}
   .eu-body{padding-left:var(--sm);}
   .steps{grid-template-columns:1fr;}
 }
+
+/* ── 분과별 분포: 100% 누적 막대 (2026-09-28 신설) ──────────────────────────
+   칸의 폭 = 전체 대비 비율. 옛 `.bar-row` 방식은 막대가 «최대 분과» 기준이고 라벨이 «전체»
+   기준이라 한 줄 안에서 두 수치가 어긋났다. 색 대비가 3:1 아래인 칸이 있으므로 값은 아래
+   범례에 글자로 적는다 — 색만으로 구분하게 두지 않는다. */
+.divbar{display:flex;gap:2px;width:100%;height:30px;border-radius:var(--r);
+  background:var(--surface-c);overflow:hidden;}
+.divbar > span{height:100%;display:block;transition:opacity .15s;}
+.divbar > span:first-child{border-radius:var(--r) 0 0 var(--r);}
+.divbar > span:last-child{border-radius:0 var(--r) var(--r) 0;}
+.divbar:hover > span{opacity:.35;}
+.divbar > span:hover{opacity:1;}
+.divlegend{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+  gap:var(--base) var(--md);margin-top:var(--sm);}
+.divlegend > div{display:flex;align-items:center;gap:var(--base);font-size:13px;
+  padding:2px 0;border-bottom:1px solid var(--surface-c);}
+.divlegend .sw{width:10px;height:10px;border-radius:var(--r-sm);flex:none;}
+.divlegend .nm{font-weight:700;color:var(--on-surface);}
+.divlegend .vl{margin-left:auto;color:var(--on-surface-variant);font-weight:600;white-space:nowrap;}
+.divlegend .vl b{color:var(--on-surface);font-weight:800;}

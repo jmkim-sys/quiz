@@ -149,6 +149,9 @@ h1{font-size:48px;font-weight:800;line-height:56px;letter-spacing:-.02em;margin:
 .arts a.cand{color:var(--primary);}
 
 /* ===== 분과 bars ===== */
+/* ⚠️ `.bars` / `.bar-row` / `.bar-name`은 2026-09-28에 분과별 분포가 누적 막대로 바뀌면서
+   **쓰는 곳이 없어졌다.** 지우지 않고 남겨 둔다 — 같은 줄 구조를 다시 쓸 일이 있을 수 있고,
+   `.bar-track`·`.bar-scale`·`.bar-fill`은 대단원 아코디언이 계속 쓰고 있어 이름이 이어진다. */
 .bars{display:flex;flex-direction:column;gap:var(--sm);}
 .bar-row{display:grid;grid-template-columns:76px 1fr 80px;gap:var(--sm);align-items:center;}
 .bar-name{font-size:14px;font-weight:700;}
@@ -211,6 +214,26 @@ footer.note b{color:var(--on-surface);}
   .eu-body{padding-left:var(--sm);}
   .steps{grid-template-columns:1fr;}
 }
+
+/* ── 분과별 분포: 100% 누적 막대 (2026-09-28 신설) ──────────────────────────
+   칸의 폭 = 전체 대비 비율. 옛 `.bar-row` 방식은 막대가 «최대 분과» 기준이고 라벨이 «전체»
+   기준이라 한 줄 안에서 두 수치가 어긋났다. 색 대비가 3:1 아래인 칸이 있으므로 값은 아래
+   범례에 글자로 적는다 — 색만으로 구분하게 두지 않는다. */
+.divbar{display:flex;gap:2px;width:100%;height:30px;border-radius:var(--r);
+  background:var(--surface-c);overflow:hidden;}
+.divbar > span{height:100%;display:block;transition:opacity .15s;}
+.divbar > span:first-child{border-radius:var(--r) 0 0 var(--r);}
+.divbar > span:last-child{border-radius:0 var(--r) var(--r) 0;}
+.divbar:hover > span{opacity:.35;}
+.divbar > span:hover{opacity:1;}
+.divlegend{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+  gap:var(--base) var(--md);margin-top:var(--sm);}
+.divlegend > div{display:flex;align-items:center;gap:var(--base);font-size:13px;
+  padding:2px 0;border-bottom:1px solid var(--surface-c);}
+.divlegend .sw{width:10px;height:10px;border-radius:var(--r-sm);flex:none;}
+.divlegend .nm{font-weight:700;color:var(--on-surface);}
+.divlegend .vl{margin-left:auto;color:var(--on-surface-variant);font-weight:600;white-space:nowrap;}
+.divlegend .vl b{color:var(--on-surface);font-weight:800;}
 </style>
 </head>
 <body>
@@ -770,32 +793,19 @@ footer.note b{color:var(--on-surface);}
       </div>
       <div class="panel span4">
         <div class="panel-head"><div><div class="panel-label">Distribution</div><h3>분과별 아티클 분포</h3></div></div>
-        <div class="bars">
-      <div class="bar-row">
-        <span class="bar-name">생명</span>
-        <span class="bar-track"><span class="bar-scale neutral" style="width:100.0%"></span></span>
-        <span class="bar-val"><b>36</b> 28.1%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-name">화학</span>
-        <span class="bar-track"><span class="bar-scale neutral" style="width:80.6%"></span></span>
-        <span class="bar-val"><b>29</b> 22.7%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-name">물리</span>
-        <span class="bar-track"><span class="bar-scale neutral" style="width:72.2%"></span></span>
-        <span class="bar-val"><b>26</b> 20.3%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-name">천문</span>
-        <span class="bar-track"><span class="bar-scale neutral" style="width:52.8%"></span></span>
-        <span class="bar-val"><b>19</b> 14.8%</span>
-      </div>
-      <div class="bar-row">
-        <span class="bar-name">지구환경</span>
-        <span class="bar-track"><span class="bar-scale neutral" style="width:50.0%"></span></span>
-        <span class="bar-val"><b>18</b> 14.1%</span>
-      </div>
+        <div class="divbar" role="img" aria-label="분과별 아티클 분포: 생명 36개, 화학 29개, 물리 26개, 천문 19개, 지구환경 18개">
+          <span style="width:28.1%;background:#2a78d6" title="생명 36개 · 전체 128개의 28.1%"></span>
+          <span style="width:22.7%;background:#eb6834" title="화학 29개 · 전체 128개의 22.7%"></span>
+          <span style="width:20.3%;background:#1baf7a" title="물리 26개 · 전체 128개의 20.3%"></span>
+          <span style="width:14.8%;background:#eda100" title="천문 19개 · 전체 128개의 14.8%"></span>
+          <span style="width:14.1%;background:#e87ba4" title="지구환경 18개 · 전체 128개의 14.1%"></span>
+        </div>
+        <div class="divlegend">
+          <div><span class="sw" style="background:#2a78d6"></span><span class="nm">생명</span><span class="vl"><b>36</b> · 28.1%</span></div>
+          <div><span class="sw" style="background:#eb6834"></span><span class="nm">화학</span><span class="vl"><b>29</b> · 22.7%</span></div>
+          <div><span class="sw" style="background:#1baf7a"></span><span class="nm">물리</span><span class="vl"><b>26</b> · 20.3%</span></div>
+          <div><span class="sw" style="background:#eda100"></span><span class="nm">천문</span><span class="vl"><b>19</b> · 14.8%</span></div>
+          <div><span class="sw" style="background:#e87ba4"></span><span class="nm">지구환경</span><span class="vl"><b>18</b> · 14.1%</span></div>
         </div>
         <div class="callout">
           가장 큰 대단원은 <b>07 7. 생명 — 진화하는 정보</b>(42개)로 전체의 32.8%를 차지합니다.

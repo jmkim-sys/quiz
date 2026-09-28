@@ -456,7 +456,6 @@ function loadReviewCsv() {
 function buildHTML(d, stamp) {
   const { units, T, divs, queue, waiting, colsNote, skipped, REVIEW } = d;
   const maxArt = Math.max(...units.map(u => u.arts.length));
-  const maxDiv = divs[0][1];
   const biggest = units.slice().sort((a, b) => b.arts.length - a.arts.length)[0];
 
   /* KPI 3종 —
@@ -512,11 +511,22 @@ ${mids}
     </details>`;
   }).join('\n');
 
-  const divBars = divs.map(([k, v]) => `      <div class="bar-row">
-        <span class="bar-name">${esc(k)}</span>
-        <span class="bar-track"><span class="bar-scale neutral" style="width:${(v / maxDiv * 100).toFixed(1)}%"></span></span>
-        <span class="bar-val"><b>${v}</b> ${(v / T.art * 100).toFixed(1)}%</span>
-      </div>`).join('\n');
+  /* 분과별 분포 — 100% 누적 막대 (2026-09-28 교체).
+     ⚠️ 그전에는 분과마다 한 줄씩 막대를 그리면서 **막대 길이는 «가장 큰 분과(36개)» 기준**,
+     옆의 숫자는 «전체(128개)» 기준이었다. 그래서 지구환경이 «막대는 절반(50%)인데 라벨은 14.1%»로
+     보였다 — 한 줄 안에 기준이 다른 두 수치가 섞여 있었던 것이다.
+     누적 막대는 **칸의 폭이 곧 전체 대비 비율**이라 이 어긋남이 구조적으로 생기지 않는다.
+     색은 카테고리 5색(검증 통과: 인접 쌍 CVD ΔE 9.1 · 일반 시야 ΔE 19.6)이고, 대비가 3:1 아래인
+     칸이 있어 **값은 반드시 범례에 글자로 적는다** — 색만으로 구분하게 두지 않는다.
+     칸 사이 2px 틈은 배경이 비쳐 경계가 되게 한 것이다. */
+  const DIV_HUE = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4'];
+  const divPct = v => v / T.art * 100;
+  const divBars = `        <div class="divbar" role="img" aria-label="분과별 아티클 분포: ${divs.map(([k, v]) => `${k} ${v}개`).join(', ')}">
+${divs.map(([k, v], i) => `          <span style="width:${divPct(v).toFixed(1)}%;background:${DIV_HUE[i % DIV_HUE.length]}" title="${esc(k)} ${v}개 · 전체 ${T.art}개의 ${divPct(v).toFixed(1)}%"></span>`).join('\n')}
+        </div>
+        <div class="divlegend">
+${divs.map(([k, v], i) => `          <div><span class="sw" style="background:${DIV_HUE[i % DIV_HUE.length]}"></span><span class="nm">${esc(k)}</span><span class="vl"><b>${v}</b> · ${divPct(v).toFixed(1)}%</span></div>`).join('\n')}
+        </div>`;
 
   const CSS = fs.readFileSync(path.join(__dirname, 'dashboard.css'), 'utf8');
 
@@ -596,9 +606,7 @@ ${accordion}
       </div>
       <div class="panel span4">
         <div class="panel-head"><div><div class="panel-label">Distribution</div><h3>분과별 아티클 분포</h3></div></div>
-        <div class="bars">
 ${divBars}
-        </div>
         <div class="callout">
           가장 큰 대단원은 <b>${esc(biggest.no + ' ' + biggest.label)}</b>(${biggest.arts.length}개)로 전체의 ${(biggest.arts.length / T.art * 100).toFixed(1)}%를 차지합니다.
           분과 기준으로도 <b>${esc(divs[0][0])}</b>이 ${divs[0][1]}개로 가장 많습니다.
