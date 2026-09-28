@@ -2469,3 +2469,9 @@
   스크린리더용 `aria-label`에 다섯 값을 모두 적었다.
 - ⚠️ `.bars`·`.bar-row`·`.bar-name`은 쓰는 곳이 없어졌지만 **지우지 않고 주석만 달았다** —
   `.bar-track`·`.bar-scale`·`.bar-fill`은 대단원 아코디언이 계속 쓴다.
+
+## 2026-09-29 — 대시보드 「기획자 검수 필요 파일」 72로 조정
+- 사용자 지시 *"html 기획자 검수 필요파일 72로 맞추자"* — `build-dashboard.js`의 `DISPLAY_ADJUST.reviewNeed`를 `-49` → `-54`로 바꿨다(검수 완료 아티클 49건 → 54건).
+- 계산값(검수용 CSV 126건)은 그대로이고 화면 숫자만 77 → 72가 된다. 대시보드를 다시 만들어 확인했다.
+- 같은 날 사용자 지시 *"70으로 다시 맞추자"* — `reviewNeed`를 `-54` → `-56`으로 다시 바꿨다(검수 완료 56건 → 화면 70). 대시보드 재생성해 확인.
+- 팀 시트 배경색 읽기: `tools/appsscript_읽기액션.gs`에 `action=colors`(`dumpColors_` — `getDisplayValues()`+`getBackgrounds()`를 같은 모양 2차원 배열로) 추가. 기획자가 초록으로 칠한 「검수 완료」 칸을 기계로 세어 `DISPLAY_ADJUST.reviewNeed` 손조정을 없애기 위한 것. **아직 시트에 배포되지 않았다** — `action=tabs`가 옛 doGet 상태 문구만 돌려주어 확인됨.
