@@ -79,6 +79,25 @@ function readReviewDone() {
  * 단원별 «수»는 언제나 시트 값을 그대로 쓰므로 짝짓기 실패와 무관하게 정확하다. */
 const normName = s => String(s || '').replace(/\s+/g, '').replace(/[·ㆍ・\-–—]/g, '-').toLowerCase();
 
+/* ===== 시트 표기 → 로컬 표기 대응표 (tools/build_quiz_update.js 의 SHEET_KEY) =====
+ * 시트와 로컬이 같은 아티클을 다르게 부르는 자리가 있다 — `수학`↔`수리물리`, `태양`↔`태양 — 가장
+ * 가까운 별`. 이 대응은 **사용자가 시트를 보고 확정해 준 값**이라 추측이 아니다(규칙 3번).
+ * 퀴즈 전송이 쓰던 그 표를 여기서도 읽어, 대단원을 펼쳤을 때 «검수 완료» 표시가 올바른 줄에 붙게 한다.
+ * ⚠️ 표에 없는 이름(`C. 금속`↔`C. 전이 금속` 등)은 **짝짓지 않는다** — 화면에 그대로 적어 둔다. */
+function readSheetAlias() {
+  const f = path.join(ROOT, 'tools', 'build_quiz_update.js');
+  const map = {};                                    /* `단원|로컬표기(정규화)` → 시트표기 */
+  if (!fs.existsSync(f)) { warn('tools/build_quiz_update.js 가 없어 시트 표기 대응표를 쓰지 않습니다.'); return map; }
+  try {
+    const src = fs.readFileSync(f, 'utf8');
+    const re = /'(\d+)\|([^']+)':\s*\{[^}]*?아티클:\s*'([^']*)'/g;
+    let m, n = 0;
+    while ((m = re.exec(src))) { map[m[1] + '|' + normName(m[2])] = m[3]; n++; }
+    if (n) ok(`시트 표기 대응 ${n}건 읽음 (tools/build_quiz_update.js)`);
+  } catch (e) { warn(`시트 표기 대응표를 읽지 못했습니다: ${e.message}`); }
+  return map;
+}
+
 const ARGS = process.argv.slice(2);
 const WATCH = ARGS.includes('--watch');
 const OPEN = ARGS.includes('--open');
@@ -496,6 +515,7 @@ function buildHTML(d, stamp) {
      ⚠️ 기준이 «검수용 CSV 수»(126)가 아니라 «전체 아티클 수»(128)다. 아직 퀴즈를 만들지 않은
      아티클도 언젠가 검수를 받아야 하므로, 남은 일의 총량을 보여주려면 전체가 맞다. */
   const REVIEW_DONE = readReviewDone();
+  const SHEET_ALIAS = readSheetAlias();
   const reviewDone = REVIEW_DONE.done;
   const reviewNeed = Math.max(0, T.art - reviewDone);
 
@@ -512,6 +532,11 @@ function buildHTML(d, stamp) {
     const rvUnit = REVIEW_DONE.units[String(Number(u.no))] || {};
     const rvCount = Number(rvUnit.검수완료) || 0;
     const localByNorm = new Map(u.arts.map(a => [normName(a.art), a.art]));
+    /* 시트 표기가 로컬과 다른 아티클은 확정 대응표로 한 번 더 이어 준다. */
+    for (const a of u.arts) {
+      const alias = SHEET_ALIAS[Number(u.no) + '|' + normName(a.art)];
+      if (alias) localByNorm.set(normName(alias), a.art);
+    }
     const rvSet = new Set(); const rvMiss = [];
     (rvUnit.검수완료_아티클 || []).forEach(n => {
       const hit = localByNorm.get(normName(n));

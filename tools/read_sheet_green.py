@@ -2,16 +2,15 @@
 
 무엇을 하나
 -----------
-기획자는 검수를 마친 아티클의 이름 칸(각 탭 C열)을 초록(#00ff00)으로 칠해 표시한다.
-그 색을 Apps Script `readWithColor`로 읽어 대단원별로 세고,
-`산출물/검수완료_시트.json` 에 적는다. 대시보드(`산출물/도구/build-dashboard.js`)가
-그 파일을 읽어 「기획자 검수 필요 파일」 수를 계산한다.
+기획자는 검수를 마친 아티클 줄을 초록(#00ff00)으로 칠해 표시한다. 그 색을 Apps Script
+`readWithColor`로 읽어 대단원별로 세고 `산출물/검수완료_시트.json` 에 적는다.
+대시보드(`산출물/도구/build-dashboard.js`)가 그 파일을 읽어 KPI와 대단원별 표시를 만든다.
 
 왜 파일로 남기나
 ----------------
 대시보드 집계 원본은 로컬 파일이라는 것이 2026-09-16 사용자 결정이다("로컬로 처리하는게 맞을듯").
 대시보드를 만들 때마다 시트를 부르면 네트워크가 끊길 때 수치가 조용히 달라진다.
-읽기(이 스크립트)와 집계(대시보드)를 갈라 두면, 언제 읽은 값인지도 화면에 적을 수 있다.
+읽기(이 스크립트)와 집계(대시보드)를 갈라 두면 언제 값이 바뀌었는지도 화면에 적을 수 있다.
 
 2026-09-29 이전에는 이 수를 기계로 알 길이 없어 사용자가 불러 주는 숫자를
 `build-dashboard.js`의 `DISPLAY_ADJUST.reviewNeed`에 손으로 적었다. 이 스크립트가 그것을 대신한다.
@@ -20,7 +19,7 @@
 -------
     py tools/read_sheet_green.py
 
-⚠️ 탭 이름은 아래 TABS에 적힌 «글자 그대로»여야 한다 (규칙 3번 — 추측해서 넣지 않는다).
+1시간마다 자동으로도 돈다 — `tools/auto_update.ps1` (작업 스케줄러 STORY-Quiz-Dashboard-Hourly).
 """
 
 import os
@@ -73,13 +72,20 @@ TABS = [
     (8, "8. 에필로그 우리의 미래 — 138억 년의 다음 장"),
 ]
 
-# 아티클 이름이 있는 열. 초록은 이 칸에만 칠해져 있다.
-# 400행이면 가장 긴 7단원(42아티클 x 7행 = 294행)도 넉넉히 덮는다.
-RANGE = "C1:C400"
+# ⚠️ **B열(중단원)까지 읽는다.** 기획자가 아티클 칸(C)이 아니라 중단원 칸(B)을 칠할 때가 있다.
+# 2026-09-29에 B열 10칸이 그렇게 칠해져 있었고(나중에 C열로 옮겨졌다), C열만 세던 때는
+# 그 10건이 통째로 빠져 52건으로 나왔다. 실제는 63건이었다.
+# 9개 탭을 17열 x 900행까지 훑어 초록이 B·C 밖에는 없음을 확인했다.
+RANGE = "A1:C400"
+
+# 아티클 한 건 = 7행이고 첫 아티클이 2행에서 시작한다. 블록 번호 = (행 - 2) // 7.
+# **칸이 아니라 블록을 센다** — 한 아티클의 B와 C를 둘 다 칠해도 1건으로 세기 위해서다.
+BLOCK_ROWS = 7
+FIRST_ROW = 2
 
 
 def read_tab(tab_name):
-    """탭 하나의 C열을 읽어 (아티클 이름 목록, 초록인 이름 목록)을 돌려준다."""
+    """탭 하나를 읽어 (아티클 이름 목록, 검수 완료 아티클 이름 목록)을 돌려준다."""
 
     r = requests.post(
         URL,
@@ -93,14 +99,33 @@ def read_tab(tab_name):
     if not data.get("ok"):
         raise RuntimeError(f"{tab_name} — {data.get('error', 'Apps Script 오류')}")
 
-    cells = [c for row in data.get("values", []) for c in row]
-    filled = [c for c in cells if (c.get("value") or "").strip()]
+    rows = data.get("values", [])
 
-    # C1은 머리글(`아티클`)이므로 뺀다. 이 한 칸을 빼야 로컬 CSV의 아티클 수와 맞는다.
-    arts = filled[1:]
+    # ── 초록이 칠해진 «블록 번호»를 모은다 (B열이든 C열이든) ──
+    green_blocks = set()
+    for r_index, row in enumerate(rows, start=1):
+        if r_index < FIRST_ROW:
+            continue
+        if any(c.get("isGreen") for c in row):
+            green_blocks.add((r_index - FIRST_ROW) // BLOCK_ROWS)
 
-    names = [c["value"].strip() for c in arts]
-    green = [c["value"].strip() for c in arts if c.get("isGreen")]
+    # ── 아티클 이름은 C열에서 읽는다 (블록 첫 행에만 적혀 있다) ──
+    names, green = [], []
+    for r_index, row in enumerate(rows, start=1):
+        if r_index < FIRST_ROW or len(row) < 3:
+            continue
+        value = (row[2].get("value") or "").strip()
+        if not value:
+            continue
+        names.append(value)
+        if (r_index - FIRST_ROW) // BLOCK_ROWS in green_blocks:
+            green.append(value)
+
+    # 블록 수와 이름 수가 어긋나면 7행 묶음 가정이 깨진 것이므로 조용히 넘기지 않는다.
+    if len(green) != len(green_blocks):
+        print(f"  [주의] {tab_name} — 초록 블록 {len(green_blocks)}개인데 아티클명은 "
+              f"{len(green)}개입니다. 7행 묶음이 아닌 자리가 있는지 확인하세요.")
+
     return names, green
 
 
@@ -109,11 +134,31 @@ def main():
     print("팀 시트에서 초록 칸(= 기획자 검수 완료)을 읽습니다.")
     print("-" * 72)
 
+    previous = {}
+    if OUT.exists():
+        try:
+            with open(OUT, encoding="utf-8") as f:
+                previous = json.load(f)
+        except Exception:
+            previous = {}
+    prev_units = previous.get("대단원", {})
+
     units = {}
     total_arts = total_green = 0
+    suspicious = []
 
     for no, tab in TABS:
         names, green = read_tab(tab)
+
+        # ⚠️ 빈 응답으로 좋은 값을 덮어쓰지 않는다.
+        # 2026-09-29 10:01 자동 실행에서 0단원·8단원이 «아티클 0개»로 들어와 파일에 그대로 적혔다.
+        # 오류가 아니라 정상 응답이었고(ok: true), 곧바로 다시 읽으니 5개·6개가 멀쩡히 나왔다.
+        # 원인은 못 밝혔지만(시트 편집 중이었을 수 있다), 한 번의 이상한 읽기가 대시보드를
+        # 0으로 만들어서는 안 된다. 전에 있던 아티클이 통째로 사라지면 **파일을 쓰지 않고 멈춘다.**
+        was = int((prev_units.get(str(no)) or {}).get("아티클", 0))
+        if not names and was:
+            suspicious.append(f"{no}단원({tab}) — 전에는 {was}개였는데 이번엔 0개")
+
         units[str(no)] = {
             "탭": tab,
             "아티클": len(names),
@@ -127,20 +172,19 @@ def main():
     print("-" * 72)
     print(f"합계    아티클 {total_arts:3d} · 검수 완료 {total_green:3d}")
 
-    # 2026-09-29 — 값이 그대로면 파일을 건드리지 않는다.
+    if suspicious:
+        print()
+        print("[중단] 아티클이 통째로 비어 돌아온 탭이 있어 파일을 고치지 않았습니다.")
+        for line in suspicious:
+            print("   ", line)
+        print("    잠시 뒤 다시 돌려 보세요. 계속 그렇다면 시트 탭이 바뀌었는지 확인하세요.")
+        raise SystemExit(1)
+
+    # 값이 그대로면 파일을 건드리지 않는다.
     # 이 스크립트는 1시간마다 자동으로 돈다(`tools/auto_update.ps1`). 매번 시각을 새로 적으면
     # 초록 칸이 하나도 안 바뀐 날에도 파일이 달라져 **빈 커밋이 하루 24개씩 쌓인다.**
-    # 그래서 검수 완료 수와 아티클 목록이 이전과 같으면 그대로 두고 끝낸다.
-    # `갱신시각`은 따라서 «마지막으로 읽은 때»가 아니라 «수치가 마지막으로 바뀐 때»다.
-    previous = {}
-    if OUT.exists():
-        try:
-            with open(OUT, encoding="utf-8") as f:
-                previous = json.load(f)
-        except Exception:
-            previous = {}
-
-    if previous.get("대단원") == units and previous.get("검수완료수") == total_green:
+    # 그래서 `갱신시각`은 «마지막으로 읽은 때»가 아니라 «수치가 마지막으로 바뀐 때»다.
+    if prev_units == units and previous.get("검수완료수") == total_green:
         print()
         print("지난번과 같습니다 — 파일을 고치지 않았습니다.",
               f"(마지막 변화: {previous.get('갱신시각', '모름')})")
@@ -148,7 +192,7 @@ def main():
 
     result = {
         "갱신시각": datetime.datetime.now().isoformat(timespec="seconds"),
-        "출처": "팀 Google 시트 · readWithColor · 각 탭 C열 배경색(#00ff00 = 검수 완료)",
+        "출처": "팀 Google 시트 · readWithColor · B·C열 배경색(#00ff00 = 검수 완료) · 아티클 7행 묶음 단위",
         "아티클수": total_arts,
         "검수완료수": total_green,
         "대단원": units,
@@ -160,7 +204,7 @@ def main():
 
     print()
     print("저장:", OUT.relative_to(ROOT))
-    print("이어서 대시보드를 갱신하세요:  node \"산출물/도구/build-dashboard.js\"")
+    print('이어서 대시보드를 갱신하세요:  node "산출물/도구/build-dashboard.js"')
 
 
 if __name__ == "__main__":

@@ -117,7 +117,7 @@ h1{font-size:48px;font-weight:800;line-height:56px;letter-spacing:-.02em;margin:
 /* ===== Accordion ===== */
 .eu{border:1px solid var(--surface-c);border-radius:var(--r-lg);margin-bottom:var(--base);overflow:hidden;}
 .eu:last-child{margin-bottom:0;}
-.eu > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:20px 300px 1fr 84px;
+.eu > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:20px 288px 1fr 78px 112px;
   gap:var(--sm);align-items:center;padding:12px var(--sm);background:var(--surface-lowest);transition:background .15s;}
 .eu > summary::-webkit-details-marker{display:none;}
 .eu > summary:hover{background:var(--surface-low);}
@@ -158,6 +158,37 @@ h1{font-size:48px;font-weight:800;line-height:56px;letter-spacing:-.02em;margin:
 .arts a{text-decoration:none;border-bottom:1px solid var(--outline-variant);}
 .arts a:hover{border-bottom-color:var(--primary);}
 .arts a.cand{color:var(--primary);}
+
+/* ── 대단원별 기획자 검수 현황 (2026-09-29 신설) ──────────────────────────────
+   왜 따로 두나: 주황 막대는 «문항을 다 만들었나»이고 이 알약은 «기획자가 검수를 마쳤나»다.
+   둘은 별개다 — 7문항을 다 만들어도 검수는 안 끝날 수 있다. 같은 막대에 겹쳐 그리면
+   두 뜻이 섞이므로 색과 자리를 나눴다. 초록은 기획자가 시트에 칠하는 색과 맞춘 것이다.
+   알약 안의 채움(i)은 그 대단원의 검수 완료 «비율»이라, 숫자를 읽기 전에 눈으로 먼저 잡힌다. */
+.eu-review{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:flex-end;
+  padding:3px var(--base);border-radius:999px;border:1px solid var(--done-container);
+  background:var(--surface-lowest);font-size:12px;font-weight:700;color:var(--done);white-space:nowrap;}
+.eu-review > i{position:absolute;left:0;top:0;bottom:0;background:var(--done-track);}
+.eu-review .t{position:relative;}
+.eu-review b{font-weight:800;}
+.eu-review.full{background:var(--done);border-color:var(--done);color:#fff;}
+.eu-review.full > i{background:transparent;}
+.eu-review.zero{border-color:var(--surface-c);color:var(--outline);}
+.eu-review.zero > i{background:transparent;}
+
+/* 아티클 한 줄 — 검수가 끝난 것은 왼쪽에 초록 띠를 세우고 오른쪽에 «검수 완료»를 적는다.
+   색만으로 구분하지 않는 이유는 색각 이상에서 구분이 사라지기 때문이다(글자를 함께 둔다). */
+.arts li{grid-template-columns:1fr 76px 56px 64px;}
+.arts .rvm{font-size:11px;font-weight:700;text-align:right;color:var(--done);white-space:nowrap;}
+.arts li.rv{box-shadow:inset 3px 0 0 var(--done);padding-left:var(--base);background:var(--done-surface);}
+.arts li.rv .rvm::before{content:'';display:inline-block;width:7px;height:7px;border-radius:2px;
+  background:var(--done-mark);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);margin-right:4px;vertical-align:middle;}
+
+/* 이름이 달라 짝을 못 지은 초록 — 숨기지 않고 적어 둔다(추측으로 짝짓지 않기 때문이다). */
+.rvwarn{margin:var(--base) 0 0;padding:var(--base) var(--sm);border-radius:var(--r-md);
+  background:var(--surface-low);border:1px dashed var(--outline-variant);
+  font-size:12px;font-weight:600;line-height:1.6;color:var(--on-surface-variant);}
+.rvwarn b{color:var(--on-surface);}
+.lg-rv{color:var(--done);}
 
 /* ===== 분과 bars ===== */
 /* ⚠️ `.bars` / `.bar-row` / `.bar-name`은 2026-09-28에 분과별 분포가 누적 막대로 바뀌면서
@@ -213,14 +244,14 @@ footer.note b{color:var(--on-surface);}
   .kpi-grid{grid-template-columns:repeat(2,1fr);}
   .span8,.span4{grid-column:span 12;}
   .steps{grid-template-columns:repeat(2,1fr);}
-  .eu > summary{grid-template-columns:20px 200px 1fr 84px;}
+  .eu > summary{grid-template-columns:20px 180px 1fr 72px 104px;}
 }
 @media (max-width:860px){
   .rail{display:none;} .shell{padding-left:0;}
   main{padding:var(--sm) var(--margin-mobile) var(--lg);gap:var(--md);}
   .kpi-grid{grid-template-columns:1fr;} h1{font-size:36px;line-height:44px;}
   .panel h2{font-size:24px;line-height:32px;}
-  .eu > summary{grid-template-columns:16px 1fr 76px;}
+  .eu > summary{grid-template-columns:16px 1fr 72px 100px;}
   .eu > summary .bar-track{display:none;}
   .eu-body{padding-left:var(--sm);}
   .steps{grid-template-columns:1fr;}
