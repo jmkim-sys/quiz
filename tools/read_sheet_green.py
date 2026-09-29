@@ -25,6 +25,7 @@
 import os
 import sys
 import json
+import time
 import datetime
 from pathlib import Path
 
@@ -76,30 +77,70 @@ TABS = [
 # 2026-09-29에 B열 10칸이 그렇게 칠해져 있었고(나중에 C열로 옮겨졌다), C열만 세던 때는
 # 그 10건이 통째로 빠져 52건으로 나왔다. 실제는 63건이었다.
 # 9개 탭을 17열 x 900행까지 훑어 초록이 B·C 밖에는 없음을 확인했다.
-RANGE = "A1:C400"
+# 가장 긴 7단원이 42아티클 x 7행 + 머리글 1행 = 295행이라 300이면 넉넉하다.
+# ⚠️ **400으로 늘리지 마라.** 범위를 키우면 웹앱이 데이터 대신 기본 응답을 돌려주는 일이 잦아진다
+# (아래 read_tab 주석 참고). 필요한 만큼만 요청하는 것이 이 엔드포인트에서는 안정성 문제다.
+RANGE = "A1:C300"
 
 # 아티클 한 건 = 7행이고 첫 아티클이 2행에서 시작한다. 블록 번호 = (행 - 2) // 7.
 # **칸이 아니라 블록을 센다** — 한 아티클의 B와 C를 둘 다 칠해도 1건으로 세기 위해서다.
 BLOCK_ROWS = 7
 FIRST_ROW = 2
 
+TRIES = 4           # 실패 시 재시도 횟수
+PAUSE = 1.5         # 탭 사이 쉬는 시간(초) — 몰아치면 엔드포인트가 흔들린다
+
+
+def fetch(tab_name):
+    """탭 하나의 값+배경색을 받아 온다. 흔들리는 응답을 재시도로 넘긴다.
+
+    ⚠️ **이 엔드포인트는 실패를 «성공처럼» 돌려준다.** 2026-09-29에 확인한 실제 응답:
+
+        A1:C400 →  {"ok": true, "message": "Apps Script Web App is running"}   ← values 없음
+        A1:C40  →  정상
+        C1:C400 →  정상
+
+    `ok`가 true라서 오류 검사를 통과하고, `values`가 없으니 «아티클 0개»로 읽힌다.
+    그대로 저장하면 그 대단원이 화면에서 통째로 0이 된다 — 10:01 자동 실행에서 0단원·8단원이
+    실제로 그렇게 덮였다. 그래서 **`values` 키가 없으면 실패로 보고 다시 시도한다.**
+    요청을 몰아치면 JSON이 아닌 HTML 오류 페이지가 오기도 하므로 그것도 재시도 대상이다.
+    """
+    last = ""
+    for attempt in range(TRIES):
+        try:
+            r = requests.post(
+                URL,
+                json={"secret": SECRET, "action": "readWithColor",
+                      "sheet": tab_name, "range": RANGE},
+                timeout=90,
+            )
+            r.raise_for_status()
+            data = r.json()
+
+            if not data.get("ok"):
+                # 탭 이름이 틀린 것은 다시 시도해도 소용없다 — 바로 세운다.
+                raise SystemExit(f"[중단] {tab_name} — {data.get('error', 'Apps Script 오류')}")
+
+            if "values" in data:
+                return data["values"], attempt
+
+            last = str(data)[:120]          # ok:true 인데 values 없음 = 위에 적은 그 현상
+        except SystemExit:
+            raise
+        except Exception as e:
+            last = f"{type(e).__name__}: {e}"
+
+        time.sleep(2 + 2 * attempt)
+
+    raise RuntimeError(f"{tab_name} — {TRIES}번 시도했지만 값을 받지 못했습니다. 마지막 응답: {last}")
+
 
 def read_tab(tab_name):
     """탭 하나를 읽어 (아티클 이름 목록, 검수 완료 아티클 이름 목록)을 돌려준다."""
 
-    r = requests.post(
-        URL,
-        json={"secret": SECRET, "action": "readWithColor",
-              "sheet": tab_name, "range": RANGE},
-        timeout=90,
-    )
-    r.raise_for_status()
-    data = r.json()
-
-    if not data.get("ok"):
-        raise RuntimeError(f"{tab_name} — {data.get('error', 'Apps Script 오류')}")
-
-    rows = data.get("values", [])
+    rows, retried = fetch(tab_name)
+    if retried:
+        print(f"  [참고] {tab_name} — {retried}번 다시 시도해서 받았습니다.")
 
     # ── 초록이 칠해진 «블록 번호»를 모은다 (B열이든 C열이든) ──
     green_blocks = set()
@@ -168,6 +209,7 @@ def main():
         total_arts += len(names)
         total_green += len(green)
         print(f"{no}단원  아티클 {len(names):3d} · 검수 완료 {len(green):3d}   {tab}")
+        time.sleep(PAUSE)      # 몰아치면 엔드포인트가 흔들린다 (fetch 주석 참고)
 
     print("-" * 72)
     print(f"합계    아티클 {total_arts:3d} · 검수 완료 {total_green:3d}")
