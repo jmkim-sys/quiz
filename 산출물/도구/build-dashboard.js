@@ -72,6 +72,13 @@ function readReviewDone() {
   }
 }
 
+/* 시트 아티클명 ↔ 로컬 아티클명을 맞춰 보기 위한 정규화 (2026-09-29).
+ * 실제로 어긋난 예: `유체 역학`↔`유체역학`(공백) · `A. 산·염기 반응`↔`A. 산-염기 반응`(가운뎃점/하이픈).
+ * ⚠️ 이름이 정말 다른 것(`C. 금속`↔`C. 전이 금속`)은 **짝짓지 않는다** — 같은 것이라고 단정하지
+ * 않기 위해서다(CLAUDE.md 규칙 3번). 짝을 못 지은 이름은 대단원을 펼치면 그대로 보여 준다.
+ * 단원별 «수»는 언제나 시트 값을 그대로 쓰므로 짝짓기 실패와 무관하게 정확하다. */
+const normName = s => String(s || '').replace(/\s+/g, '').replace(/[·ㆍ・\-–—]/g, '-').toLowerCase();
+
 const ARGS = process.argv.slice(2);
 const WATCH = ARGS.includes('--watch');
 const OPEN = ARGS.includes('--open');
@@ -501,6 +508,18 @@ function buildHTML(d, stamp) {
     const links = [`<a class="filelink" href="${esc(encodeURI('대단원별/' + u.file))}">CSV 열기</a>`];
     /* 검수용 CSV가 둘 이상인 대단원에서 "N건"이라고만 쓰고 첫 건만 걸면 라벨과 동작이 어긋난다.
        검수용 CSV 하나에 링크 하나씩 걸고, 어느 아티클인지 이름으로 밝힌다. */
+    /* ── 이 대단원의 기획자 검수 현황 (팀 시트 초록 칸) ── */
+    const rvUnit = REVIEW_DONE.units[String(Number(u.no))] || {};
+    const rvCount = Number(rvUnit.검수완료) || 0;
+    const localByNorm = new Map(u.arts.map(a => [normName(a.art), a.art]));
+    const rvSet = new Set(); const rvMiss = [];
+    (rvUnit.검수완료_아티클 || []).forEach(n => {
+      const hit = localByNorm.get(normName(n));
+      if (hit) rvSet.add(hit); else rvMiss.push(n);
+    });
+    const rvPct = u.arts.length ? (rvCount / u.arts.length * 100).toFixed(1) : '0';
+    const rvCls = !rvCount ? ' zero' : (rvCount >= u.arts.length ? ' full' : '');
+
     const mine = u.arts.filter(a => REVIEW[quizKey(u.file, a.art)]);
     mine.forEach(a => links.push(`<a class="filelink alt" href="${esc(REVIEW[quizKey(u.file, a.art)].href)}">검수용 CSV · ${esc(a.art)}</a>`));
     const mids = u.mids.map(m => `      <div class="mid">
@@ -512,7 +531,9 @@ ${m.arts.map(a => {
       const name = href
         ? `<a class="cand" href="${esc(href)}">${esc(a.art)}</a>`
         : esc(a.art);
-      return `          <li${done ? ' class="done"' : ''}><span class="an">${name}</span><span class="dv">${esc(a.div)}</span><span class="cnt">${a.shown}/${a.total}</span></li>`;
+      const rvd = rvSet.has(a.art);
+      const cls = [done ? 'done' : '', rvd ? 'rv' : ''].filter(Boolean).join(' ');
+      return `          <li${cls ? ` class="${cls}"` : ''}><span class="an">${name}</span><span class="dv">${esc(a.div)}</span><span class="cnt">${a.shown}/${a.total}</span><span class="rvm" title="${rvd ? '기획자 검수 완료 (팀 시트 초록)' : '아직 검수 전'}">${rvd ? '검수 완료' : ''}</span></li>`;
     }).join('\n')}
         </ul>
       </div>`).join('\n');
@@ -522,9 +543,13 @@ ${m.arts.map(a => {
         <span class="eu-name">${u.no} · ${esc(u.label)}</span>
         <span class="bar-track"><span class="bar-scale" style="width:${pct}%"><span class="bar-fill" style="width:${fill}%"></span></span></span>
         <span class="bar-val"><b>${u.done}</b> / ${u.arts.length}</span>
+        <span class="eu-review${rvCls}" title="기획자 검수 완료 ${rvCount} / 아티클 ${u.arts.length} — 팀 시트에서 초록으로 칠해진 수">
+          <i style="width:${rvPct}%"></i><span class="t">검수 <b>${rvCount}</b>/${u.arts.length}</span>
+        </span>
       </summary>
       <div class="eu-body">
-        <div class="filelinks">${links.join(' ')}</div>
+        <div class="filelinks">${links.join(' ')}</div>${rvMiss.length ? `
+        <div class="rvwarn">시트에서 초록으로 칠해졌지만 <b>이름이 달라 짝을 못 지은 ${rvMiss.length}건</b>: ${rvMiss.map(esc).join(' · ')} — 위 <b>검수 ${rvCount}</b>에는 들어가 있고, 아래 목록에만 표시가 빠집니다.</div>` : ''}
 ${mids}
       </div>
     </details>`;
@@ -624,7 +649,7 @@ ${CSS}</style>
       <div class="panel span8">
         <div class="panel-head">
           <div><div class="panel-label">Volume &amp; Progress</div><h2>대단원별 규모와 진행</h2></div>
-          <div class="hint"><b>주황 채움</b> = 완료 아티클 비율(7문항이 다 찬 아티클) · 아티클 수는 오른쪽 숫자 · 행을 클릭하면 펼쳐집니다</div>
+          <div class="hint"><b>주황 채움</b> = 완료 아티클 비율(7문항이 다 찬 아티클) · <b class="lg-rv">초록 «검수 N/M»</b> = 기획자가 팀 시트에서 초록으로 칠한 아티클 수 · 행을 클릭하면 펼쳐집니다</div>
         </div>
         <div>
 ${accordion}
