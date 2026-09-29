@@ -65,7 +65,7 @@ function readReviewDone() {
   }
   try {
     const d = JSON.parse(fs.readFileSync(f, 'utf8').replace(/^﻿/, ''));
-    return { done: Number(d.검수완료수) || 0, at: String(d.읽은시각 || '').slice(0, 10), units: d.대단원 || {} };
+    return { done: Number(d.검수완료수) || 0, at: String(d.갱신시각 || d.읽은시각 || '').slice(0, 10), units: d.대단원 || {} };
   } catch (e) {
     warn(`검수완료_시트.json 을 읽지 못했습니다 — 0으로 봅니다: ${e.message}`);
     return { done: 0, at: '', units: {} };
@@ -610,7 +610,7 @@ ${CSS}</style>
         <span class="kpi-label">기획자 검수 완료 파일</span>
         <div class="kpi-num"><span class="big">${reviewDone}</span><span class="of">/ ${T.art}</span></div>
         <div class="track"><i style="width:${(reviewDone / T.art * 100).toFixed(1)}%"></i></div>
-        <div class="kpi-foot">팀 시트에서 초록으로 칠해진 아티클 · 전체의 ${(reviewDone / T.art * 100).toFixed(1)}%${REVIEW_DONE.at ? ` · ${REVIEW_DONE.at} 기준` : ''}</div>
+        <div class="kpi-foot">팀 시트에서 초록으로 칠해진 아티클 · 전체의 ${(reviewDone / T.art * 100).toFixed(1)}%${REVIEW_DONE.at ? ` · ${REVIEW_DONE.at} 갱신` : ''}</div>
       </div>
       <div class="kpi accent">
         <span class="kpi-label">기획자 검수 필요 파일</span>

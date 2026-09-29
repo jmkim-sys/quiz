@@ -127,8 +127,27 @@ def main():
     print("-" * 72)
     print(f"합계    아티클 {total_arts:3d} · 검수 완료 {total_green:3d}")
 
+    # 2026-09-29 — 값이 그대로면 파일을 건드리지 않는다.
+    # 이 스크립트는 1시간마다 자동으로 돈다(`tools/auto_update.ps1`). 매번 시각을 새로 적으면
+    # 초록 칸이 하나도 안 바뀐 날에도 파일이 달라져 **빈 커밋이 하루 24개씩 쌓인다.**
+    # 그래서 검수 완료 수와 아티클 목록이 이전과 같으면 그대로 두고 끝낸다.
+    # `갱신시각`은 따라서 «마지막으로 읽은 때»가 아니라 «수치가 마지막으로 바뀐 때»다.
+    previous = {}
+    if OUT.exists():
+        try:
+            with open(OUT, encoding="utf-8") as f:
+                previous = json.load(f)
+        except Exception:
+            previous = {}
+
+    if previous.get("대단원") == units and previous.get("검수완료수") == total_green:
+        print()
+        print("지난번과 같습니다 — 파일을 고치지 않았습니다.",
+              f"(마지막 변화: {previous.get('갱신시각', '모름')})")
+        return
+
     result = {
-        "읽은시각": datetime.datetime.now().isoformat(timespec="seconds"),
+        "갱신시각": datetime.datetime.now().isoformat(timespec="seconds"),
         "출처": "팀 Google 시트 · readWithColor · 각 탭 C열 배경색(#00ff00 = 검수 완료)",
         "아티클수": total_arts,
         "검수완료수": total_green,
