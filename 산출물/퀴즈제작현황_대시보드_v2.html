@@ -19,6 +19,9 @@
   --primary-container:#f78d1e; --on-primary-container:#5f3100;
   --primary-fixed:#ffdcc2; --primary-fixed-dim:#ffb77c;
   --secondary:#5f5e5f; --secondary-container:#e2dfe0; --on-secondary-container:#636263;
+  /* 검수 완료(초록) — 팀 시트에서 기획자가 칠하는 #00ff00 을 화면용으로 가라앉힌 색 */
+  --done:#2f6b42; --done-container:#8fcfa4; --done-surface:#eaf6ee; --done-track:#d4ead9;
+  --done-mark:#00ff00;
   --error:#ba1a1a; --error-c:#ffdad6; --on-error-c:#93000a;
   /* spacing */
   --xs:4px; --base:8px; --sm:12px; --md:24px; --lg:48px; --xl:80px;
@@ -89,6 +92,22 @@ h1{font-size:48px;font-weight:800;line-height:56px;letter-spacing:-.02em;margin:
 .track{width:100%;height:6px;background:var(--surface-c);border-radius:var(--r-sm);overflow:hidden;}
 .track > i{display:block;height:100%;background:var(--primary);border-radius:var(--r-sm);}
 .kpi-foot{margin-top:auto;font-size:13px;font-weight:600;line-height:1.6;color:var(--on-surface-variant);}
+
+/* ── 「기획자 검수 완료 파일」 타일 (2026-09-29 신설) ─────────────────────────
+   왜 초록인가: 기획자가 팀 시트에서 검수를 마친 아티클 칸을 실제로 초록(#00ff00)으로
+   칠하고, 이 타일은 그 칸을 센 값이다. 화면 색을 뜻과 맞춰 두면 「무엇을 센 숫자인가」를
+   따로 읽지 않아도 안다. 주황 primary(=해야 할 일)와 갈라 놓는 것이 이 타일의 목적이다.
+   라벨 앞 네모는 시트에서 칠하는 바로 그 색을 그대로 보여주는 견본이다. */
+.kpi.done{border-color:var(--done-container);
+  box-shadow:inset 0 0 0 1px var(--done-container);
+  background:linear-gradient(180deg,var(--done-surface),var(--surface-lowest) 62%);}
+.kpi.done .kpi-label{color:var(--done);display:flex;align-items:center;gap:var(--base);}
+.kpi.done .kpi-label::before{content:'';width:11px;height:11px;flex:none;border-radius:var(--r-sm);
+  background:var(--done-mark);box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);}
+.kpi.done .kpi-num .big{color:var(--done);}
+.kpi.done .kpi-num .of{color:var(--done);opacity:.62;}
+.kpi.done .track{background:var(--done-track);}
+.kpi.done .track > i{background:var(--done);}
 
 /* ===== Panels ===== */
 .cols{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--gutter);}
@@ -270,7 +289,7 @@ footer.note b{color:var(--on-surface);}
       <p class="sub">아티클 1건 = 문항 7개. <b>만든 문항 수는 <code>산출물/퀴즈CSV/*.csv</code></b>에서, 중단원명·아티클명·분과와 전체 규모는 <code>산출물/대단원별/*.csv</code> 9개 파일에서, 대단원명은 <code>재료/Story전체 목차_0730.csv</code>에서 그대로 읽어 채운 값입니다.</p>
     </section>
 
-    <section class="kpi-grid kpi-3">
+    <section class="kpi-grid">
       <div class="kpi">
         <span class="kpi-label">진행 중인 아티클</span>
         <div class="kpi-num"><span class="big">128</span><span class="of">/ 128</span></div>
@@ -283,10 +302,17 @@ footer.note b{color:var(--on-surface);}
         <div class="track"><i style="width:100.0%"></i></div>
         <div class="kpi-foot">검수용 CSV가 만들어진 문항 · 진행률 100.0% · 그중 889문항은 대단원별 CSV에도 반영됨</div>
       </div>
+      <div class="kpi done">
+        <span class="kpi-label">기획자 검수 완료 파일</span>
+        <div class="kpi-num"><span class="big">63</span><span class="of">/ 128</span></div>
+        <div class="track"><i style="width:49.2%"></i></div>
+        <div class="kpi-foot">팀 시트에서 초록으로 칠해진 아티클 · 전체의 49.2% · 2026-09-29 기준</div>
+      </div>
       <div class="kpi accent">
         <span class="kpi-label">기획자 검수 필요 파일</span>
-        <div class="kpi-num"><span class="big">70</span><span class="note">개</span></div>
-        <div class="kpi-foot"><code>산출물/퀴즈CSV/</code>의 검수용 CSV 수 · 아티클 링크를 눌러 엑셀로 여세요</div>
+        <div class="kpi-num"><span class="big">65</span><span class="of">/ 128</span></div>
+        <div class="track"><i style="width:50.8%"></i></div>
+        <div class="kpi-foot">전체 아티클 128건 − 검수 완료 63건 · 그중 63건은 검수용 CSV가 이미 있습니다 — 아티클 링크를 눌러 엑셀로 여세요</div>
       </div>
     </section>
 
@@ -816,7 +842,7 @@ footer.note b{color:var(--on-surface);}
 
     <footer class="note">
       <b>데이터 기준</b> 2026-09-29. 집계 원본은 <code>산출물/대단원별/</code>의 대단원 CSV 9개 파일이며, 헤더를 포함한 905행을 모두 세어 17열 구조임을 확인했습니다. 같은 폴더의 <code>퀴즈샘플_260831.csv</code>는 대단원 파일이 아니므로 집계에서 제외했습니다.<br>
-      <b>집계 방법</b> 아티클 = 아티클명이 적힌 행부터 다음 아티클명 전까지 / <b>만든 문항</b> = <code>산출물/퀴즈CSV/&lt;아티클&gt;.csv</code>의 행 수(퀴즈를 만들면 바로 생기는 파일입니다). 그 파일이 없는 아티클은 대단원별 CSV에서 <code>문제</code> 열이 채워진 행을 셉니다 — 검수용 CSV가 없던 시절에 반영된 건을 잃지 않기 위해서입니다 / <b>진행 중인 아티클</b> = 문항이 하나라도 만들어졌거나 반영된 아티클 / <b>기획자 검수 필요 파일</b> = <code>산출물/퀴즈CSV/</code>에 만들어진 검수용 CSV 파일 수(문항 수가 아니라 파일 수입니다). 대단원별 CSV 반영 여부와는 별개입니다 — 반영했다고 검수가 끝난 것은 아닙니다.<br>
+      <b>집계 방법</b> 아티클 = 아티클명이 적힌 행부터 다음 아티클명 전까지 / <b>만든 문항</b> = <code>산출물/퀴즈CSV/&lt;아티클&gt;.csv</code>의 행 수(퀴즈를 만들면 바로 생기는 파일입니다). 그 파일이 없는 아티클은 대단원별 CSV에서 <code>문제</code> 열이 채워진 행을 셉니다 — 검수용 CSV가 없던 시절에 반영된 건을 잃지 않기 위해서입니다 / <b>진행 중인 아티클</b> = 문항이 하나라도 만들어졌거나 반영된 아티클 / <b>기획자 검수 완료 파일</b> = 기획자가 팀 Google 시트에서 <b>초록(#00ff00)으로 칠한 아티클 수</b>입니다(문항 수가 아니라 파일 수). <code>py tools/read_sheet_green.py</code>가 9개 탭을 읽어 <code>산출물/검수완료_시트.json</code>에 적어 두고, 대시보드는 그 파일만 읽습니다 — 화면 숫자를 바꾸려면 그 명령을 먼저 돌리세요 / <b>기획자 검수 필요 파일</b> = 전체 아티클 수 − 검수 완료 수. 아직 퀴즈를 만들지 않은 아티클도 언젠가 검수를 받아야 하므로 검수용 CSV 수가 아니라 <b>전체</b>를 기준으로 뺍니다 — 대단원별 CSV 반영 여부와는 별개입니다.<br>
       <b>대단원·중단원·아티클명</b>은 <code>재료/Story전체 목차_0730.csv</code>와 대단원별 CSV의 표기를 그대로 사용했습니다(대단원명의 줄바꿈만 공백으로 정규화).<br>
       <b>다시 만들기</b> <code>산출물/도구/대시보드_새로고침.bat</code> 더블클릭. CSV를 고치는 동안 계속 자동 갱신하려면 <code>대시보드_자동감시.bat</code>을 실행해 두세요.<br>
       <b>CSV 열기</b>는 브라우저 설정에 따라 다운로드로 처리될 수 있습니다. 원본을 편집하려면 저장된 위치에서 직접 여세요.<br>

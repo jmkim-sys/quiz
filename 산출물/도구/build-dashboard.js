@@ -45,20 +45,32 @@ const DISPLAY_ADJUST = {
   /* 2026-09-22 사용자 지시 *"7-1/C 콜로이드가 이미 있는데 너가 인식을 못하니까 내가 임의로 +1한거니까
      그거 인식되면 +1한거 돌려도 돼"* — FORCE_DONE 키를 새 자리로 고쳐 콜로이드가 다시 잡히므로 0으로 되돌린다. */
   started: 0,       /* 진행 중인 아티클 */
-  /* 이 값은 «눈속임»이 아니라 **기획자가 이미 검수를 마친 아티클 수**다.
-     계산값(`reviewNeedCalc`)은 «산출물/퀴즈CSV/에 있는 파일 수», 즉 지금까지 만든 아티클 전부를
-     세므로 이미 검수가 끝난 것까지 포함한다. 검수 완료 여부를 담은 파일이 우리 쪽에 없어
-     (기획자가 팀 시트에서 검수한다) 그 수를 기계로 알 길이 없고, 사용자가 화면 숫자를 바로잡아
-     주면 그 차이를 여기에 적는 방식으로 남아 있다.
-     ⚠️ **가감값인 것이 맞다** — 새 퀴즈를 만들면 계산값과 화면 숫자가 함께 오른다. 새로 만든
-     아티클은 아직 검수 전이므로 그게 옳은 움직임이다. **기획자가 검수를 더 마쳤을 때만** 이 값을
-     키운다(예: 3건 더 검수 완료 → -21).
-     ⛔ 0으로 되돌리지 마라 — 2026-09-17·09-21 두 번 사용자가 바로잡아 준 값이 사라진다.
-     검수 완료 목록을 파일로 받게 되면 그때 이 숫자를 지우고 계산으로 바꾼다.
-     기준점(2026-09-29): 검수용 CSV 126건 · 검수 완료 56건 → 화면 70.
-     (옛 기준점 2026-09-29: 126건 · 54건 → 72 / 2026-09-28: 126건 · 49건 → 77 / 2026-09-23: 110건 · 32건 → 78) */
-  reviewNeed: -56,  /* 기획자 검수 필요 파일 (2026-09-29 사용자 지시 "70으로 다시 맞추자"에서 확정) */
+  /* ⚠️ `reviewNeed` 손조정은 2026-09-29에 없앴다 — 이제 팀 시트의 초록 칸에서 계산한다.
+     그전에는 검수 완료 여부를 담은 파일이 우리 쪽에 없어(기획자가 팀 시트에서 검수한다)
+     사용자가 화면 숫자를 불러 주면 그 차이를 여기에 적었다. 마지막 값은 `-56`(검수 완료 56건)
+     이었고, 실제로 시트를 세어 보니 **52건**이었다.
+     경위와 읽는 방법은 `tools/read_sheet_green.py`와 `기록/HISTORY.md` 2026-09-29 항목에 있다. */
 };
+
+/* ===== 기획자 검수 완료 수 (팀 시트의 초록 칸) =====
+ * `py tools/read_sheet_green.py` 가 만들어 두는 파일을 읽는다. 시트를 여기서 직접 부르지 않는
+ * 이유는 대시보드 집계 원본을 로컬 파일로 둔다는 2026-09-16 결정 때문이다("로컬로 처리하는게
+ * 맞을듯"). 네트워크가 끊겨도 대시보드는 같은 값을 낸다.
+ * ⚠️ 파일이 없으면 0으로 두고 **경고를 낸다** — 조용히 0이 되면 화면 숫자가 갑자기 뛴다. */
+function readReviewDone() {
+  const f = path.join(ROOT, '산출물', '검수완료_시트.json');
+  if (!fs.existsSync(f)) {
+    warn('산출물/검수완료_시트.json 이 없어 검수 완료 수를 0으로 봅니다 — `py tools/read_sheet_green.py` 를 먼저 돌리세요.');
+    return { done: 0, at: '', units: {} };
+  }
+  try {
+    const d = JSON.parse(fs.readFileSync(f, 'utf8').replace(/^﻿/, ''));
+    return { done: Number(d.검수완료수) || 0, at: String(d.읽은시각 || '').slice(0, 10), units: d.대단원 || {} };
+  } catch (e) {
+    warn(`검수완료_시트.json 을 읽지 못했습니다 — 0으로 봅니다: ${e.message}`);
+    return { done: 0, at: '', units: {} };
+  }
+}
 
 const ARGS = process.argv.slice(2);
 const WATCH = ARGS.includes('--watch');
@@ -471,7 +483,14 @@ function buildHTML(d, stamp) {
   const reviewNeedCalc = allArts.filter(hasQuiz).length;
   /* 위 DISPLAY_ADJUST 참고 — 계산값에 보정폭을 더한다. 음수로 내려가지는 않게 막는다. */
   const started = Math.max(0, startedCalc + DISPLAY_ADJUST.started);
-  const reviewNeed = Math.max(0, reviewNeedCalc + DISPLAY_ADJUST.reviewNeed);
+  /* 기획자 검수 — 두 KPI가 한 쌍이다 (2026-09-29 사용자 지시 "필요 파일은 128-63한 결과지").
+       검수 완료 = 기획자가 팀 시트에서 초록으로 칠한 아티클 수 (센 값 · 손조정 아님)
+       검수 필요 = **전체 아티클 수** − 검수 완료
+     ⚠️ 기준이 «검수용 CSV 수»(126)가 아니라 «전체 아티클 수»(128)다. 아직 퀴즈를 만들지 않은
+     아티클도 언젠가 검수를 받아야 하므로, 남은 일의 총량을 보여주려면 전체가 맞다. */
+  const REVIEW_DONE = readReviewDone();
+  const reviewDone = REVIEW_DONE.done;
+  const reviewNeed = Math.max(0, T.art - reviewDone);
 
   const accordion = units.map((u, i) => {
     /* 2026-09-16 사용자 지시 *"갈색 바 게이지 끝까지 넣어"* — 바깥 막대를 대단원 크기에 비례해
@@ -574,7 +593,7 @@ ${CSS}</style>
       <p class="sub">아티클 1건 = 문항 7개. <b>만든 문항 수는 <code>산출물/퀴즈CSV/*.csv</code></b>에서, 중단원명·아티클명·분과와 전체 규모는 <code>산출물/대단원별/*.csv</code> ${units.length}개 파일에서, 대단원명은 <code>재료/Story전체 목차_0730.csv</code>에서 그대로 읽어 채운 값입니다.</p>
     </section>
 
-    <section class="kpi-grid kpi-3">
+    <section class="kpi-grid">
       <div class="kpi">
         <span class="kpi-label">진행 중인 아티클</span>
         <div class="kpi-num"><span class="big">${started}</span><span class="of">/ ${T.art}</span></div>
@@ -587,10 +606,17 @@ ${CSS}</style>
         <div class="track"><i style="width:${(T.made / T.rows * 100).toFixed(1)}%"></i></div>
         <div class="kpi-foot">검수용 CSV가 만들어진 문항 · 진행률 ${(T.made / T.rows * 100).toFixed(1)}% · 그중 ${T.filled}문항은 대단원별 CSV에도 반영됨</div>
       </div>
+      <div class="kpi done">
+        <span class="kpi-label">기획자 검수 완료 파일</span>
+        <div class="kpi-num"><span class="big">${reviewDone}</span><span class="of">/ ${T.art}</span></div>
+        <div class="track"><i style="width:${(reviewDone / T.art * 100).toFixed(1)}%"></i></div>
+        <div class="kpi-foot">팀 시트에서 초록으로 칠해진 아티클 · 전체의 ${(reviewDone / T.art * 100).toFixed(1)}%${REVIEW_DONE.at ? ` · ${REVIEW_DONE.at} 기준` : ''}</div>
+      </div>
       <div class="kpi accent">
         <span class="kpi-label">기획자 검수 필요 파일</span>
-        <div class="kpi-num"><span class="big">${reviewNeed}</span><span class="note">개</span></div>
-        <div class="kpi-foot"><code>산출물/퀴즈CSV/</code>의 검수용 CSV 수 · 아티클 링크를 눌러 엑셀로 여세요</div>
+        <div class="kpi-num"><span class="big">${reviewNeed}</span><span class="of">/ ${T.art}</span></div>
+        <div class="track"><i style="width:${(reviewNeed / T.art * 100).toFixed(1)}%"></i></div>
+        <div class="kpi-foot">전체 아티클 ${T.art}건 − 검수 완료 ${reviewDone}건 · 그중 ${Math.max(0, reviewNeedCalc - reviewDone)}건은 검수용 CSV가 이미 있습니다 — 아티클 링크를 눌러 엑셀로 여세요</div>
       </div>
     </section>
 
@@ -616,7 +642,7 @@ ${divBars}
 
     <footer class="note">
       <b>데이터 기준</b> ${stamp}. 집계 원본은 <code>산출물/대단원별/</code>의 대단원 CSV ${units.length}개 파일이며, ${colsNote}.${skipped.length ? ` 같은 폴더의 <code>${skipped.map(esc).join('</code>, <code>')}</code>는 대단원 파일이 아니므로 집계에서 제외했습니다.` : ''}<br>
-      <b>집계 방법</b> 아티클 = 아티클명이 적힌 행부터 다음 아티클명 전까지 / <b>만든 문항</b> = <code>산출물/퀴즈CSV/&lt;아티클&gt;.csv</code>의 행 수(퀴즈를 만들면 바로 생기는 파일입니다). 그 파일이 없는 아티클은 대단원별 CSV에서 <code>문제</code> 열이 채워진 행을 셉니다 — 검수용 CSV가 없던 시절에 반영된 건을 잃지 않기 위해서입니다 / <b>진행 중인 아티클</b> = 문항이 하나라도 만들어졌거나 반영된 아티클 / <b>기획자 검수 필요 파일</b> = <code>산출물/퀴즈CSV/</code>에 만들어진 검수용 CSV 파일 수(문항 수가 아니라 파일 수입니다). 대단원별 CSV 반영 여부와는 별개입니다 — 반영했다고 검수가 끝난 것은 아닙니다.<br>
+      <b>집계 방법</b> 아티클 = 아티클명이 적힌 행부터 다음 아티클명 전까지 / <b>만든 문항</b> = <code>산출물/퀴즈CSV/&lt;아티클&gt;.csv</code>의 행 수(퀴즈를 만들면 바로 생기는 파일입니다). 그 파일이 없는 아티클은 대단원별 CSV에서 <code>문제</code> 열이 채워진 행을 셉니다 — 검수용 CSV가 없던 시절에 반영된 건을 잃지 않기 위해서입니다 / <b>진행 중인 아티클</b> = 문항이 하나라도 만들어졌거나 반영된 아티클 / <b>기획자 검수 완료 파일</b> = 기획자가 팀 Google 시트에서 <b>초록(#00ff00)으로 칠한 아티클 수</b>입니다(문항 수가 아니라 파일 수). <code>py tools/read_sheet_green.py</code>가 9개 탭을 읽어 <code>산출물/검수완료_시트.json</code>에 적어 두고, 대시보드는 그 파일만 읽습니다 — 화면 숫자를 바꾸려면 그 명령을 먼저 돌리세요 / <b>기획자 검수 필요 파일</b> = 전체 아티클 수 − 검수 완료 수. 아직 퀴즈를 만들지 않은 아티클도 언젠가 검수를 받아야 하므로 검수용 CSV 수가 아니라 <b>전체</b>를 기준으로 뺍니다 — 대단원별 CSV 반영 여부와는 별개입니다.<br>
       <b>대단원·중단원·아티클명</b>은 <code>재료/Story전체 목차_0730.csv</code>와 대단원별 CSV의 표기를 그대로 사용했습니다(대단원명의 줄바꿈만 공백으로 정규화).<br>
       <b>다시 만들기</b> <code>산출물/도구/대시보드_새로고침.bat</code> 더블클릭. CSV를 고치는 동안 계속 자동 갱신하려면 <code>대시보드_자동감시.bat</code>을 실행해 두세요.<br>
       <b>CSV 열기</b>는 브라우저 설정에 따라 다운로드로 처리될 수 있습니다. 원본을 편집하려면 저장된 위치에서 직접 여세요.<br>

@@ -19,10 +19,10 @@
        print(requests.get(os.getenv('GOOGLE_SHEET_WEBAPP_URL'),
        params={'secret':os.getenv('GOOGLE_SHEET_SECRET'),'action':'tabs'}).text[:500])"
 
-     ⚠️ 2026-09-29 확인 결과, 이 파일은 **아직 시트에 붙여 넣지 않은 상태다.**
-     `action=tabs`를 보냈더니 옛 doGet의 상태 문구만 돌아왔다(`{"success":true,"message":"…정상
-     작동 중입니다."}` — `actions` 목록이 없다). 붙여 넣은 뒤라면 탭 목록이 와야 한다.
-     따라서 아래 `colors`만 따로 넣을 수 없고, **이 파일 전체를 한 번에 넣어야 한다.**
+     ⚠️ 2026-09-29 — **이 파일은 시트에 들어가 있지 않다. 쓰이지 않는 초안이다.**
+     같은 날 사용자가 별도로 POST 방식 `readWithColor` 액션을 배포했고(→ `tools/read_google_sheet.py`),
+     시트 배경색은 그쪽으로 읽는다. 이 GET 방식 초안은 참고용으로만 남긴다.
+     확인 근거: `action=tabs`에 옛 doGet의 상태 문구만 돌아왔고, 틀린 secret에도 같은 응답이 왔다.
 
    보안: 기존 `doPost`와 같은 `secret`을 요구한다. 시트를 **읽기만** 하고 쓰지 않는다.
    ============================================================================ */
@@ -39,12 +39,11 @@ function doGet(e) {
   try {
     if (action === 'tabs')  return json_({ success: true, tabs: listTabs_() });
     if (action === 'dump')  return json_({ success: true, sheets: dumpSheets_(p.sheet) });
-    if (action === 'colors') return json_({ success: true, sheet: dumpColors_(p.sheet) });
     /* action이 없거나 모르는 값이면 종전처럼 상태 문구를 돌려준다 (기존 동작 유지) */
     return json_({
       success: true,
       message: 'STORY 퀴즈 Google Sheets API가 정상 작동 중입니다.',
-      actions: ['tabs', 'dump', 'colors']
+      actions: ['tabs', 'dump']
     });
   } catch (err) {
     return json_({ success: false, message: String(err) });
@@ -89,45 +88,6 @@ function dumpSheets_(sheetName) {
       : sh.getRange(1, 1, lastRow, lastCol).getDisplayValues();
     return { name: sh.getName(), rows: values };
   });
-}
-
-/* ── 탭 내용 + 칸 배경색 (2026-09-29 신설) ───────────────────────────────────
-   왜 필요한가: `dumpSheets_`는 `getDisplayValues()`만 쓰므로 **칸에 적힌 글자만** 돌아온다.
-   기획자는 검수를 마친 아티클 칸을 시트에서 초록으로 칠해 표시하는데, 그 색이 오지 않아
-   「기획자 검수 필요 파일」 수를 기계로 알 수 없었다. 그래서 지금은
-   `산출물/도구/build-dashboard.js`의 `DISPLAY_ADJUST.reviewNeed`에 사용자가 불러 주는
-   숫자를 손으로 적고 있다. 이 액션이 그 손조정을 없애기 위한 것이다.
-
-   무엇을 돌려주나: 글자(`text`)와 배경색(`color`)을 **같은 모양의 2차원 배열**로 함께 준다.
-   행·열 번호가 같으므로 `text[r][c]`의 색이 `color[r][c]`다.
-   색은 `'#d9ead3'`처럼 소문자 16진수이고, 칠하지 않은 칸은 `'#ffffff'`다 (빈 문자열이 아니다).
-
-   ⚠️ 조건부 서식으로 칠해진 색은 여기에 **그대로 나온다** —
-   `getBackgrounds()`는 규칙이 아니라 «보이는 색»을 준다. 그건 우리에게 유리하다.
-
-   ⚠️ 값을 여기서 판정하지 않는다 (CLAUDE.md 규칙 3번). 「초록이면 검수 완료」 같은 해석은
-   받는 쪽에서 하고, 여기서는 시트에 있는 그대로만 옮긴다.
-
-   sheetName을 주면 그 탭만 돌려준다. 색까지 담으면 응답이 커지므로 `dump`와 달리
-   **탭 이름을 반드시 받는다** — 전부 달라면 탭 수만큼 나눠 부른다.
-   예) ?secret=…&action=colors&sheet=1대단원                                           */
-function dumpColors_(sheetName) {
-  if (!sheetName) throw new Error('action=colors 에는 sheet 파라미터가 필요합니다. 예) &sheet=1대단원');
-
-  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
-  if (!sh) throw new Error('탭을 찾을 수 없습니다: ' + sheetName);
-
-  var lastRow = sh.getLastRow(), lastCol = sh.getLastColumn();
-  if (lastRow < 1 || lastCol < 1) return { name: sh.getName(), text: [], color: [] };
-
-  var r = sh.getRange(1, 1, lastRow, lastCol);
-  return {
-    name:  sh.getName(),
-    rows:  lastRow,
-    cols:  lastCol,
-    text:  r.getDisplayValues(),
-    color: r.getBackgrounds()
-  };
 }
 
 function json_(obj) {
