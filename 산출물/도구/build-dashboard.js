@@ -314,6 +314,12 @@ function collect() {
     }
   } catch (e) { /* 퀴즈데이터가 없으면 전부 '처리 대기'로 둔다 */ }
 
+  /* 목차 행 → 대단원별 CSV 아티클 (대단원 안 차례로 짝짓는다 · 2026-10-06) */
+  const tocArt = new Map();
+  euLabels.forEach((lbl, i) => {
+    tocRows.filter(r => r.eu === lbl).forEach((r, k) => tocArt.set(r, units[i].arts[k]));
+  });
+
   const queue = msFiles.map(f => {
     const m = f.match(/^(\d+)_(\d+)\)_([A-Z])/);
     let hit = null;
@@ -322,10 +328,17 @@ function collect() {
       const cands = tocRows.filter(r => r.mid.startsWith(midPrefix) && r.art.startsWith(letter));
       if (cands.length === 1) hit = cands[0];
     }
+    /* 목차 행 ↔ 대단원별 CSV 아티클은 «이름»이 아니라 «대단원 안에서의 차례»로 잇는다.
+       2026-10-06에 로컬 표기를 팀 시트에 맞추면서 두 쪽 이름이 갈라졌다
+       (목차 `A. 우리은하와 외부은하` ↔ CSV `A. 우리은하와 외부 은하`,
+        목차 `4-5) 화학 반응의 법칙` ↔ CSV `4-7) 화학 반응의 법칙` 등 41자리).
+       이름으로 맞추면 그 아티클이 전부 «처리 대기»로 떨어져 대기 원고가 9 → 23으로 튄다.
+       차례로 잇는 근거는 바로 위 euLabels 검사다 — 대단원마다 목차 개수 = CSV 아티클 개수임을
+       이미 보장하고 있고, 스켈레톤 자체가 목차 순서대로 만들어졌다. */
+    const art = hit ? tocArt.get(hit) : null;
     let filled = 0, total = 0;
-    if (hit) for (const u of units) for (const a of u.arts)
-      if (a.art === hit.art && a.mid === hit.mid) { filled = a.filled; total = a.total; }
-    const made = hit && madeArts.has(norm(hit.mid) + '|' + norm(hit.art));
+    if (art) { filled = art.filled; total = art.total; }
+    const made = !!art && madeArts.has(norm(art.mid) + '|' + norm(art.art));
     const note = (total && filled === total) ? 'CSV 반영 완료'
                : filled ? `CSV ${filled}/${total}행 반영 중`
                : made ? '7문항 생성 완료 · 검수 대기'
